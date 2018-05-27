@@ -50,6 +50,8 @@ Orbs can be found on the ground or dropped by the enemy. Bosses always drop 1 lu
 * Base/lump vs. frozen: 60%
 * Fire vs. frozen: 100%
 
+Orbs do not stack on the dungeon floor. If two orbs appear in the same place, the newer orb will replace the older one.
+
 ## Power Stack
 
 Power orbs are stored in the power stack. Your stack can contain at most 6 orbs.

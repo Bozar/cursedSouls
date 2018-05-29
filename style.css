@@ -1,0 +1,11 @@
+body {
+  font-size: 10px;
+  margin: 0;
+  background-color: #262626;
+}
+
+div#game canvas {
+  display: block;
+  margin: 2rem auto;
+  border: 2px dashed #abb2bf;
+}

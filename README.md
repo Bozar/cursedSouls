@@ -60,6 +60,14 @@ When pressing Space in aim mode, the last orb will be used.
 
 When taking X damages from the enemy, the stack will pop X powers, following the `last in, first out` rule. If you take more damages than your remaining powers, you will die.
 
+## Enemy
+
+Enemies' abilities are hinted in the descriptions. You can tell their challenge ratings by the loot.
+
+* Easy: slime
+* Normal: fire, ice
+* Hard: lump
+
 ## Behind The Scene
 
 After playing [HyperRogue](https://store.steampowered.com/app/342610/HyperRogue/), I asked myself: how to give PC different abilities, and keep the key-bindings as simple as possible? My answer has two points:

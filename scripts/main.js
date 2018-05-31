@@ -333,13 +333,13 @@ Main.screens.drawHelp = function () {
 // ``` In-game screens +++
 Main.screens.main = new Main.Screen('main')
 
-// Main.screens.main.initialize = function () {
+Main.screens.main.initialize = function () {
 //   Main.entity.seed()
 //   Main.getEntity('seed').Seed.setSeed(Main.getDevSeed())
 //   ROT.RNG.setSeed(Main.getEntity('seed').Seed.getSeed())
 
 //   Main.entity.dungeon()
-//   Main.entity.message()
+  Main.entity.message()
 
 //   Main.entity.pc()
 
@@ -352,7 +352,12 @@ Main.screens.main = new Main.Screen('main')
 
 //   Main.getEntity('message').Message.getMsgList().push(
 //     Main.text.tutorial('move'))
-// }
+
+  Main.getEntity('message').Message.setModeline('this is the modeline')
+  for (let i = 0; i < 10; i++) {
+    Main.getEntity('message').Message.pushMsg(`Message: ${i}`)
+  }
+}
 
 Main.screens.main.display = function () {
   Main.screens.drawBorder()
@@ -368,8 +373,8 @@ Main.screens.main.display = function () {
   // Main.screens.drawItem()
   // Main.screens.drawActor(Main.getEntity('pc'))
 
-  // Main.screens.drawMessage()
-  // Main.screens.drawModeLine()
+  Main.screens.drawMessage()
+  Main.screens.drawModeLine()
 }
 
 // ----- Initialization +++++

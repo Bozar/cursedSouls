@@ -2,7 +2,7 @@
 
 // ----- Version number, development switch, seed & color +++++
 var Main = {}
-Main._version = '0.0.1-dev'
+Main._version = '0.0.1'
 Main._develop = true
 Main.getVersion = function () { return this._version }
 Main.getDevelop = function () { return this._develop }
@@ -19,6 +19,7 @@ Main._color.set('white', '#ABB2BF')
 Main._color.set('black', '#262626')
 Main._color.set('grey', '#666666')
 Main._color.set('orange', '#FF9900')
+Main._color.set('green', '#A0D86C')
 
 Main.getColor = function (color) { return Main._color.get(color) }
 
@@ -88,6 +89,21 @@ Main.UI.dungeon._x = Main.UI.padLeftRight
 Main.UI.dungeon._y = Main.UI.padTopBottom
 
 // ``` UI blocks +++
+Main.UI.level = new Main.UI(Main.UI.status.getWidth(), 1)
+Main.UI.level._x = Main.UI.status.getX()
+Main.UI.level._y = Main.UI.status.getY() + 2
+
+Main.UI.power = new Main.UI(Main.UI.status.getWidth(), 6)
+Main.UI.power._x = Main.UI.status.getX()
+Main.UI.power._y = Main.UI.level.getY() + 2
+
+Main.UI.ground = new Main.UI(Main.UI.status.getWidth(), 1)
+Main.UI.ground._x = Main.UI.status.getX()
+Main.UI.ground._y = Main.UI.power.getY() + Main.UI.power.getHeight() + 2
+
+Main.UI.help = new Main.UI(Main.UI.status.getWidth(), 1)
+Main.UI.help._x = Main.UI.status.getX()
+Main.UI.help._y = Main.UI.status.getY() + Main.UI.status.getHeight() - 2.5
 
 // ----- Screen factory: display content, listen keyboard events +++++
 Main.Screen = function (name, mode) {
@@ -173,7 +189,8 @@ Main.screens.drawVersion = function () {
 }
 
 Main.screens.drawSeed = function () {
-  let seed = Main.getEntity('seed').Seed.getRawSeed()
+  let seed = '#1234567890'
+  // let seed = Main.getEntity('seed').Seed.getRawSeed()
   seed = seed.replace(/^(#{0,1}\d{5})(\d{5})$/, '$1-$2')
 
   Main.screens.drawAlignRight(
@@ -247,6 +264,72 @@ Main.screens.drawDungeon = function () {
   }
 }
 
+Main.screens.drawLevelName = function () {
+  let levelName = Main.text.levelName('grave')
+
+  Main.display.drawText(
+    Main.UI.level.getX(),
+    Main.UI.level.getY(),
+    `${Main.text.statusPanel('level')} ${levelName}`)
+}
+
+Main.screens.drawPower = function () {
+  let powers = [
+    Main.text.orb('fire'),
+    Main.text.orb('fire'),
+    Main.text.orb('ice'),
+    Main.text.orb('slime'),
+    Main.text.orb('ice'),
+    Main.text.orb('lump')
+  ]
+  let enhance = false
+
+  // power orbs
+  for (let i = 0; i < powers.length; i++) {
+    Main.display.drawText(
+      Main.UI.power.getX() + 2,
+      Main.UI.power.getY() + i * 1.1,
+      powers[i])
+  }
+
+  // HP bar
+  for (let i = 0; i < 6; i++) {
+    Main.display.drawText(
+      Main.UI.power.getX() + 9,
+      Main.UI.power.getY() + i * 1.1,
+      (i + 1).toString(10))
+  }
+
+  // star indicator
+  enhance && Main.display.drawText(
+    Main.UI.power.getX(),
+    Main.UI.power.getY(),
+    Main.text.statusPanel('enhance'))
+}
+
+Main.screens.drawOrbOnTheGround = function () {
+  let orb = 'slime'
+
+  Main.display.drawText(
+    Main.UI.ground.getX(),
+    Main.UI.ground.getY(),
+    orb
+      ? Main.text.statusPanel('ground') + ' ' +
+      Main.screens.colorfulText(Main.text.orb(orb), 'green')
+      : Main.text.statusPanel('ground'))
+}
+
+Main.screens.drawHelp = function () {
+  let helpKey = '?'
+
+  Main.screens.drawAlignRight(
+    Main.UI.help.getX(),
+    Main.UI.help.getY(),
+    Main.UI.help.getWidth(),
+    `${Main.text.statusPanel('help')} ${helpKey}`,
+    'grey')
+}
+
 // ``` In-game screens +++
 Main.screens.main = new Main.Screen('main')
 
@@ -274,8 +357,12 @@ Main.screens.main = new Main.Screen('main')
 Main.screens.main.display = function () {
   Main.screens.drawBorder()
   Main.screens.drawVersion()
-  // Main.screens.drawStatus()
-  // Main.screens.drawSeed()
+  Main.screens.drawHelp()
+  Main.screens.drawSeed()
+
+  Main.screens.drawLevelName()
+  Main.screens.drawPower()
+  Main.screens.drawOrbOnTheGround()
 
   // Main.screens.drawDungeon()
   // Main.screens.drawItem()

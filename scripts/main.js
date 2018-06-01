@@ -189,8 +189,7 @@ Main.screens.drawVersion = function () {
 }
 
 Main.screens.drawSeed = function () {
-  let seed = '#1234567890'
-  // let seed = Main.getEntity('seed').Seed.getRawSeed()
+  let seed = Main.getEntity('seed').Seed.getRawSeed()
   seed = seed.replace(/^(#{0,1}\d{5})(\d{5})$/, '$1-$2')
 
   Main.screens.drawAlignRight(
@@ -264,6 +263,30 @@ Main.screens.drawDungeon = function () {
   }
 }
 
+Main.screens.drawActor = function (actor, noFov) {
+  let drawThis = false
+
+  let dungeon = Main.getEntity('dungeon')
+  let pc = Main.getEntity('pc').Position
+  let actorX = Number.parseInt(actor.Position.getX(), 10)
+  let actorY = Number.parseInt(actor.Position.getY(), 10)
+
+  if (!noFov && dungeon.Dungeon.getFov() && !Main.system.isPC(actor)) {
+    dungeon.fov.compute(pc.getX(), pc.getY(), pc.getSight(), function (x, y) {
+      if (x === actorX && y === actorY) {
+        drawThis = true
+      }
+    })
+  } else {
+    drawThis = true
+  }
+
+  drawThis && Main.display.draw(
+    actorX + Main.UI.dungeon.getX() + dungeon.Dungeon.getPadding(),
+    actorY + Main.UI.dungeon.getY() + dungeon.Dungeon.getPadding(),
+    actor.Display.getCharacter(), actor.Display.getColor())
+}
+
 Main.screens.drawLevelName = function () {
   let levelName = Main.text.levelName('grave')
 
@@ -334,20 +357,20 @@ Main.screens.drawHelp = function () {
 Main.screens.main = new Main.Screen('main')
 
 Main.screens.main.initialize = function () {
-//   Main.entity.seed()
-//   Main.getEntity('seed').Seed.setSeed(Main.getDevSeed())
-//   ROT.RNG.setSeed(Main.getEntity('seed').Seed.getSeed())
+  Main.entity.seed()
+  Main.getEntity('seed').Seed.setSeed(Main.getDevSeed())
+  ROT.RNG.setSeed(Main.getEntity('seed').Seed.getSeed())
 
-//   Main.entity.dungeon()
+  Main.entity.dungeon()
   Main.entity.message()
 
-//   Main.entity.pc()
+  Main.entity.pc()
 
 //   Main.entity.timer()
 //   Main.getEntity('timer').scheduler.add(Main.getEntity('pc'), true)
 //   Main.getEntity('timer').engine.start()
 
-//   Main.system.placePC()
+  Main.system.placePC()
 //   Main.system.placeItem()
 
 //   Main.getEntity('message').Message.getMsgList().push(
@@ -369,9 +392,9 @@ Main.screens.main.display = function () {
   Main.screens.drawPower()
   Main.screens.drawOrbOnTheGround()
 
-  // Main.screens.drawDungeon()
+  Main.screens.drawDungeon()
   // Main.screens.drawItem()
-  // Main.screens.drawActor(Main.getEntity('pc'))
+  Main.screens.drawActor(Main.getEntity('pc'))
 
   Main.screens.drawMessage()
   Main.screens.drawModeLine()

@@ -55,8 +55,18 @@ Main.entity.pc = function () {
 
   e.addComponent(new Main.Component.Position(5))
   e.addComponent(new Main.Component.Display('@'))
+  e.addComponent(new Main.Component.ActionDuration())
 
-  // e.act = Main.system.pcAct
+  e.act = Main.system.pcAct
 
   Main.entities.set('pc', e)
+}
+
+Main.entity.timer = function () {
+  let e = new Main.Factory('timer')
+
+  e.scheduler = new ROT.Scheduler.Action()
+  e.engine = new ROT.Engine(e.scheduler)
+
+  Main.entities.set('timer', e)
 }

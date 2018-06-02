@@ -84,3 +84,17 @@ Main.Component.Position = function (range, x, y) {
   this.setX = function (pos) { this._x = pos }
   this.setY = function (pos) { this._y = pos }
 }
+
+Main.Component.ActionDuration = function (move) {
+  this._name = 'ActionDuration'
+
+  this._move = move || 1
+  this._useOrb = 1
+  this._pickUpOrb = 1
+  this._wait = 1
+
+  this.getMove = function () { return this._move }
+  this.getUseOrb = function () { return this._useOrb }
+  this.getPickUpOrb = function () { return this._pickUpOrb }
+  this.getWait = function () { return this._wait }
+}

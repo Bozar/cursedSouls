@@ -116,7 +116,8 @@ Main.input.keybind = new Map()
 Main.input.keybind.set('fixed', new Map())
 Main.input.keybind.get('fixed').set('help', ['?'])
 Main.input.keybind.get('fixed').set('develop', ['~'])
-Main.input.keybind.get('fixed').set('fov', ['\\'])
+Main.input.keybind.get('fixed').set('fov', [']'])
+Main.input.keybind.get('fixed').set('turn', ['\\'])
 
 // movement
 Main.input.keybind.set('move', new Map())
@@ -124,13 +125,13 @@ Main.input.keybind.get('move').set('left', ['h', 'ArrowLeft'])
 Main.input.keybind.get('move').set('down', ['j', 'ArrowDown'])
 Main.input.keybind.get('move').set('up', ['k', 'ArrowUp'])
 Main.input.keybind.get('move').set('right', ['l', 'ArrowRight'])
+Main.input.keybind.get('move').set('wait', ['z', '.'])
 
 // interaction
 Main.input.keybind.set('interact', new Map())
 Main.input.keybind.get('interact').set('space', [' '])
 Main.input.keybind.get('interact').set('esc', ['Escape'])
 Main.input.keybind.get('interact').set('examine', ['x'])
-Main.input.keybind.get('interact').set('wait', ['z', '.'])
 Main.input.keybind.get('interact').set('lockNext', ['n', 'o', 'PageDown'])
 Main.input.keybind.get('interact').set('lockPrevious', ['p', 'i', 'PageUp'])
 
@@ -424,22 +425,17 @@ Main.screens.main.initialize = function () {
 
   Main.entity.pc()
 
-//   Main.entity.timer()
-//   Main.getEntity('timer').scheduler.add(Main.getEntity('pc'), true)
-//   Main.getEntity('timer').engine.start()
+  Main.entity.timer()
+  Main.getEntity('timer').scheduler.add(Main.getEntity('pc'), true)
+  Main.getEntity('timer').engine.start()
 
   Main.system.placePC()
 //   Main.system.placeItem()
-
-//   Main.getEntity('message').Message.getMsgList().push(
-//     Main.text.tutorial('move'))
 
   Main.getEntity('message').Message.setModeline('this is the modeline')
   for (let i = 0; i < 10; i++) {
     Main.getEntity('message').Message.pushMsg(`Message: ${i}`)
   }
-
-  Main.input.listenEvent('add', 'main')
 }
 
 Main.screens.main.display = function () {
@@ -467,9 +463,13 @@ Main.screens.main.keyInput = function (e) {
     if (keyAction(e, 'fixed') === 'develop') {
       Main.setDevelop()
     }
+  } else if (keyAction(e, 'move')) {
+    Main.system.move(keyAction(e, 'move'))
   } else if (Main.getDevelop()) {
     if (keyAction(e, 'fixed') === 'fov') {
       Main.getEntity('dungeon').Dungeon.setFov()
+    } else if (keyAction(e, 'fixed') === 'turn') {
+      console.log(Main.getEntity('timer').scheduler.getTime())
     }
   }
 

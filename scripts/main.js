@@ -105,6 +105,64 @@ Main.UI.help = new Main.UI(Main.UI.status.getWidth(), 1)
 Main.UI.help._x = Main.UI.status.getX()
 Main.UI.help._y = Main.UI.status.getY() + Main.UI.status.getHeight() - 2.5
 
+// ----- Key-bindings +++++
+Main.input = {}
+Main.input.keybind = new Map()
+// [mode1: [keybind1], mode2: [keybind2], ...]
+// keybind1 -> [action1: [key1_1, key1_2, ...],
+//              action2: [key2_1, key2_2, ...], ...]
+
+// keys that cannot be remapped by player
+Main.input.keybind.set('fixed', new Map())
+Main.input.keybind.get('fixed').set('help', ['?'])
+Main.input.keybind.get('fixed').set('develop', ['~'])
+Main.input.keybind.get('fixed').set('fov', ['\\'])
+
+// movement
+Main.input.keybind.set('move', new Map())
+Main.input.keybind.get('move').set('left', ['h', 'ArrowLeft'])
+Main.input.keybind.get('move').set('down', ['j', 'ArrowDown'])
+Main.input.keybind.get('move').set('up', ['k', 'ArrowUp'])
+Main.input.keybind.get('move').set('right', ['l', 'ArrowRight'])
+
+// interaction
+Main.input.keybind.set('interact', new Map())
+Main.input.keybind.get('interact').set('space', [' '])
+Main.input.keybind.get('interact').set('esc', ['Escape'])
+Main.input.keybind.get('interact').set('examine', ['x'])
+Main.input.keybind.get('interact').set('wait', ['z', '.'])
+Main.input.keybind.get('interact').set('lockNext', ['n', 'o', 'PageDown'])
+Main.input.keybind.get('interact').set('lockPrevious', ['p', 'i', 'PageUp'])
+
+Main.input.getAction = function (keyInput, mode) {
+  if (!mode) {
+    Main.getDevelop() && console.log('Undefined mode.')
+    return null
+  }
+
+  for (const [key, value] of Main.input.keybind.get(mode)) {
+    if (value.indexOf(keyInput.key) > -1) {
+      return key
+    }
+  }
+  return null
+}
+
+Main.input.listenEvent = function (event, handler) {
+  handler = Main.screens[String(handler)]
+    ? Main.screens[handler].keyInput
+    : handler
+
+  switch (event) {
+    case 'add':
+      window.addEventListener('keydown', handler)
+      break
+    case 'remove':
+      window.removeEventListener('keydown', handler)
+      break
+  }
+}
+
 // ----- Screen factory: display content, listen keyboard events +++++
 Main.Screen = function (name, mode) {
   this._name = name || 'Unnamed Screen'
@@ -380,6 +438,8 @@ Main.screens.main.initialize = function () {
   for (let i = 0; i < 10; i++) {
     Main.getEntity('message').Message.pushMsg(`Message: ${i}`)
   }
+
+  Main.input.listenEvent('add', 'main')
 }
 
 Main.screens.main.display = function () {
@@ -398,6 +458,23 @@ Main.screens.main.display = function () {
 
   Main.screens.drawMessage()
   Main.screens.drawModeLine()
+}
+
+Main.screens.main.keyInput = function (e) {
+  let keyAction = Main.input.getAction
+
+  if (e.shiftKey) {
+    if (keyAction(e, 'fixed') === 'develop') {
+      Main.setDevelop()
+    }
+  } else if (Main.getDevelop()) {
+    if (keyAction(e, 'fixed') === 'fov') {
+      Main.getEntity('dungeon').Dungeon.setFov()
+    }
+  }
+
+  Main.display.clear()
+  Main.screens.main.display()
 }
 
 // ----- Initialization +++++

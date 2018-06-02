@@ -19,13 +19,14 @@ Normal mode:
 * Move: arrow keys, hjkl
 * Pick up: Space
 * Wait: z, .
-* Help: /
+* Help: ?
 
 Examine mode, aim mode:
 
 * Enter: x, Space
 * Use orb (aim mode only): Space
-* Lock target: i/o, PgUp/PgDn
+* Lock next target: o, n, PgDn
+* Lock previous target: i, p, PgUp
 * Move cursor: arrow keys, hjkl
 * Exit: Esc
 

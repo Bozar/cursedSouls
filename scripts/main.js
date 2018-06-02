@@ -117,6 +117,7 @@ Main.input.keybind.set('fixed', new Map())
 Main.input.keybind.get('fixed').set('help', ['?'])
 Main.input.keybind.get('fixed').set('develop', ['~'])
 Main.input.keybind.get('fixed').set('fov', [']'])
+Main.input.keybind.get('fixed').set('seed', ['['])
 Main.input.keybind.get('fixed').set('turn', ['\\'])
 
 // movement
@@ -430,7 +431,7 @@ Main.screens.main.initialize = function () {
   Main.getEntity('timer').engine.start()
 
   Main.system.placePC()
-//   Main.system.placeItem()
+  //   Main.system.placeItem()
 
   Main.getEntity('message').Message.setModeline('this is the modeline')
   for (let i = 0; i < 10; i++) {
@@ -470,6 +471,8 @@ Main.screens.main.keyInput = function (e) {
       Main.getEntity('dungeon').Dungeon.setFov()
     } else if (keyAction(e, 'fixed') === 'turn') {
       console.log(Main.getEntity('timer').scheduler.getTime())
+    } else if (keyAction(e, 'fixed') === 'seed') {
+      console.log(Main.getEntity('seed').Seed.getSeed())
     }
   }
 

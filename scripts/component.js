@@ -48,6 +48,7 @@ Main.Component.Dungeon = function () {
   this._terrain = new Map()   // z,x,y: 0(floor) or 1(wall)
   this._memory = []           // explored dungeon
   this._hasFov = true         // only draw whatever the PC can see
+  this._floorArea = 55            // the floor-to-wall ratio
 
   this.getWidth = function () { return this._width }
   this.getHeight = function () { return this._height }
@@ -55,6 +56,7 @@ Main.Component.Dungeon = function () {
   this.getTerrain = function () { return this._terrain }
   this.getMemory = function () { return this._memory }
   this.getFov = function () { return this._hasFov }
+  this.getFloorArea = function () { return this._floorArea }
 
   this.setFov = function () { this._hasFov = !this._hasFov }
   this.setMemory = function (memory) { this._memory = memory }

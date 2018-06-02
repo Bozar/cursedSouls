@@ -30,7 +30,10 @@ Main.entity.dungeon = function () {
   let e = new Main.Factory('dungeon')
   e.addComponent(new Main.Component.Dungeon())
 
-  cellular()
+  do {
+    cellular()
+  } while (floorArea() < e.Dungeon.getFloorArea())
+
   e.light = function (x, y) {
     return e.Dungeon.getTerrain().get(x + ',' + y) === 0
   }
@@ -47,6 +50,19 @@ Main.entity.dungeon = function () {
     cell.connect(function (x, y, wall) {
       e.Dungeon.getTerrain().set(x + ',' + y, wall)
     })
+  }
+
+  function floorArea () {
+    let floor = 0
+
+    for (const keyValue of e.Dungeon.getTerrain()) {
+      if (keyValue[1] === 0) {
+        floor++
+      }
+    }
+
+    return Math.floor(
+      floor / (e.Dungeon.getWidth() * e.Dungeon.getHeight()) * 100)
   }
 }
 

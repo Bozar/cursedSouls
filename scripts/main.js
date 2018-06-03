@@ -117,8 +117,9 @@ Main.input.keybind.set('fixed', new Map())
 Main.input.keybind.get('fixed').set('help', ['?'])
 Main.input.keybind.get('fixed').set('develop', ['~'])
 Main.input.keybind.get('fixed').set('fov', [']'])
-Main.input.keybind.get('fixed').set('seed', ['['])
+Main.input.keybind.get('fixed').set('seed', ['='])
 Main.input.keybind.get('fixed').set('turn', ['\\'])
+Main.input.keybind.get('fixed').set('dummy', ['d'])
 
 // movement
 Main.input.keybind.set('move', new Map())
@@ -453,6 +454,10 @@ Main.screens.main.display = function () {
   // Main.screens.drawItem()
   Main.screens.drawActor(Main.getEntity('pc'))
 
+  for (const keyValue of Main.getEntity('npc')) {
+    Main.screens.drawActor(keyValue[1])
+  }
+
   Main.screens.drawMessage()
   Main.screens.drawModeLine()
 }
@@ -466,13 +471,17 @@ Main.screens.main.keyInput = function (e) {
     }
   } else if (keyAction(e, 'move')) {
     Main.system.move(keyAction(e, 'move'))
+  } else if (keyAction(e, 'fixed') === 'seed') {
+    console.log(Main.getEntity('seed').Seed.getSeed())
   } else if (Main.getDevelop()) {
     if (keyAction(e, 'fixed') === 'fov') {
       Main.getEntity('dungeon').Dungeon.setFov()
     } else if (keyAction(e, 'fixed') === 'turn') {
       console.log(Main.getEntity('timer').scheduler.getTime())
-    } else if (keyAction(e, 'fixed') === 'seed') {
-      console.log(Main.getEntity('seed').Seed.getSeed())
+    } else if (keyAction(e, 'fixed') === 'dummy') {
+      Main.entity.dummy(
+        Main.getEntity('pc').Position.getX() - 1,
+        Main.getEntity('pc').Position.getY())
     }
   }
 

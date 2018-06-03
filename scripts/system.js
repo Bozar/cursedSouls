@@ -61,7 +61,7 @@ Main.system.move = function (direction) {
       duration = actor.ActionDuration.getWait()
   }
 
-  if (Main.system.isFloor(x, y)) {
+  if (Main.system.isFloor(x, y) && !Main.system.npcHere(x, y)) {
     // Main.system.isItem(x, y) &&
     //   message.pushMsg(Main.text.interact('find',
     //     Main.system.isItem(x, y).getEntityName()))
@@ -83,4 +83,14 @@ Main.system.unlockEngine = function (duration) {
 
   Main.display.clear()
   Main.screens.main.display()
+}
+
+Main.system.npcHere = function (x, y) {
+  for (const keyValue of Main.getEntity('npc')) {
+    if (x === keyValue[1].Position.getX() &&
+      y === keyValue[1].Position.getY()) {
+      return true
+    }
+  }
+  return false
 }

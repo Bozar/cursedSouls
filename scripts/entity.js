@@ -5,6 +5,8 @@ Main.entities = new Map()
 Main.entities.set('message', null)
 Main.entities.set('seed', null)
 Main.entities.set('dungeon', null)
+Main.entities.set('pc', null)
+Main.entities.set('npc', new Map())
 
 // ----- Create a single entity +++++
 Main.entity = {}
@@ -76,6 +78,18 @@ Main.entity.pc = function () {
   e.act = Main.system.pcAct
 
   Main.entities.set('pc', e)
+}
+
+Main.entity.dummy = function (x, y) {
+  let e = new Main.Factory('dummy')
+
+  e.addComponent(new Main.Component.Position(5, x, y))
+  e.addComponent(new Main.Component.Display('d'))
+  e.addComponent(new Main.Component.ActionDuration())
+
+  e.act = Main.system.dummyAct
+
+  Main.entities.get('npc').set(e.getID(), e)
 }
 
 Main.entity.timer = function () {

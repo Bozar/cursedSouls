@@ -94,3 +94,8 @@ Main.system.npcHere = function (x, y) {
   }
   return false
 }
+
+Main.system.examineMode = function () {
+  Main.getEntity('marker').Position.setX(Main.getEntity('pc').Position.getX())
+  Main.getEntity('marker').Position.setY(Main.getEntity('pc').Position.getY())
+}

@@ -64,25 +64,25 @@ Main.UI.padMessageDungeon = 1
 Main.UI.status = new Main.UI(13, null)
 Main.UI.status._height = Main.UI.canvas.getHeight() - Main.UI.padTopBottom * 2
 Main.UI.status._x = Main.UI.canvas.getWidth() -
-  Main.UI.padLeftRight - Main.UI.status.getWidth()
+    Main.UI.padLeftRight - Main.UI.status.getWidth()
 Main.UI.status._y = Main.UI.padTopBottom
 
 Main.UI.modeline = new Main.UI(null, 1)
 Main.UI.modeline._width = Main.UI.canvas.getWidth() - Main.UI.padLeftRight * 2 -
-  Main.UI.padModeStatus - Main.UI.status.getWidth()
+    Main.UI.padModeStatus - Main.UI.status.getWidth()
 Main.UI.modeline._x = Main.UI.padLeftRight
 Main.UI.modeline._y = Main.UI.canvas.getHeight() - Main.UI.padTopBottom -
-  Main.UI.modeline.getHeight()
+    Main.UI.modeline.getHeight()
 
 Main.UI.message = new Main.UI(Main.UI.modeline.getWidth(), 5)
 Main.UI.message._x = Main.UI.modeline.getX()
 Main.UI.message._y = Main.UI.modeline.getY() - Main.UI.padModeMessage -
-  Main.UI.message.getHeight()
+    Main.UI.message.getHeight()
 
 Main.UI.dungeon = new Main.UI(Main.UI.modeline.getWidth(), null)
 Main.UI.dungeon._height = Main.UI.canvas.getHeight() - Main.UI.padTopBottom -
-  Main.UI.modeline.getHeight() - Main.UI.padModeMessage -
-  Main.UI.message.getHeight() - Main.UI.padMessageDungeon
+    Main.UI.modeline.getHeight() - Main.UI.padModeMessage -
+    Main.UI.message.getHeight() - Main.UI.padMessageDungeon
 // the dungeon size should be an integer
 Main.UI.dungeon._height = Math.floor(Main.UI.dungeon._height)
 Main.UI.dungeon._x = Main.UI.padLeftRight
@@ -153,8 +153,8 @@ Main.input.getAction = function (keyInput, mode) {
 
 Main.input.listenEvent = function (event, handler) {
   handler = Main.screens[String(handler)]
-    ? Main.screens[handler].keyInput
-    : handler
+        ? Main.screens[handler].keyInput
+        : handler
 
   switch (event) {
     case 'add':
@@ -219,14 +219,14 @@ Main.screens._currentMode = null
 // ``` Helper functions +++
 Main.screens.colorfulText = function (text, fgColor, bgColor) {
   return bgColor
-    ? '%c{' + Main.getColor(fgColor) + '}%b{' +
-    Main.getColor(bgColor) + '}' + text + '%b{}%c{}'
-    : '%c{' + Main.getColor(fgColor) + '}' + text + '%c{}'
+        ? '%c{' + Main.getColor(fgColor) + '}%b{' +
+        Main.getColor(bgColor) + '}' + text + '%b{}%c{}'
+        : '%c{' + Main.getColor(fgColor) + '}' + text + '%c{}'
 }
 
 Main.screens.drawAlignRight = function (x, y, width, text, color) {
   Main.display.drawText(x + width - text.length, y,
-    color ? Main.screens.colorfulText(text, color) : text)
+        color ? Main.screens.colorfulText(text, color) : text)
 }
 
 Main.screens.drawBorder = function () {
@@ -246,7 +246,7 @@ Main.screens.drawVersion = function () {
 
   Main.getDevelop() && (version = 'Wiz|' + version)
   Main.screens.drawAlignRight(Main.UI.status.getX(), Main.UI.status.getY(),
-    Main.UI.status.getWidth(), version, 'grey')
+        Main.UI.status.getWidth(), version, 'grey')
 }
 
 Main.screens.drawSeed = function () {
@@ -254,15 +254,15 @@ Main.screens.drawSeed = function () {
   seed = seed.replace(/^(#{0,1}\d{5})(\d{5})$/, '$1-$2')
 
   Main.screens.drawAlignRight(
-    Main.UI.status.getX(),
-    Main.UI.status.getY() + Main.UI.status.getHeight() - 1,
-    Main.UI.status.getWidth(),
-    seed, 'grey')
+        Main.UI.status.getX(),
+        Main.UI.status.getY() + Main.UI.status.getHeight() - 1,
+        Main.UI.status.getWidth(),
+        seed, 'grey')
 }
 
 Main.screens.drawModeLine = function () {
   Main.display.drawText(Main.UI.modeline.getX(), Main.UI.modeline.getY(),
-    Main.getEntity('message').Message.getModeline())
+        Main.getEntity('message').Message.getModeline())
 }
 
 // the text cannot be longer than the width of message block
@@ -293,9 +293,9 @@ Main.screens.drawDungeon = function () {
     if (memory.length > 0) {
       for (let i = 0; i < memory.length; i++) {
         drawTerrain(
-          memory[i].split(',')[0],
-          memory[i].split(',')[1],
-          'grey')
+                    memory[i].split(',')[0],
+                    memory[i].split(',')[1],
+                    'grey')
       }
     }
 
@@ -306,9 +306,9 @@ Main.screens.drawDungeon = function () {
   } else {
     for (const keyValue of dungeon.Dungeon.getTerrain()) {
       drawTerrain(
-        keyValue[0].split(',')[0],
-        keyValue[0].split(',')[1],
-        'white')
+                keyValue[0].split(',')[0],
+                keyValue[0].split(',')[1],
+                'white')
     }
   }
 
@@ -317,10 +317,10 @@ Main.screens.drawDungeon = function () {
     y = Number.parseInt(y, 10)
 
     Main.display.draw(
-      x + Main.UI.dungeon.getX() + dungeon.Dungeon.getPadding(),
-      y + Main.UI.dungeon.getY() + dungeon.Dungeon.getPadding(),
-      Main.system.isFloor(x, y) ? '.' : '#',
-      Main.getColor(color))
+            x + Main.UI.dungeon.getX() + dungeon.Dungeon.getPadding(),
+            y + Main.UI.dungeon.getY() + dungeon.Dungeon.getPadding(),
+            Main.system.isFloor(x, y) ? '.' : '#',
+            Main.getColor(color))
   }
 }
 
@@ -343,18 +343,18 @@ Main.screens.drawActor = function (actor, noFov) {
   }
 
   drawThis && Main.display.draw(
-    actorX + Main.UI.dungeon.getX() + dungeon.Dungeon.getPadding(),
-    actorY + Main.UI.dungeon.getY() + dungeon.Dungeon.getPadding(),
-    actor.Display.getCharacter(), actor.Display.getColor())
+        actorX + Main.UI.dungeon.getX() + dungeon.Dungeon.getPadding(),
+        actorY + Main.UI.dungeon.getY() + dungeon.Dungeon.getPadding(),
+        actor.Display.getCharacter(), actor.Display.getColor())
 }
 
 Main.screens.drawLevelName = function () {
   let levelName = Main.text.levelName('grave')
 
   Main.display.drawText(
-    Main.UI.level.getX(),
-    Main.UI.level.getY(),
-    `${Main.text.statusPanel('level')} ${levelName}`)
+        Main.UI.level.getX(),
+        Main.UI.level.getY(),
+        `${Main.text.statusPanel('level')} ${levelName}`)
 }
 
 Main.screens.drawPower = function () {
@@ -368,50 +368,50 @@ Main.screens.drawPower = function () {
   ]
   let enhance = false
 
-  // power orbs
+    // power orbs
   for (let i = 0; i < powers.length; i++) {
     Main.display.drawText(
-      Main.UI.power.getX() + 2,
-      Main.UI.power.getY() + i * 1.1,
-      powers[i])
+            Main.UI.power.getX() + 2,
+            Main.UI.power.getY() + i * 1.1,
+            powers[i])
   }
 
-  // HP bar
+    // HP bar
   for (let i = 0; i < 6; i++) {
     Main.display.drawText(
-      Main.UI.power.getX() + 9,
-      Main.UI.power.getY() + i * 1.1,
-      (i + 1).toString(10))
+            Main.UI.power.getX() + 9,
+            Main.UI.power.getY() + i * 1.1,
+            (i + 1).toString(10))
   }
 
-  // star indicator
+    // star indicator
   enhance && Main.display.drawText(
-    Main.UI.power.getX(),
-    Main.UI.power.getY(),
-    Main.text.statusPanel('enhance'))
+        Main.UI.power.getX(),
+        Main.UI.power.getY(),
+        Main.text.statusPanel('enhance'))
 }
 
 Main.screens.drawOrbOnTheGround = function () {
   let orb = 'slime'
 
   Main.display.drawText(
-    Main.UI.ground.getX(),
-    Main.UI.ground.getY(),
-    orb
-      ? Main.text.statusPanel('ground') + ' ' +
-      Main.screens.colorfulText(Main.text.orb(orb), 'green')
-      : Main.text.statusPanel('ground'))
+        Main.UI.ground.getX(),
+        Main.UI.ground.getY(),
+        orb
+            ? Main.text.statusPanel('ground') + ' ' +
+            Main.screens.colorfulText(Main.text.orb(orb), 'green')
+            : Main.text.statusPanel('ground'))
 }
 
 Main.screens.drawHelp = function () {
   let helpKey = '?'
 
   Main.screens.drawAlignRight(
-    Main.UI.help.getX(),
-    Main.UI.help.getY(),
-    Main.UI.help.getWidth(),
-    `${Main.text.statusPanel('help')} ${helpKey}`,
-    'grey')
+        Main.UI.help.getX(),
+        Main.UI.help.getY(),
+        Main.UI.help.getWidth(),
+        `${Main.text.statusPanel('help')} ${helpKey}`,
+        'grey')
 }
 
 // ``` In-game screens +++
@@ -426,13 +426,14 @@ Main.screens.main.initialize = function () {
   Main.entity.message()
 
   Main.entity.pc()
+  Main.entity.marker()
 
   Main.entity.timer()
   Main.getEntity('timer').scheduler.add(Main.getEntity('pc'), true)
   Main.getEntity('timer').engine.start()
 
   Main.system.placePC()
-  //   Main.system.placeItem()
+    //   Main.system.placeItem()
 
   Main.getEntity('message').Message.setModeline('this is the modeline')
   for (let i = 0; i < 10; i++) {
@@ -451,8 +452,9 @@ Main.screens.main.display = function () {
   Main.screens.drawOrbOnTheGround()
 
   Main.screens.drawDungeon()
-  // Main.screens.drawItem()
+    // Main.screens.drawItem()
   Main.screens.drawActor(Main.getEntity('pc'))
+  Main.screens.drawActor(Main.getEntity('marker'))
 
   for (const keyValue of Main.getEntity('npc')) {
     Main.screens.drawActor(keyValue[1])
@@ -471,6 +473,8 @@ Main.screens.main.keyInput = function (e) {
     }
   } else if (keyAction(e, 'move')) {
     Main.system.move(keyAction(e, 'move'))
+  } else if (keyAction(e, 'interact') === 'examine') {
+    Main.system.examineMode()
   } else if (keyAction(e, 'fixed') === 'seed') {
     console.log(Main.getEntity('seed').Seed.getSeed())
   } else if (Main.getDevelop()) {
@@ -499,4 +503,8 @@ window.onload = function () {
 
   Main.display.clear()
   Main.screens.main.enter()
+
+  // window.localStorage.setItem('hello', 'world')
+  // let myObj = window.localStorage.getItem('hello')
+  // console.log(myObj)
 }

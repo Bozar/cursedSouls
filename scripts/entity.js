@@ -6,6 +6,7 @@ Main.entities.set('message', null)
 Main.entities.set('seed', null)
 Main.entities.set('dungeon', null)
 Main.entities.set('pc', null)
+Main.entities.set('marker', null)
 Main.entities.set('npc', new Map())
 
 // ----- Create a single entity +++++
@@ -90,6 +91,15 @@ Main.entity.dummy = function (x, y) {
   e.act = Main.system.dummyAct
 
   Main.entities.get('npc').set(e.getID(), e)
+}
+
+Main.entity.marker = function () {
+  let e = new Main.Factory('marker')
+
+  e.addComponent(new Main.Component.Position())
+  e.addComponent(new Main.Component.Display('X', 'orange'))
+
+  Main.entities.set('marker', e)
 }
 
 Main.entity.timer = function () {

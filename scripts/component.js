@@ -28,11 +28,12 @@ Main.Component.Seed = function () {
 
     this.getSeed = function () { return this._seed; };
     this.getRawSeed = function () { return this._rawSeed; };
+
     this.setSeed = function (seed) {
         if (!seed) {
             this._seed = (Math.random() * 9 + 1) * Math.pow(10, 9);
             this._seed = Math.floor(this._seed);
-            this._seed.toString();
+            this._seed = this._seed.toString();
 
             this._rawSeed = this._seed;
         } else {

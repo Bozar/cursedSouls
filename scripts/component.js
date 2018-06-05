@@ -21,16 +21,18 @@ Main.Component.Message = function () {
 
 Main.Component.Seed = function () {
     this._name = 'Seed';
-
-    this._seed = null; // to start the RNG engine
-    this._rawSeed = null; // player's input
+    // Use _seed to start the RNG engine.
+    this._seed = null;
+    // Use _rawseed to store player's input.
+    this._rawSeed = null;
 
     this.getSeed = function () { return this._seed; };
     this.getRawSeed = function () { return this._rawSeed; };
     this.setSeed = function (seed) {
         if (!seed) {
-            this._seed =
-                Math.floor((Math.random() * 9 + 1) * Math.pow(10, 9)).toString();
+            this._seed = Math.floor(
+                (Math.random() * 9 + 1) * Math.pow(10, 9))
+                .toString();
             this._rawSeed = this._seed;
         } else {
             this._seed = seed.toString().replace(/^#{0,1}(.+)$/, '$1');

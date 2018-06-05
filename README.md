@@ -79,4 +79,3 @@ After playing [HyperRogue](https://store.steampowered.com/app/342610/HyperRogue/
 Starting from this idea, I spent 10 days to design the paper prototype for Cursed Souls.
 
 And one more thing: HyperRogue is truly fascinating! Do not be intimidated by the mathematics, you can find detailed guides in the Steam community. If you can read Chinese, here is an [introduction](https://trow.cc/board/showtopic=30027) written by me.
-

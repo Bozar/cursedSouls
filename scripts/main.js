@@ -505,7 +505,7 @@ window.onload = function () {
     Main.display.clear();
     Main.screens.main.enter();
 
-    window.localStorage.setItem('hello', { 'name': 'this is a test', 'browser': 'firefox' });
-    let myObj = window.localStorage.getItem('hello');
-    console.log(myObj);
+    //window.localStorage.setItem('hello', 'world');
+    //let myObj = window.localStorage.getItem('hello');
+    //console.log(myObj);
 };

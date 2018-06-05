@@ -32,6 +32,7 @@
     "no-undef": 2,
     "no-unused-vars": 2,
     "dot-location": [ 1, "property" ],
+    "operator-linebreak": [ 1, "before" ],
     "semi": 2,
     "semi-spacing": 1,
     "no-multiple-empty-lines": 1,

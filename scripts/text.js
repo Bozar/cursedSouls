@@ -17,7 +17,8 @@ Main.text.orb = function (id) {
     text.set('ice', 'Ice');
     text.set('slime', 'Slime');
     // text.set('candy', 'Candy')
-    text.set('lump', 'Lump'); // LSP: Yay, it's me, babe.
+    // LSP: Yay, it's me, babe.
+    text.set('lump', 'Lump');
 
     return text.get(id);
 };

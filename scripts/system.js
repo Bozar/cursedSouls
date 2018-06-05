@@ -3,7 +3,8 @@
 Main.system = {};
 
 Main.system.isFloor = function (x, y) {
-    return Main.getEntity('dungeon').Dungeon.getTerrain().get(x + ',' + y) === 0;
+    return Main.getEntity('dungeon').Dungeon.getTerrain().get(x + ',' + y)
+        === 0;
 };
 
 Main.system.placePC = function () {
@@ -16,9 +17,9 @@ Main.system.placePC = function () {
     do {
         x = Math.floor(width * ROT.RNG.getUniform());
         y = Math.floor(height * ROT.RNG.getUniform());
-    } while (!Main.system.isFloor(x, y) ||
-    x < border || x > width - border ||
-    y < border || y > height - border);
+    } while (!Main.system.isFloor(x, y)
+    || x < border || x > width - border
+    || y < border || y > height - border);
 
     Main.getEntity('pc').Position.setX(x);
     Main.getEntity('pc').Position.setY(y);
@@ -87,8 +88,8 @@ Main.system.unlockEngine = function (duration) {
 
 Main.system.npcHere = function (x, y) {
     for (const keyValue of Main.getEntity('npc')) {
-        if (x === keyValue[1].Position.getX() &&
-            y === keyValue[1].Position.getY()) {
+        if (x === keyValue[1].Position.getX()
+            && y === keyValue[1].Position.getY()) {
             return true;
         }
     }

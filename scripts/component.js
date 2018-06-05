@@ -30,9 +30,10 @@ Main.Component.Seed = function () {
     this.getRawSeed = function () { return this._rawSeed; };
     this.setSeed = function (seed) {
         if (!seed) {
-            this._seed = Math.floor(
-                (Math.random() * 9 + 1) * Math.pow(10, 9))
-                .toString();
+            this._seed = (Math.random() * 9 + 1) * Math.pow(10, 9);
+            this._seed = Math.floor(this._seed);
+            this._seed.toString();
+
             this._rawSeed = this._seed;
         } else {
             this._seed = seed.toString().replace(/^#{0,1}(.+)$/, '$1');
@@ -44,21 +45,32 @@ Main.Component.Seed = function () {
 Main.Component.Dungeon = function () {
     this._name = 'Dungeon';
 
+    // UI: size & position
     this._width = Main.UI.dungeon.getWidth() - 2;
     this._height = Main.UI.dungeon.getHeight() - 2;
-    this._padding = 1; // do not draw along the UI border
-    this._terrain = new Map(); // z,x,y: 0(floor) or 1(wall)
-    this._memory = []; // explored dungeon
-    this._hasFov = true; // only draw whatever the PC can see
-    this._floorArea = 55; // the floor-to-wall ratio
+    // Do not draw along the UI border.
+    this._padding = 1;
+
+    // Terrain: wall & floor
+    this._terrain = new Map();
+    // The floor-to-wall ratio
+    this._floorArea = 55;
+
+    // PC: memory & sight
+    // Explored dungeon
+    this._memory = [];
+    // Only draw whatever the PC can see
+    this._hasFov = true;
 
     this.getWidth = function () { return this._width; };
     this.getHeight = function () { return this._height; };
     this.getPadding = function () { return this._padding; };
+
     this.getTerrain = function () { return this._terrain; };
+    this.getFloorArea = function () { return this._floorArea; };
+
     this.getMemory = function () { return this._memory; };
     this.getFov = function () { return this._hasFov; };
-    this.getFloorArea = function () { return this._floorArea; };
 
     this.setFov = function () { this._hasFov = !this._hasFov; };
     this.setMemory = function (memory) { this._memory = memory; };
@@ -79,7 +91,8 @@ Main.Component.Position = function (range, x, y) {
 
     this._x = x;
     this._y = y;
-    this._sight = range || 0; // how far one can see
+    // How far one can see?
+    this._sight = range || 0;
 
     this.getX = function () { return this._x; };
     this.getY = function () { return this._y; };

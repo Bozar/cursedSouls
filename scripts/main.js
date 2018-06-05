@@ -3,6 +3,7 @@
 // ================================================
 // Version number, development switch, seed & color
 // ================================================
+
 var Main = {};
 Main._version = '0.0.1';
 Main._develop = true;
@@ -29,6 +30,7 @@ Main.getColor = function (color) { return Main._color.get(color); };
 // ======================================
 // The position & size of screen elements
 // ======================================
+
 Main.UI = function (width, height) {
     this._width = width || null;
     this._height = height || null;
@@ -47,8 +49,10 @@ Main.UI.canvas = new Main.UI(70, 26);
 Main.display = new ROT.Display({
     width: Main.UI.canvas.getWidth(),
     height: Main.UI.canvas.getHeight(),
+
     fg: Main.getColor('white'),
     bg: Main.getColor('black'),
+
     fontSize: 20,
     fontFamily: (function () {
         let family = 'dejavu sans mono';
@@ -69,27 +73,36 @@ Main.UI.padModeMessage = 0;
 Main.UI.padMessageDungeon = 1;
 
 Main.UI.status = new Main.UI(13, null);
-Main.UI.status._height = Main.UI.canvas.getHeight() - Main.UI.padTopBottom * 2;
-Main.UI.status._x = Main.UI.canvas.getWidth() -
-    Main.UI.padLeftRight - Main.UI.status.getWidth();
+Main.UI.status._height = Main.UI.canvas.getHeight()
+    - Main.UI.padTopBottom * 2;
+Main.UI.status._x = Main.UI.canvas.getWidth()
+    - Main.UI.padLeftRight
+    - Main.UI.status.getWidth();
 Main.UI.status._y = Main.UI.padTopBottom;
 
 Main.UI.modeline = new Main.UI(null, 1);
-Main.UI.modeline._width = Main.UI.canvas.getWidth() - Main.UI.padLeftRight * 2 -
-    Main.UI.padModeStatus - Main.UI.status.getWidth();
+Main.UI.modeline._width = Main.UI.canvas.getWidth()
+    - Main.UI.padLeftRight * 2
+    - Main.UI.padModeStatus
+    - Main.UI.status.getWidth();
 Main.UI.modeline._x = Main.UI.padLeftRight;
-Main.UI.modeline._y = Main.UI.canvas.getHeight() - Main.UI.padTopBottom -
-    Main.UI.modeline.getHeight();
+Main.UI.modeline._y = Main.UI.canvas.getHeight()
+    - Main.UI.padTopBottom
+    - Main.UI.modeline.getHeight();
 
 Main.UI.message = new Main.UI(Main.UI.modeline.getWidth(), 5);
 Main.UI.message._x = Main.UI.modeline.getX();
-Main.UI.message._y = Main.UI.modeline.getY() - Main.UI.padModeMessage -
-    Main.UI.message.getHeight();
+Main.UI.message._y = Main.UI.modeline.getY()
+    - Main.UI.padModeMessage
+    - Main.UI.message.getHeight();
 
 Main.UI.dungeon = new Main.UI(Main.UI.modeline.getWidth(), null);
-Main.UI.dungeon._height = Main.UI.canvas.getHeight() - Main.UI.padTopBottom -
-    Main.UI.modeline.getHeight() - Main.UI.padModeMessage -
-    Main.UI.message.getHeight() - Main.UI.padMessageDungeon;
+Main.UI.dungeon._height = Main.UI.canvas.getHeight()
+    - Main.UI.padTopBottom
+    - Main.UI.padMessageDungeon
+    - Main.UI.padModeMessage
+    - Main.UI.modeline.getHeight()
+    - Main.UI.message.getHeight();
 // The dungeon size should be an integer.
 Main.UI.dungeon._height = Math.floor(Main.UI.dungeon._height);
 Main.UI.dungeon._x = Main.UI.padLeftRight;
@@ -108,15 +121,18 @@ Main.UI.power._y = Main.UI.level.getY() + 2;
 
 Main.UI.ground = new Main.UI(Main.UI.status.getWidth(), 1);
 Main.UI.ground._x = Main.UI.status.getX();
-Main.UI.ground._y = Main.UI.power.getY() + Main.UI.power.getHeight() + 2;
+Main.UI.ground._y = Main.UI.power.getY()
+    + Main.UI.power.getHeight() + 2;
 
 Main.UI.help = new Main.UI(Main.UI.status.getWidth(), 1);
 Main.UI.help._x = Main.UI.status.getX();
-Main.UI.help._y = Main.UI.status.getY() + Main.UI.status.getHeight() - 2.5;
+Main.UI.help._y = Main.UI.status.getY()
+    + Main.UI.status.getHeight() - 2.5;
 
 // ============
 // Key-bindings
 // ============
+
 Main.input = {};
 Main.input.keybind = new Map();
 // [mode1: [keybind1], mode2: [keybind2], ...]
@@ -180,6 +196,7 @@ Main.input.listenEvent = function (event, handler) {
 // =======================================================
 // Screen factory: display content, listen keyboard events
 // =======================================================
+
 Main.Screen = function (name, mode) {
     this._name = name || 'Unnamed Screen';
     this._mode = mode || 'main';
@@ -227,6 +244,7 @@ Main.Screen.prototype.keyInput = function (e) {
 // ==================================
 // In-game screens & helper functions
 // ==================================
+
 Main.screens = {};
 Main.screens._currentName = null;
 Main.screens._currentMode = null;
@@ -236,14 +254,18 @@ Main.screens._currentMode = null;
 // ----------------
 Main.screens.colorfulText = function (text, fgColor, bgColor) {
     return bgColor
-        ? '%c{' + Main.getColor(fgColor) + '}%b{' +
-        Main.getColor(bgColor) + '}' + text + '%b{}%c{}'
+        ? '%c{' + Main.getColor(fgColor) + '}%b{'
+        + Main.getColor(bgColor) + '}' + text + '%b{}%c{}'
         : '%c{' + Main.getColor(fgColor) + '}' + text + '%c{}';
 };
 
 Main.screens.drawAlignRight = function (x, y, width, text, color) {
-    Main.display.drawText(x + width - text.length, y,
-        color ? Main.screens.colorfulText(text, color) : text);
+    Main.display.drawText(
+        x + width - text.length,
+        y,
+        color
+            ? Main.screens.colorfulText(text, color)
+            : text);
 };
 
 Main.screens.drawBorder = function () {
@@ -415,8 +437,8 @@ Main.screens.drawOrbOnTheGround = function () {
         Main.UI.ground.getX(),
         Main.UI.ground.getY(),
         orb
-            ? Main.text.statusPanel('ground') + ' ' +
-            Main.screens.colorfulText(Main.text.orb(orb), 'green')
+            ? Main.text.statusPanel('ground') + ' '
+            + Main.screens.colorfulText(Main.text.orb(orb), 'green')
             : Main.text.statusPanel('ground'));
 };
 
@@ -515,6 +537,7 @@ Main.screens.main.keyInput = function (e) {
 // ==============
 // Initialization
 // ==============
+
 window.onload = function () {
     if (!ROT.isSupported()) {
         window.alert(Main.text.error('browser'));

@@ -1,4 +1,4 @@
-'use strict';
+﻿'use strict';
 
 // ----- Store entities +++++
 Main.entities = new Map();

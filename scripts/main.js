@@ -1,4 +1,4 @@
-'use strict';
+﻿'use strict';
 
 // ----- Version number, development switch, seed & color +++++
 var Main = {};

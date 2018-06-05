@@ -1,4 +1,4 @@
-{
+﻿{
   /* See all the pre-defined configs here: https://www.npmjs.com/package/eslint-config-defaults */
   "globals": {
     "Main": false,
@@ -36,6 +36,9 @@
     "semi-spacing": 1,
     "no-multiple-empty-lines": 1,
     "no-unexpected-multiline": 1,
+    "no-else-return": 1,
+    "no-octal": 2,
+    "no-octal-escape": 2,
     "valid-jsdoc": [
       2,
       { "requireReturn": false }

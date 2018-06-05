@@ -1,17 +1,19 @@
 ﻿'use strict';
 
-// ----- Version number, development switch, seed & color +++++
+// ================================================
+// Version number, development switch, seed & color
+// ================================================
 var Main = {};
-Main._version = '0.0.2';
+Main._version = '0.0.1';
 Main._develop = true;
 Main.getVersion = function () { return this._version; };
 Main.getDevelop = function () { return this._develop; };
 
 Main.setDevelop = function () { this._develop = !this._develop; };
 
-// set seed manually for testing, '#' can be omitted
-// there are no hyphens ('-') inside numbered seed
-// example:
+// Set seed manually for testing. '#' can be omitted.
+// There are no hyphens ('-') inside numbered seed.
+// Example:
 // Main._devSeed = '#12345'
 Main.getDevSeed = function () { return this._devSeed; };
 
@@ -24,7 +26,9 @@ Main._color.set('green', '#A0D86C');
 
 Main.getColor = function (color) { return Main._color.get(color); };
 
-// ----- The position & size of screen elements +++++
+// ======================================
+// The position & size of screen elements
+// ======================================
 Main.UI = function (width, height) {
     this._width = width || null;
     this._height = height || null;
@@ -55,7 +59,9 @@ Main.display = new ROT.Display({
     }())
 });
 
-// ``` The main screen +++
+// ---------------
+// The main screen
+// ---------------
 Main.UI.padTopBottom = 0.5;
 Main.UI.padLeftRight = 1;
 Main.UI.padModeStatus = 1;
@@ -84,12 +90,14 @@ Main.UI.dungeon = new Main.UI(Main.UI.modeline.getWidth(), null);
 Main.UI.dungeon._height = Main.UI.canvas.getHeight() - Main.UI.padTopBottom -
     Main.UI.modeline.getHeight() - Main.UI.padModeMessage -
     Main.UI.message.getHeight() - Main.UI.padMessageDungeon;
-// the dungeon size should be an integer
+// The dungeon size should be an integer.
 Main.UI.dungeon._height = Math.floor(Main.UI.dungeon._height);
 Main.UI.dungeon._x = Main.UI.padLeftRight;
 Main.UI.dungeon._y = Main.UI.padTopBottom;
 
-// ``` UI blocks +++
+// ---------
+// UI blocks
+// ---------
 Main.UI.level = new Main.UI(Main.UI.status.getWidth(), 1);
 Main.UI.level._x = Main.UI.status.getX();
 Main.UI.level._y = Main.UI.status.getY() + 2;
@@ -106,14 +114,16 @@ Main.UI.help = new Main.UI(Main.UI.status.getWidth(), 1);
 Main.UI.help._x = Main.UI.status.getX();
 Main.UI.help._y = Main.UI.status.getY() + Main.UI.status.getHeight() - 2.5;
 
-// ----- Key-bindings +++++
+// ============
+// Key-bindings
+// ============
 Main.input = {};
 Main.input.keybind = new Map();
 // [mode1: [keybind1], mode2: [keybind2], ...]
 // keybind1 -> [action1: [key1_1, key1_2, ...],
 //              action2: [key2_1, key2_2, ...], ...]
 
-// keys that cannot be remapped by player
+// Keys that cannot be remapped by player
 Main.input.keybind.set('fixed', new Map());
 Main.input.keybind.get('fixed').set('help', ['?']);
 Main.input.keybind.get('fixed').set('develop', ['~']);
@@ -122,7 +132,7 @@ Main.input.keybind.get('fixed').set('seed', ['=']);
 Main.input.keybind.get('fixed').set('turn', ['\\']);
 Main.input.keybind.get('fixed').set('dummy', ['d']);
 
-// movement
+// Movement
 Main.input.keybind.set('move', new Map());
 Main.input.keybind.get('move').set('left', ['h', 'ArrowLeft']);
 Main.input.keybind.get('move').set('down', ['j', 'ArrowDown']);
@@ -130,7 +140,7 @@ Main.input.keybind.get('move').set('up', ['k', 'ArrowUp']);
 Main.input.keybind.get('move').set('right', ['l', 'ArrowRight']);
 Main.input.keybind.get('move').set('wait', ['z', '.']);
 
-// interaction
+// Interaction
 Main.input.keybind.set('interact', new Map());
 Main.input.keybind.get('interact').set('space', [' ']);
 Main.input.keybind.get('interact').set('esc', ['Escape']);
@@ -167,7 +177,9 @@ Main.input.listenEvent = function (event, handler) {
     }
 };
 
-// ----- Screen factory: display content, listen keyboard events +++++
+// =======================================================
+// Screen factory: display content, listen keyboard events
+// =======================================================
 Main.Screen = function (name, mode) {
     this._name = name || 'Unnamed Screen';
     this._mode = mode || 'main';
@@ -212,12 +224,16 @@ Main.Screen.prototype.keyInput = function (e) {
     Main.getDevelop() && console.log('Key pressed: ' + e.key);
 };
 
-// ----- In-game screens & helper functions +++++
+// ==================================
+// In-game screens & helper functions
+// ==================================
 Main.screens = {};
 Main.screens._currentName = null;
 Main.screens._currentMode = null;
 
-// ``` Helper functions +++
+// ----------------
+// Helper functions
+// ----------------
 Main.screens.colorfulText = function (text, fgColor, bgColor) {
     return bgColor
         ? '%c{' + Main.getColor(fgColor) + '}%b{' +
@@ -266,7 +282,7 @@ Main.screens.drawModeLine = function () {
         Main.getEntity('message').Message.getModeline());
 };
 
-// the text cannot be longer than the width of message block
+// The text cannot be longer than the width of message block.
 Main.screens.drawMessage = function (text) {
     let msgList = Main.getEntity('message').Message.getMsgList();
     let x = Main.UI.message.getX();
@@ -369,7 +385,7 @@ Main.screens.drawPower = function () {
     ];
     let enhance = false;
 
-    // power orbs
+    // Power orbs
     for (let i = 0; i < powers.length; i++) {
         Main.display.drawText(
             Main.UI.power.getX() + 2,
@@ -385,7 +401,7 @@ Main.screens.drawPower = function () {
             (i + 1).toString(10));
     }
 
-    // star indicator
+    // Star indicator
     enhance && Main.display.drawText(
         Main.UI.power.getX(),
         Main.UI.power.getY(),
@@ -415,7 +431,9 @@ Main.screens.drawHelp = function () {
         'grey');
 };
 
-// ``` In-game screens +++
+// ---------------
+// In-game screens
+// ---------------
 Main.screens.main = new Main.Screen('main');
 
 Main.screens.main.initialize = function () {
@@ -494,7 +512,9 @@ Main.screens.main.keyInput = function (e) {
     Main.screens.main.display();
 };
 
-// ----- Initialization +++++
+// ==============
+// Initialization
+// ==============
 window.onload = function () {
     if (!ROT.isSupported()) {
         window.alert(Main.text.error('browser'));

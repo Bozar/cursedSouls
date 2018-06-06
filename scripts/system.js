@@ -176,7 +176,7 @@ Main.system.examineMode = function () {
 
     // Helper functions
     function examine(e) {
-        if (Main.input.getAction(e, 'fixed') === 'esc') {
+        if (Main.input.getAction(e, 'fixed') === 'no') {
             // Exit the examine mode.
             Main.input.listenEvent('remove', examine);
             Main.input.listenEvent('add', 'main');

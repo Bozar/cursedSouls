@@ -140,8 +140,8 @@ Main.input.keybind = new Map();
 
 // Keys that cannot be remapped by player
 Main.input.keybind.set('fixed', new Map());
-Main.input.keybind.get('fixed').set('space', [' ']);
-Main.input.keybind.get('fixed').set('esc', ['Escape']);
+Main.input.keybind.get('fixed').set('yes', [' ']);
+Main.input.keybind.get('fixed').set('no', ['Escape']);
 Main.input.keybind.get('fixed').set('help', ['?']);
 Main.input.keybind.get('fixed').set('seed', ['=']);
 
@@ -284,7 +284,7 @@ Main.screens.drawBorder = function () {
 Main.screens.drawVersion = function () {
     let version = Main.getVersion();
 
-    Main.getDevelop() && (version = 'Wiz|' + version);
+    Main.getDevelop() && (version = Main.text.statusPanel('wizard') + version);
     Main.screens.drawAlignRight(Main.UI.status.getX(), Main.UI.status.getY(),
         Main.UI.status.getWidth(), version, 'grey');
 };
@@ -293,16 +293,27 @@ Main.screens.drawSeed = function () {
     let seed = Main.getEntity('seed').Seed.getRawSeed();
     seed = seed.replace(/^(#{0,1}\d{5})(\d{5})$/, '$1-$2');
 
+    Main.screens.drawBottomRight(seed);
+};
+
+Main.screens.drawModeLine = function () {
+    Main.screens.drawBottomLeft(
+        Main.getEntity('message').Message.getModeline());
+};
+
+Main.screens.drawBottomRight = function (text) {
     Main.screens.drawAlignRight(
         Main.UI.status.getX(),
         Main.UI.status.getY() + Main.UI.status.getHeight() - 1,
         Main.UI.status.getWidth(),
-        seed, 'grey');
+        text, 'grey');
 };
 
-Main.screens.drawModeLine = function () {
-    Main.display.drawText(Main.UI.modeline.getX(), Main.UI.modeline.getY(),
-        Main.getEntity('message').Message.getModeline());
+Main.screens.drawBottomLeft = function (text) {
+    Main.display.drawText(
+        Main.UI.modeline.getX(),
+        Main.UI.modeline.getY(),
+        text);
 };
 
 // The text cannot be longer than the width of message block.
@@ -332,7 +343,7 @@ Main.screens.drawDungeon = function () {
     if (dungeon.Dungeon.getFov()) {
         if (memory.length > 0) {
             for (let i = 0; i < memory.length; i++) {
-                drawTerrain(
+                drawWallAndFloor(
                     memory[i].split(',')[0],
                     memory[i].split(',')[1],
                     'grey');
@@ -341,18 +352,18 @@ Main.screens.drawDungeon = function () {
 
         dungeon.fov.compute(pcX, pcY, sight, function (x, y) {
             memory.indexOf(x + ',' + y) < 0 && memory.push(x + ',' + y);
-            drawTerrain(x, y, 'white');
+            drawWallAndFloor(x, y, 'white');
         });
     } else {
         for (const keyValue of dungeon.Dungeon.getTerrain()) {
-            drawTerrain(
+            drawWallAndFloor(
                 keyValue[0].split(',')[0],
                 keyValue[0].split(',')[1],
                 'white');
         }
     }
 
-    function drawTerrain(x, y, color) {
+    function drawWallAndFloor(x, y, color) {
         x = Number.parseInt(x, 10);
         y = Number.parseInt(y, 10);
 
@@ -373,11 +384,12 @@ Main.screens.drawActor = function (actor, noFov) {
     let actorY = Number.parseInt(actor.Position.getY(), 10);
 
     if (!noFov && dungeon.Dungeon.getFov() && !Main.system.isPC(actor)) {
-        dungeon.fov.compute(pc.getX(), pc.getY(), pc.getSight(), function (x, y) {
-            if (x === actorX && y === actorY) {
-                drawThis = true;
-            }
-        });
+        dungeon.fov.compute(pc.getX(), pc.getY(), pc.getSight(),
+            function (x, y) {
+                if (x === actorX && y === actorY) {
+                    drawThis = true;
+                }
+            });
     } else {
         drawThis = true;
     }
@@ -444,7 +456,7 @@ Main.screens.drawOrbOnTheGround = function () {
 };
 
 Main.screens.drawHelp = function () {
-    let helpKey = '?';
+    let helpKey = Main.input.keybind.get('fixed').get('help')[0];
 
     Main.screens.drawAlignRight(
         Main.UI.help.getX(),
@@ -454,14 +466,17 @@ Main.screens.drawHelp = function () {
         'grey');
 };
 
+Main.screens.drawBlankCutScene = function () {
+    Main.screens.drawBottomLeft(Main.text.hint('continue'));
+    Main.screens.drawBottomRight(Main.text.statusPanel('studio'));
+};
+
 // ---------------
 // In-game screens
 // ---------------
 Main.screens.main = new Main.Screen('main');
 
 Main.screens.main.initialize = function () {
-    Main.text.initialize();
-
     Main.entity.seed();
     Main.getEntity('seed').Seed.setSeed(Main.getDevSeed());
     ROT.RNG.setSeed(Main.getEntity('seed').Seed.getSeed());
@@ -546,9 +561,11 @@ window.onload = function () {
         return;
     }
     document.getElementById('game').appendChild(Main.display.getContainer());
+    Main.text.initialize();
 
     Main.display.clear();
     Main.screens.main.enter();
+    //Main.screens.drawBlankCutScene();
 
     //window.localStorage.setItem('hello', 'world');
     //let myObj = window.localStorage.getItem('hello');

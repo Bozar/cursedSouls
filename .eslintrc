@@ -21,7 +21,6 @@
     "worker": true
   },
   "rules": {
-
     "eqeqeq": 2,
     "comma-dangle": 1,
     "no-console": 0,

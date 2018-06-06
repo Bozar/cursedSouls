@@ -394,17 +394,17 @@ Main.screens.drawLevelName = function () {
     Main.display.drawText(
         Main.UI.level.getX(),
         Main.UI.level.getY(),
-        `${Main.text.statusPanel('level')} ${levelName}`);
+        `${Main.text.statusPanel('stairs')} ${levelName}`);
 };
 
 Main.screens.drawPower = function () {
     let powers = [
-        Main.text.orb('fire'),
-        Main.text.orb('fire'),
-        Main.text.orb('ice'),
-        Main.text.orb('slime'),
-        Main.text.orb('ice'),
-        Main.text.orb('lump')
+        Main.text.orbName('fire'),
+        Main.text.orbName('fire'),
+        Main.text.orbName('ice'),
+        Main.text.orbName('slime'),
+        Main.text.orbName('ice'),
+        Main.text.orbName('lump')
     ];
     let enhance = false;
 
@@ -439,7 +439,7 @@ Main.screens.drawOrbOnTheGround = function () {
         Main.UI.ground.getY(),
         orb
             ? Main.text.statusPanel('ground') + ' '
-            + Main.screens.colorfulText(Main.text.orb(orb), 'green')
+            + Main.screens.colorfulText(Main.text.orbName(orb), 'green')
             : Main.text.statusPanel('ground'));
 };
 
@@ -460,6 +460,8 @@ Main.screens.drawHelp = function () {
 Main.screens.main = new Main.Screen('main');
 
 Main.screens.main.initialize = function () {
+    Main.text.initialize();
+
     Main.entity.seed();
     Main.getEntity('seed').Seed.setSeed(Main.getDevSeed());
     ROT.RNG.setSeed(Main.getEntity('seed').Seed.getSeed());

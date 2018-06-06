@@ -97,6 +97,35 @@ Main.system.npcHere = function (x, y) {
 };
 
 Main.system.examineMode = function () {
-    Main.getEntity('marker').Position.setX(Main.getEntity('pc').Position.getX());
-    Main.getEntity('marker').Position.setY(Main.getEntity('pc').Position.getY());
+    Main.input.listenEvent('remove', 'main');
+    Main.input.listenEvent('add', examine);
+
+    setOrRemoveMarker(true);
+
+    function examine(e) {
+        if (Main.input.getAction(e, 'fixed') === 'esc') {
+            Main.input.listenEvent('remove', examine);
+            Main.input.listenEvent('add', 'main');
+
+            setOrRemoveMarker(false);
+            console.log('exit examine mode');
+
+            Main.display.clear();
+            Main.screens.main.display();
+        } else {
+            console.log('incorrect key: ' + e.key);
+        }
+    }
+
+    function setOrRemoveMarker(setMarker) {
+        if (setMarker) {
+            Main.getEntity('marker').Position.setX(
+                Main.getEntity('pc').Position.getX());
+            Main.getEntity('marker').Position.setY(
+                Main.getEntity('pc').Position.getY());
+        } else {
+            Main.getEntity('marker').Position.setX(null);
+            Main.getEntity('marker').Position.setY(null);
+        }
+    }
 };

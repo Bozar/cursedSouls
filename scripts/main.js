@@ -9,7 +9,6 @@ Main._version = '0.0.1';
 Main._develop = true;
 Main.getVersion = function () { return this._version; };
 Main.getDevelop = function () { return this._develop; };
-
 Main.setDevelop = function () { this._develop = !this._develop; };
 
 // Set seed manually for testing. '#' can be omitted.
@@ -141,10 +140,14 @@ Main.input.keybind = new Map();
 
 // Keys that cannot be remapped by player
 Main.input.keybind.set('fixed', new Map());
+Main.input.keybind.get('fixed').set('space', [' ']);
+Main.input.keybind.get('fixed').set('esc', ['Escape']);
 Main.input.keybind.get('fixed').set('help', ['?']);
+Main.input.keybind.get('fixed').set('seed', ['=']);
+
+// Development
 Main.input.keybind.get('fixed').set('develop', ['~']);
 Main.input.keybind.get('fixed').set('fov', [']']);
-Main.input.keybind.get('fixed').set('seed', ['=']);
 Main.input.keybind.get('fixed').set('turn', ['\\']);
 Main.input.keybind.get('fixed').set('dummy', ['d']);
 
@@ -158,8 +161,6 @@ Main.input.keybind.get('move').set('wait', ['z', '.']);
 
 // Interaction
 Main.input.keybind.set('interact', new Map());
-Main.input.keybind.get('interact').set('space', [' ']);
-Main.input.keybind.get('interact').set('esc', ['Escape']);
 Main.input.keybind.get('interact').set('examine', ['x']);
 Main.input.keybind.get('interact').set('lockNext', ['n', 'o', 'PageDown']);
 Main.input.keybind.get('interact').set('lockPrevious', ['p', 'i', 'PageUp']);

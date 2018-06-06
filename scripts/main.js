@@ -496,11 +496,10 @@ Main.screens.main.display = function () {
     Main.screens.drawDungeon();
     // Main.screens.drawItem()
     Main.screens.drawActor(Main.getEntity('pc'));
-    Main.screens.drawActor(Main.getEntity('marker'));
-
     for (const keyValue of Main.getEntity('npc')) {
         Main.screens.drawActor(keyValue[1]);
     }
+    Main.screens.drawActor(Main.getEntity('marker'));
 
     Main.screens.drawMessage();
     Main.screens.drawModeLine();

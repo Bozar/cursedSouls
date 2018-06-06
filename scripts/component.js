@@ -46,22 +46,21 @@ Main.Component.Seed = function () {
 Main.Component.Dungeon = function () {
     this._name = 'Dungeon';
 
-    // UI: size & position
+    // The dungeon size
     this._width = Main.UI.dungeon.getWidth() - 2;
     this._height = Main.UI.dungeon.getHeight() - 2;
     // Do not draw along the UI border.
     this._padding = 1;
+    // Only draw whatever the PC can see
+    this._hasFov = true;
 
-    // Terrain: wall & floor
+    // Terrain: 'x,y' => wall (1) or floor (0)
     this._terrain = new Map();
     // The floor-to-wall ratio
     this._floorArea = 55;
 
-    // PC: memory & sight
     // Explored dungeon
     this._memory = [];
-    // Only draw whatever the PC can see
-    this._hasFov = true;
 
     this.getWidth = function () { return this._width; };
     this.getHeight = function () { return this._height; };

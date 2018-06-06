@@ -44,7 +44,7 @@ Main.entity.dungeon = function () {
 
     Main.entities.set('dungeon', e);
 
-    // helper functions
+    // Helper functions
     function cellular() {
         let cell = new ROT.Map.Cellular(
             e.Dungeon.getWidth(), e.Dungeon.getHeight());

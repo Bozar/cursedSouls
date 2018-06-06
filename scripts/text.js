@@ -2,34 +2,44 @@
 
 Main.text = {};
 
-Main.text.levelName = function (id) {
+// Store all text in one map.
+Main.text.libraryMap = null;
+
+Main.text.initialize = function () {
     let text = new Map();
 
-    text.set('grave', 'Graveyard');
+    text.set('dungeon', new Map());
+    text.get('dungeon').set('stairs', '>');
+    text.get('dungeon').set('grave', 'Graveyard');
 
-    return text.get(id);
+    text.set('item', new Map());
+    text.get('item').set('fire', 'Fire');
+    text.get('item').set('ice', 'Ice');
+    text.get('item').set('slime', 'Slime');
+    // text.get('item').set('candy', 'Candy');
+    // LSP: Yay, it's me, babe.
+    text.get('item').set('lump', 'Lump');
+
+    text.set('ui', new Map());
+    text.get('ui').set('enhance', '*');
+    text.get('ui').set('ground', '@');
+    text.get('ui').set('help', 'Help:');
+
+    Main.text.libraryMap = text;
 };
 
-Main.text.orb = function (id) {
-    let text = new Map();
+// Get text from the library.
+Main.text.levelName = function (id) {
+    return Main.text.libraryMap.get('dungeon').get(id);
+};
 
-    text.set('fire', 'Fire');
-    text.set('ice', 'Ice');
-    text.set('slime', 'Slime');
-    // text.set('candy', 'Candy')
-    // LSP: Yay, it's me, babe.
-    text.set('lump', 'Lump');
-
-    return text.get(id);
+Main.text.orbName = function (id) {
+    return Main.text.libraryMap.get('item').get(id);
 };
 
 Main.text.statusPanel = function (id) {
-    let text = new Map();
-
-    text.set('level', '>');
-    text.set('enhance', '*');
-    text.set('ground', '@');
-    text.set('help', 'Help:');
-
-    return text.get(id);
+    if (id === 'stairs') {
+        return Main.text.libraryMap.get('dungeon').get(id);
+    }
+    return Main.text.libraryMap.get('ui').get(id);
 };

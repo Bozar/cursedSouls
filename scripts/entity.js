@@ -1,6 +1,9 @@
 ﻿'use strict';
 
-// Store entities
+// ===============
+// Store entities.
+// ===============
+
 Main.entities = new Map();
 Main.entities.set('message', null);
 Main.entities.set('seed', null);
@@ -9,7 +12,10 @@ Main.entities.set('pc', null);
 Main.entities.set('marker', null);
 Main.entities.set('npc', new Map());
 
-// Create a single entity
+// =======================
+// Create a single entity.
+// =======================
+
 Main.entity = {};
 Main.getEntity = function (id) { return Main.entities.get(id); };
 

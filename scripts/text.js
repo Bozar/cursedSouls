@@ -2,7 +2,10 @@
 
 Main.text = {};
 
+// ==========================
 // Store all text in one map.
+// ==========================
+
 Main.text.libraryMap = null;
 
 Main.text.initialize = function () {
@@ -36,7 +39,10 @@ Main.text.initialize = function () {
     Main.text.libraryMap = text;
 };
 
+// ==========================
 // Get text from the library.
+// ==========================
+
 Main.text.levelName = function (id) {
     return Main.text.libraryMap.get('dungeon').get(id);
 };

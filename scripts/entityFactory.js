@@ -1,7 +1,8 @@
 'use strict';
 
-// Entity factory
+// Reference:
 // http://vasir.net/blog/game-development/how-to-build-entity-component-system-in-javascript
+
 Main.Factory = function (name) {
     this._entityName = name;
     this._id = createID();

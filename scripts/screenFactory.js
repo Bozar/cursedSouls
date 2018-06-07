@@ -5,33 +5,38 @@
 // ====================
 
 Main.Screen = function (name, mode) {
+    // Every screen has a specific name.
     this._name = name || 'Unnamed Screen';
-    this._mode = mode || 'main';
-    this._modeLineText = '';
+
+    // Every screen has at least one `main` mode. There might be more modes like
+    // `aim` or `examine`. The `main` mode should be the first element in the
+    // list. Player's input --> change the mode --> draw different elements on
+    // the screen.
+    this._mode = mode || ['main'];
 };
 
 Main.Screen.prototype.getName = function () { return this._name; };
-Main.Screen.prototype.getMode = function () { return this._mode; };
-Main.Screen.prototype.getText = function () { return this._modeLineText; };
-
-Main.Screen.prototype.setMode = function (mode, text) {
-    this._mode = mode || 'main';
-    this._modeLineText = Main.text.modeLine(this._mode) + (text || '');
-};
+Main.Screen.prototype.getMode = function (index) { return this._mode[index]; };
 
 Main.Screen.prototype.enter = function () {
-    Main.screens._currentName = this.getName();
-    Main.screens._currentMode = this.getMode();
+    Main.screens.setCurrentName(this.getName());
+    Main.screens.setCurrentMode(this.getMode(0));
 
     this.initialize(this.getName());
     this.display();
 };
 
 Main.Screen.prototype.exit = function () {
-    Main.screens._currentName = null;
-    Main.screens._currentMode = null;
+    Main.screens.setCurrentName(null);
+    Main.screens.setCurrentMode(null);
 
     Main.display.clear();
+};
+
+Main.Screen.prototype.keyInput = function (e) {
+    if (Main.getDevelop()) {
+        console.log('Key pressed: ' + e.key);
+    }
 };
 
 Main.Screen.prototype.initialize = function (name) {
@@ -42,23 +47,31 @@ Main.Screen.prototype.initialize = function (name) {
 
 Main.Screen.prototype.display = function () {
     Main.display.drawText(1, 1, 'Testing screen');
-    Main.display.drawText(1, 2, 'Name: ' + Main.screens._currentName);
-    Main.display.drawText(1, 3, 'Mode: ' + Main.screens._currentMode);
+    Main.display.drawText(1, 2, 'Name: ' + Main.screens.getCurrentName());
+    Main.display.drawText(1, 3, 'Mode: ' + Main.screens.getCurrentMode());
 };
 
-Main.Screen.prototype.keyInput = function (e) {
-    if (Main.getDevelop()) {
-        console.log('Key pressed: ' + e.key);
-    }
-};
+// =======================================
+// The name and mode of the current screen
+// =======================================
 
 Main.screens = {};
 Main.screens._currentName = null;
 Main.screens._currentMode = null;
 
-// ===========================
-// Draw elements on the screen
-// ===========================
+Main.screens.getCurrentName = function () { return this._currentName; };
+Main.screens.getCurrentMode = function () { return this._currentMode; };
+
+Main.screens.setCurrentName = function (name) {
+    this._currentName = name;
+};
+Main.screens.setCurrentMode = function (mode) {
+    this._currentMode = mode;
+};
+
+// ===============================================
+// Helper functions to draw elements on the screen
+// ===============================================
 
 Main.screens.colorfulText = function (text, fgColor, bgColor) {
     return bgColor

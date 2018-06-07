@@ -4,7 +4,7 @@
 // The main screen
 // ===============
 
-Main.screens.main = new Main.Screen('main');
+Main.screens.main = new Main.Screen('main', ['main', 'examine', 'aim']);
 
 Main.screens.main.initialize = function () {
     Main.entity.seed();

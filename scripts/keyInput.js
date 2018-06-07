@@ -44,7 +44,9 @@ Main.input.keybind.get('interact').set('previous', ['p', 'i', 'PageUp']);
 
 Main.input.getAction = function (keyInput, mode) {
     if (!mode) {
-        Main.getDevelop() && console.log('Undefined mode.');
+        if (Main.getDevelop()) {
+            console.log('Undefined mode.');
+        }
         return null;
     }
 

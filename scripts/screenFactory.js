@@ -141,7 +141,7 @@ Main.screens.drawDungeon = function () {
     let memory = dungeon.Dungeon.getMemory();
     let pcX = Main.getEntity('pc').Position.getX();
     let pcY = Main.getEntity('pc').Position.getY();
-    let sight = Main.getEntity('pc').Position.getSight();
+    let sight = Main.getEntity('pc').Position.getRange();
 
     if (dungeon.Dungeon.getFov()) {
         if (memory.length > 0) {
@@ -187,7 +187,7 @@ Main.screens.drawActor = function (actor, noFov) {
     let actorY = Number.parseInt(actor.Position.getY(), 10);
 
     if (!noFov && dungeon.Dungeon.getFov() && !Main.system.isPC(actor)) {
-        dungeon.fov.compute(pc.getX(), pc.getY(), pc.getSight(),
+        dungeon.fov.compute(pc.getX(), pc.getY(), pc.getRange(),
             function (x, y) {
                 if (x === actorX && y === actorY) {
                     drawThis = true;

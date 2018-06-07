@@ -92,11 +92,11 @@ Main.Component.Position = function (range, x, y) {
     this._x = x;
     this._y = y;
     // How far one can see?
-    this._sight = range || 0;
+    this._range = range || 0;
 
     this.getX = function () { return this._x; };
     this.getY = function () { return this._y; };
-    this.getSight = function () { return this._sight; };
+    this.getRange = function () { return this._range; };
 
     this.setX = function (pos) { this._x = pos; };
     this.setY = function (pos) { this._y = pos; };

@@ -12,7 +12,7 @@ Main.system.placePC = function () {
     let y = null;
     let width = Main.getEntity('dungeon').Dungeon.getWidth();
     let height = Main.getEntity('dungeon').Dungeon.getHeight();
-    let border = Main.getEntity('pc').Position.getSight();
+    let border = Main.getEntity('pc').Position.getRange();
 
     do {
         x = Math.floor(width * ROT.RNG.getUniform());
@@ -40,7 +40,7 @@ Main.system.isInSight = function (source, targetX, targetY) {
     Main.getEntity('dungeon').fov.compute(
         source.Position.getX(),
         source.Position.getY(),
-        source.Position.getSight(),
+        source.Position.getRange(),
         (x, y) => {
             sight.push(x + ',' + y);
         }
@@ -186,8 +186,11 @@ Main.system.examineMode = function () {
             // Move the marker.
             Main.system.move(Main.input.getAction(e, 'move'),
                 Main.getEntity('marker'));
-        }
-        else {
+        } else if (Main.input.getAction(e, 'interact') === 'next'
+            || Main.input.getAction(e, 'interact') === 'previous') {
+            // Lock the previous or next target.
+            lockTarget(Main.input.getAction(e, 'interact'));
+        } else {
             // TODO: change or delete the `else` block.
             // Invalid keys.
             Main.getEntity('message').Message.setModeline(
@@ -209,4 +212,102 @@ Main.system.examineMode = function () {
             Main.getEntity('marker').Position.setY(null);
         }
     }
+
+    function lockTarget(who) {
+        let targets = [];
+        let left = [];
+        let right = [];
+        let lockIndex = null;
+
+        // Store NPCs in sight in the `left` or `right` list.
+        Main.getEntity('npc').forEach((value) => {
+            if (Main.system.getDistance(Main.getEntity('pc'), value)
+                <= Main.getEntity('pc').Position.getRange()
+                && Main.system.isInSight(
+                    Main.getEntity('pc'),
+                    value.Position.getX(),
+                    value.Position.getY())) {
+                if (value.Position.getX()
+                    < Main.getEntity('pc').Position.getX()) {
+                    left.push(value);
+                } else {
+                    right.push(value);
+                }
+            }
+        });
+
+        // Sort targets on the right:
+        //      Lesser x comes first.
+        //      Lesser y comes first.
+        right.sort((a, b) => {
+            if (a.Position.getX() !== b.Position.getX()) {
+                return a.Position.getX() - b.Position.getX();
+            }
+            return a.Position.getY() - b.Position.getY();
+        });
+
+        // Sort targets on the left:
+        //      Greater x comes first.
+        //      Lesser y comes first.
+        left.sort((a, b) => {
+            if (a.Position.getX() !== b.Position.getX()) {
+                return -(a.Position.getX() - b.Position.getX());
+            }
+            return a.Position.getY() - b.Position.getY();
+        });
+
+        // Exit `lockTarget` if there are no targets in sight.
+        targets = right.concat(left);
+        if (targets.length < 1) {
+            return false;
+        }
+
+        // Get the index of currently locked target.
+        for (var i = 0; i < targets.length; i++) {
+            if (Main.getEntity('marker').Position.getX()
+                === targets[i].Position.getX()
+                && Main.getEntity('marker').Position.getY()
+                === targets[i].Position.getY()) {
+                lockIndex = i;
+                break;
+            }
+        }
+
+        // Update the index. Prepare to lock another target.
+        switch (who) {
+            case 'next':
+                if (lockIndex === null) {
+                    lockIndex = 0;
+                } else {
+                    lockIndex = lockIndex + 1 > targets.length - 1
+                        ? 0
+                        : lockIndex + 1;
+                }
+                break;
+            case 'previous':
+                if (lockIndex === null) {
+                    lockIndex = targets.length - 1;
+                } else {
+                    lockIndex = lockIndex - 1 < 0
+                        ? targets.length - 1
+                        : lockIndex - 1;
+                }
+                break;
+        }
+
+        // Update the position of marker.
+        Main.getEntity('marker').Position.setX(
+            targets[lockIndex].Position.getX());
+        Main.getEntity('marker').Position.setY(
+            targets[lockIndex].Position.getY());
+
+        return true;
+    }
+};
+
+Main.system.getDistance = function (source, target) {
+    let x = Math.abs(source.Position.getX() - target.Position.getX());
+    let y = Math.abs(source.Position.getY() - target.Position.getY());
+
+    return Math.max(x, y);
 };

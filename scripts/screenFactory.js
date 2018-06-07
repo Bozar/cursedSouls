@@ -35,7 +35,9 @@ Main.Screen.prototype.exit = function () {
 };
 
 Main.Screen.prototype.initialize = function (name) {
-    Main.getDevelop() && console.log('Enter screen: ' + name + '.');
+    if (Main.getDevelop()) {
+        console.log('Enter screen: ' + name + '.');
+    }
 };
 
 Main.Screen.prototype.display = function () {
@@ -45,7 +47,9 @@ Main.Screen.prototype.display = function () {
 };
 
 Main.Screen.prototype.keyInput = function (e) {
-    Main.getDevelop() && console.log('Key pressed: ' + e.key);
+    if (Main.getDevelop()) {
+        console.log('Key pressed: ' + e.key);
+    }
 };
 
 Main.screens = {};
@@ -87,7 +91,10 @@ Main.screens.drawBorder = function () {
 Main.screens.drawVersion = function () {
     let version = Main.getVersion();
 
-    Main.getDevelop() && (version = Main.text.statusPanel('wizard') + version);
+    if (Main.getDevelop()) {
+        version = Main.text.statusPanel('wizard') + version;
+    }
+
     Main.screens.drawAlignRight(Main.UI.status.getX(), Main.UI.status.getY(),
         Main.UI.status.getWidth(), version, 'grey');
 };
@@ -125,7 +132,9 @@ Main.screens.drawMessage = function (text) {
     let x = Main.UI.message.getX();
     let y = Main.UI.message.getY();
 
-    text && msgList.push(text);
+    if (text) {
+        msgList.push(text);
+    }
     while (msgList.length > Main.UI.message.getHeight()) {
         msgList.shift();
     }
@@ -154,7 +163,9 @@ Main.screens.drawDungeon = function () {
         }
 
         dungeon.fov.compute(pcX, pcY, sight, function (x, y) {
-            memory.indexOf(x + ',' + y) < 0 && memory.push(x + ',' + y);
+            if (memory.indexOf(x + ',' + y) < 0) {
+                memory.push(x + ',' + y);
+            }
             drawWallAndFloor(x, y, 'white');
         });
     } else {
@@ -197,10 +208,13 @@ Main.screens.drawActor = function (actor, noFov) {
         drawThis = true;
     }
 
-    drawThis && Main.display.draw(
-        actorX + Main.UI.dungeon.getX() + dungeon.Dungeon.getPadding(),
-        actorY + Main.UI.dungeon.getY() + dungeon.Dungeon.getPadding(),
-        actor.Display.getCharacter(), actor.Display.getColor());
+    if (drawThis) {
+        Main.display.draw(
+            actorX + Main.UI.dungeon.getX() + dungeon.Dungeon.getPadding(),
+            actorY + Main.UI.dungeon.getY() + dungeon.Dungeon.getPadding(),
+            actor.Display.getCharacter(),
+            actor.Display.getColor());
+    }
 };
 
 Main.screens.drawLevelName = function () {
@@ -240,10 +254,12 @@ Main.screens.drawPower = function () {
     }
 
     // Star indicator
-    enhance && Main.display.drawText(
-        Main.UI.power.getX(),
-        Main.UI.power.getY(),
-        Main.text.statusPanel('enhance'));
+    if (enhance) {
+        Main.display.drawText(
+            Main.UI.power.getX(),
+            Main.UI.power.getY(),
+            Main.text.statusPanel('enhance'));
+    }
 };
 
 Main.screens.drawOrbOnTheGround = function () {

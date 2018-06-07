@@ -207,10 +207,19 @@ Main.system.examineMode = function () {
                 Main.getEntity('pc').Position.getX());
             Main.getEntity('marker').Position.setY(
                 Main.getEntity('pc').Position.getY());
+
+            // Change mode: main --> examine.
+            Main.screens.setCurrentMode(Main.screens.main.getMode(1));
         } else {
             Main.getEntity('marker').Position.setX(null);
             Main.getEntity('marker').Position.setY(null);
+
+            // Change mode: examine --> main.
+            Main.screens.setCurrentMode(Main.screens.main.getMode(0));
         }
+
+        Main.display.clear();
+        Main.screens.main.display();
     }
 
     function lockTarget(who) {

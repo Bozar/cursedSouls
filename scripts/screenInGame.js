@@ -12,8 +12,6 @@ Main.screens.main.initialize = function () {
     ROT.RNG.setSeed(Main.getEntity('seed').Seed.getSeed());
 
     Main.entity.dungeon();
-    Main.entity.message();
-
     Main.entity.pc();
     Main.entity.marker();
 
@@ -34,7 +32,7 @@ Main.screens.main.display = function () {
     Main.screens.drawBorder();
     Main.screens.drawVersion();
     Main.screens.drawHelp();
-    Main.screens.drawSeed();
+    Main.screens.drawBottomRight(Main.getEntity('seed').Seed.getPrintSeed());
 
     Main.screens.drawLevelName();
     Main.screens.drawPower();
@@ -50,6 +48,13 @@ Main.screens.main.display = function () {
 
     Main.screens.drawMessage();
     Main.screens.drawModeLine();
+
+    // In main mode, draw the modeline text only once. In examine or aim mode,
+    // draw the text every turn.
+    if (Main.getEntity('message').Message.getModeline()
+        && Main.screens.getCurrentMode() === 'main') {
+        Main.getEntity('message').Message.setModeline('');
+    }
 };
 
 Main.screens.main.keyInput = function (e) {

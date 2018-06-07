@@ -37,6 +37,7 @@ window.onload = function () {
     }
     document.getElementById('game').appendChild(Main.display.getContainer());
     Main.text.initialize();
+    Main.entity.message();
 
     Main.display.clear();
     Main.screens.main.enter();

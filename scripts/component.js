@@ -9,11 +9,7 @@ Main.Component.Message = function () {
     this._modeline = '';
 
     this.getMsgList = function () { return this._message; };
-    this.getModeline = function () {
-        let text = this._modeline;
-        this._modeline = '';
-        return text;
-    };
+    this.getModeline = function () { return this._modeline; };
 
     this.setModeline = function (text) { this._modeline = text; };
     this.pushMsg = function (text) { this._message.push(text); };
@@ -21,13 +17,13 @@ Main.Component.Message = function () {
 
 Main.Component.Seed = function () {
     this._name = 'Seed';
-    // Use _seed to start the RNG engine.
+    // Use `_seed` to start the RNG engine.
     this._seed = null;
-    // Use _rawseed to store player's input.
-    this._rawSeed = null;
+    // Print `_printSeed` on the screen.
+    this._printSeed = null;
 
     this.getSeed = function () { return this._seed; };
-    this.getRawSeed = function () { return this._rawSeed; };
+    this.getPrintSeed = function () { return this._printSeed; };
 
     this.setSeed = function (seed) {
         if (!seed) {
@@ -35,11 +31,15 @@ Main.Component.Seed = function () {
             this._seed = Math.floor(this._seed);
             this._seed = this._seed.toString();
 
-            this._rawSeed = this._seed;
+            this._printSeed = this._seed;
         } else {
+            // Remove the beginning `#` if the seed is set manually.
             this._seed = seed.toString().replace(/^#{0,1}(.+)$/, '$1');
-            this._rawSeed = seed;
+            this._printSeed = seed;
         }
+        // Insert hyphen to the seed string.
+        this._printSeed
+            = this._printSeed.replace(/^(#{0,1}\d{5})(\d{5})$/, '$1-$2');
     };
 };
 

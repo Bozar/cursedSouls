@@ -112,16 +112,13 @@ Main.screens.drawVersion = function () {
         Main.UI.status.getWidth(), version, 'grey');
 };
 
-Main.screens.drawSeed = function () {
-    let seed = Main.getEntity('seed').Seed.getRawSeed();
-    seed = seed.replace(/^(#{0,1}\d{5})(\d{5})$/, '$1-$2');
-
-    Main.screens.drawBottomRight(seed);
-};
-
 Main.screens.drawModeLine = function () {
-    Main.screens.drawBottomLeft(
-        Main.getEntity('message').Message.getModeline());
+    if (Main.getEntity('message').Message.getModeline()) {
+        Main.display.drawText(
+            Main.UI.modeline.getX(),
+            Main.UI.modeline.getY(),
+            Main.getEntity('message').Message.getModeline());
+    }
 };
 
 Main.screens.drawBottomRight = function (text) {
@@ -130,13 +127,6 @@ Main.screens.drawBottomRight = function (text) {
         Main.UI.status.getY() + Main.UI.status.getHeight() - 1,
         Main.UI.status.getWidth(),
         text, 'grey');
-};
-
-Main.screens.drawBottomLeft = function (text) {
-    Main.display.drawText(
-        Main.UI.modeline.getX(),
-        Main.UI.modeline.getY(),
-        text);
 };
 
 // The text cannot be longer than the width of message block.
@@ -299,6 +289,8 @@ Main.screens.drawHelp = function () {
 };
 
 Main.screens.drawBlankCutScene = function () {
-    Main.screens.drawBottomLeft(Main.text.hint('continue'));
+    Main.getEntity('message').Message.setModeline(Main.text.hint('continue'));
+
+    Main.screens.drawModeLine();
     Main.screens.drawBottomRight(Main.text.statusPanel('studio'));
 };

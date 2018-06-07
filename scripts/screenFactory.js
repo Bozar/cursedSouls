@@ -131,21 +131,40 @@ Main.screens.drawBottomRight = function (text) {
 
 // The text cannot be longer than the width of message block.
 Main.screens.drawMessage = function (text) {
-    let msgList = Main.getEntity('message').Message.getMsgList();
-    let x = Main.UI.message.getX();
-    let y = Main.UI.message.getY();
-
     if (text) {
-        msgList.push(text);
+        Main.getEntity('message').Message.getMessage().push(text);
     }
-    while (msgList.length > Main.UI.message.getHeight()) {
-        msgList.shift();
+    while (Main.getEntity('message').Message.getMessage().length
+        > Main.UI.message.getHeight()) {
+        Main.getEntity('message').Message.getMessage().shift();
     }
-    y += Main.UI.message.getHeight() - msgList.length;
 
-    for (let i = 0; i < msgList.length; i++) {
-        Main.display.drawText(x, y + i, msgList[i]);
+    for (let i = 0;
+        i < Main.getEntity('message').Message.getMessage().length;
+        i++) {
+        Main.display.drawText(
+            Main.UI.message.getX(),
+            Main.UI.message.getY()
+            + Main.UI.message.getHeight()
+            - Main.getEntity('message').Message.getMessage().length
+            + i,
+            Main.getEntity('message').Message.getMessage()[i]);
     }
+};
+
+Main.screens.drawDescription = function (top, bottom) {
+    // The top text cannot be longer than 4 lines. The recommended length is 2 to
+    // 3 lines.
+    Main.display.drawText(
+        Main.UI.message.getX(),
+        Main.UI.message.getY(),
+        top,
+        Main.UI.message.getWidth());
+
+    Main.display.drawText(
+        Main.UI.message.getX(),
+        Main.UI.message.getY() + Main.UI.message.getHeight() - 1,
+        bottom);
 };
 
 Main.screens.drawDungeon = function () {

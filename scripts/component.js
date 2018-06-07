@@ -8,7 +8,7 @@ Main.Component.Message = function () {
     this._message = [];
     this._modeline = '';
 
-    this.getMsgList = function () { return this._message; };
+    this.getMessage = function () { return this._message; };
     this.getModeline = function () { return this._modeline; };
 
     this.setModeline = function (text) { this._modeline = text; };

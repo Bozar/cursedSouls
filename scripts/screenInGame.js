@@ -46,15 +46,12 @@ Main.screens.main.display = function () {
     }
     Main.screens.drawActor(Main.getEntity('marker'));
 
-    Main.screens.drawMessage();
-    Main.screens.drawModeLine();
-
-    // In main mode, draw the modeline text only once. In examine or aim mode,
-    // draw the text every turn.
-    if (Main.getEntity('message').Message.getModeline()
-        && Main.screens.getCurrentMode() === 'main') {
-        Main.getEntity('message').Message.setModeline('');
+    if (Main.screens.getCurrentMode() !== 'main') {
+        Main.screens.drawDescription();
+    } else {
+        Main.screens.drawMessage();
     }
+    Main.screens.drawModeLine();
 };
 
 Main.screens.main.keyInput = function (e) {

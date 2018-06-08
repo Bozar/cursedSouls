@@ -30,14 +30,24 @@ Main.text.initialize = function () {
     text.get('ui').set('help', 'Help:');
     text.get('ui').set('wizard', 'Wiz|');
     text.get('ui').set('studio', 'Red Tabby Studio');
-    text.get('ui').set('examine', '[Ex]');
-    text.get('ui').set('aim', '[Aim]');
+    text.get('ui').set('examine', 'Exm');
+    text.get('ui').set('aim', 'Aim');
     text.get('ui').set('range', 'Range: %%');
 
     // Prompt the player to do something. Report the reaction to PC or NPC's
     // action.
     text.set('action', new Map());
     text.get('action').set('continue', 'Press Space to continue.');
+
+    // NPC's names
+    text.set('name', new Map());
+    text.get('name').set('dummy', 'Dummy');
+
+    // Describe the NPC, item or building under the marker.
+    text.set('info', new Map());
+    text.get('info').set('dummy', 'This is a dummy.'
+        + ' It has 1 hit point.'
+        + ' It drops 1 Slime Orb when killed.');
 
     Main.text.libraryMap = text;
 };
@@ -58,6 +68,14 @@ Main.text.action = function (id) {
     return Main.text.libraryMap.get('action').get(id);
 };
 
+Main.text.name = function (id) {
+    return Main.text.libraryMap.get('name').get(id);
+};
+
+Main.text.info = function (id) {
+    return Main.text.libraryMap.get('info').get(id);
+};
+
 // ==========================
 // Combine fragments of text.
 // ==========================
@@ -70,7 +88,7 @@ Main.text.modeLine = function (mode) {
         mode = check[0];
     }
 
-    text = `${Main.text.ui(mode)} ${Main.text.ui('range')}`;
+    text = `[${Main.text.ui(mode)}][${Main.text.ui('range')}]`;
     text = text.replace('%%', Main.system.getDistance(
         Main.getEntity('pc'), Main.getEntity('marker')));
 

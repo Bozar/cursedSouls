@@ -105,7 +105,7 @@ Main.screens.drawVersion = function () {
     let version = Main.getVersion();
 
     if (Main.getDevelop()) {
-        version = Main.text.statusPanel('wizard') + version;
+        version = Main.text.ui('wizard') + version;
     }
 
     Main.screens.drawAlignRight(Main.UI.status.getX(), Main.UI.status.getY(),
@@ -240,22 +240,22 @@ Main.screens.drawActor = function (actor, noFov) {
 };
 
 Main.screens.drawLevelName = function () {
-    let levelName = Main.text.levelName('grave');
+    let levelName = Main.text.dungeon('grave');
 
     Main.display.drawText(
         Main.UI.level.getX(),
         Main.UI.level.getY(),
-        `${Main.text.statusPanel('stairs')} ${levelName}`);
+        `${Main.text.dungeon('stairs')} ${levelName}`);
 };
 
 Main.screens.drawPower = function () {
     let powers = [
-        Main.text.orbName('fire'),
-        Main.text.orbName('fire'),
-        Main.text.orbName('ice'),
-        Main.text.orbName('slime'),
-        Main.text.orbName('ice'),
-        Main.text.orbName('lump')
+        Main.text.dungeon('fire'),
+        Main.text.dungeon('fire'),
+        Main.text.dungeon('ice'),
+        Main.text.dungeon('slime'),
+        Main.text.dungeon('ice'),
+        Main.text.dungeon('lump')
     ];
     let enhance = false;
 
@@ -280,7 +280,7 @@ Main.screens.drawPower = function () {
         Main.display.drawText(
             Main.UI.power.getX(),
             Main.UI.power.getY(),
-            Main.text.statusPanel('enhance'));
+            Main.text.ui('enhance'));
     }
 };
 
@@ -291,9 +291,9 @@ Main.screens.drawOrbOnTheGround = function () {
         Main.UI.ground.getX(),
         Main.UI.ground.getY(),
         orb
-            ? Main.text.statusPanel('ground') + ' '
-            + Main.screens.colorfulText(Main.text.orbName(orb), 'green')
-            : Main.text.statusPanel('ground'));
+            ? Main.text.ui('ground') + ' '
+            + Main.screens.colorfulText(Main.text.dungeon(orb), 'green')
+            : Main.text.ui('ground'));
 };
 
 Main.screens.drawHelp = function () {
@@ -303,13 +303,13 @@ Main.screens.drawHelp = function () {
         Main.UI.help.getX(),
         Main.UI.help.getY(),
         Main.UI.help.getWidth(),
-        `${Main.text.statusPanel('help')} ${helpKey}`,
+        `${Main.text.ui('help')} ${helpKey}`,
         'grey');
 };
 
 Main.screens.drawBlankCutScene = function () {
-    Main.getEntity('message').Message.setModeline(Main.text.hint('continue'));
+    Main.getEntity('message').Message.setModeline(Main.text.action('continue'));
 
     Main.screens.drawModeLine();
-    Main.screens.drawBottomRight(Main.text.statusPanel('studio'));
+    Main.screens.drawBottomRight(Main.text.ui('studio'));
 };

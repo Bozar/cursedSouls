@@ -30,6 +30,9 @@ Main.text.initialize = function () {
     text.get('ui').set('help', 'Help:');
     text.get('ui').set('wizard', 'Wiz|');
     text.get('ui').set('studio', 'Red Tabby Studio');
+    text.get('ui').set('examine', '[Ex]');
+    text.get('ui').set('aim', '[Aim]');
+    text.get('ui').set('range', 'Range: %%');
 
     // Prompt the player to do something. Report the reaction to PC or NPC's
     // action.
@@ -39,29 +42,37 @@ Main.text.initialize = function () {
     Main.text.libraryMap = text;
 };
 
-// ==========================
-// Get text from the library.
-// ==========================
+// =================================
+// Get static text from the library.
+// =================================
 
-Main.text.levelName = function (id) {
+Main.text.dungeon = function (id) {
     return Main.text.libraryMap.get('dungeon').get(id);
 };
 
-Main.text.orbName = function (id) {
-    return Main.text.libraryMap.get('dungeon').get(id);
-};
-
-// UI elements that remain unchanged.
-Main.text.statusPanel = function (id) {
-    if (id === 'stairs') {
-        return Main.text.libraryMap.get('dungeon').get(id);
-    }
+Main.text.ui = function (id) {
     return Main.text.libraryMap.get('ui').get(id);
 };
 
-Main.text.hint = function (id) {
-    switch (id) {
-        case 'continue':
-            return Main.text.libraryMap.get('action').get(id);
+Main.text.action = function (id) {
+    return Main.text.libraryMap.get('action').get(id);
+};
+
+// ==========================
+// Combine fragments of text.
+// ==========================
+
+Main.text.modeLine = function (mode) {
+    let check = ['examine', 'aim'];
+    let text = '';
+
+    if (check.indexOf(mode) < 0) {
+        mode = check[0];
     }
+
+    text = `${Main.text.ui(mode)} ${Main.text.ui('range')}`;
+    text = text.replace('%%', Main.system.getDistance(
+        Main.getEntity('pc'), Main.getEntity('marker')));
+
+    return text;
 };

@@ -174,7 +174,13 @@ Main.system.examineMode = function () {
 
     setOrRemoveMarker(true);
 
+    return true;
+
+    // ----------------
     // Helper functions
+    // ----------------
+
+    // The hub function to handle key inputs and call other functions.
     function examine(e) {
         if (Main.input.getAction(e, 'fixed') === 'no') {
             // Exit the examine mode.
@@ -190,13 +196,9 @@ Main.system.examineMode = function () {
             || Main.input.getAction(e, 'interact') === 'previous') {
             // Lock the previous or next target.
             lockTarget(Main.input.getAction(e, 'interact'));
-        } else {
-            // TODO: change or delete the `else` block.
-            // Invalid keys.
-            Main.getEntity('message').Message.setModeline(
-                'invalid key: ' + e.key);
         }
 
+        setExModeLine();
         Main.display.clear();
         Main.screens.main.display();
     }
@@ -218,6 +220,7 @@ Main.system.examineMode = function () {
             Main.screens.setCurrentMode(Main.screens.main.getMode(0));
         }
 
+        setExModeLine();
         Main.display.clear();
         Main.screens.main.display();
     }
@@ -311,6 +314,15 @@ Main.system.examineMode = function () {
             targets[lockIndex].Position.getY());
 
         return true;
+    }
+
+    function setExModeLine() {
+        if (Main.screens.getCurrentMode() === 'examine') {
+            Main.getEntity('message').Message.setModeline(
+                Main.text.modeLine('examine'));
+        } else {
+            Main.getEntity('message').Message.setModeline('');
+        }
     }
 };
 

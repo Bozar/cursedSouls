@@ -274,7 +274,7 @@ Main.screens.drawLevelName = function () {
     Main.display.drawText(
         Main.UI.level.getX(),
         Main.UI.level.getY(),
-        `${Main.text.dungeon('stairs')} ${levelName}`);
+        `${Main.text.dungeon('stairs')} ${levelName} `);
 };
 
 Main.screens.drawPower = function () {
@@ -332,7 +332,7 @@ Main.screens.drawHelp = function () {
         Main.UI.help.getX(),
         Main.UI.help.getY(),
         Main.UI.help.getWidth(),
-        `${Main.text.ui('help')} ${helpKey}`,
+        `${Main.text.ui('help')} ${helpKey} `,
         'grey');
 };
 

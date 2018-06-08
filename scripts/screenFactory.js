@@ -118,6 +118,13 @@ Main.screens.drawModeLine = function () {
             Main.UI.modeline.getX(),
             Main.UI.modeline.getY(),
             Main.getEntity('message').Message.getModeline());
+
+        // In the main screen (main mode), draw the modeline text only once.
+        // Otherwise, draw the text every turn.
+        if (Main.screens.getCurrentName() === 'main'
+            && Main.screens.getCurrentMode() === 'main') {
+            Main.getEntity('message').Message.setModeline('');
+        }
     }
 };
 
@@ -152,19 +159,41 @@ Main.screens.drawMessage = function (text) {
     }
 };
 
-Main.screens.drawDescription = function (top, bottom) {
-    // The top text cannot be longer than 4 lines. The recommended length is 2 to
-    // 3 lines.
-    Main.display.drawText(
-        Main.UI.message.getX(),
-        Main.UI.message.getY(),
-        top,
-        Main.UI.message.getWidth());
+Main.screens.drawDescription = function () {
+    let npcHere = Main.system.npcHere(
+        Main.getEntity('marker').Position.getX(),
+        Main.getEntity('marker').Position.getY());
+    let itemHere = Main.system.itemHere(
+        Main.getEntity('marker').Position.getX(),
+        Main.getEntity('marker').Position.getY());
 
-    Main.display.drawText(
-        Main.UI.message.getX(),
-        Main.UI.message.getY() + Main.UI.message.getHeight() - 1,
-        bottom);
+    if (npcHere) {
+        drawTextBlock(
+            Main.text.info(npcHere.getEntityName()),
+            `[${Main.text.name(npcHere.getEntityName())}]`
+            + `[${Main.text.dungeon(npcHere.Inventory.getItem())}]`
+            + `[${npcHere.HitPoint.getHitPoint()}]`);
+    } else if (itemHere) {
+        drawTextBlock(
+            Main.text.info(itemHere.getEntityName()),
+            `[${Main.text.name(itemHere.getEntityName())}]`
+        );
+    } else {
+        Main.screens.drawMessage();
+    }
+
+    function drawTextBlock(top, bottom) {
+        Main.display.drawText(
+            Main.UI.message.getX(),
+            Main.UI.message.getY(),
+            top,
+            Main.UI.message.getWidth());
+
+        Main.display.drawText(
+            Main.UI.message.getX(),
+            Main.UI.message.getY() + Main.UI.message.getHeight() - 1,
+            bottom);
+    }
 };
 
 Main.screens.drawDungeon = function () {

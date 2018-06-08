@@ -115,3 +115,23 @@ Main.Component.ActionDuration = function (move) {
     this.getPickUpOrb = function () { return this._pickUpOrb; };
     this.getWait = function () { return this._wait; };
 };
+
+Main.Component.Inventory = function (item) {
+    this._name = 'Inventory';
+
+    this._item = ['fire', 'ice', 'slime', 'lump'].indexOf(item) > -1
+        ? item
+        : null;
+
+    this.getItem = function () { return this._item; };
+};
+
+Main.Component.HitPoint = function (hp) {
+    this._name = 'HitPoint';
+
+    this._hitPoint = hp;
+
+    this.getHitPoint = function () { return this._hitPoint; };
+    this.takeDamage = function (damage) { this._hitPoint -= damage; };
+    this.isDead = function () { return this._hitPoint > 0; };
+};

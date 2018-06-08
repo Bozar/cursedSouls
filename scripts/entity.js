@@ -94,6 +94,8 @@ Main.entity.dummy = function (x, y) {
     e.addComponent(new Main.Component.Position(5, x, y));
     e.addComponent(new Main.Component.Display('d'));
     e.addComponent(new Main.Component.ActionDuration());
+    e.addComponent(new Main.Component.Inventory('slime'));
+    e.addComponent(new Main.Component.HitPoint(1));
 
     e.act = Main.system.dummyAct;
 

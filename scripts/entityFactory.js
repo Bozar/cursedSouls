@@ -12,9 +12,9 @@ Main.Factory = function (name) {
         let randomNumber = '';
 
         while (randomNumber.length < 32) {
-            randomNumber += Math.random() * Math.pow(10, 8) | 0;
-            randomNumber.toString(16);
+            randomNumber += (Math.random() * Math.pow(10, 8) | 0).toString(16);
         }
+
         return randomNumber.replace(/.{8}/g, '$&' + '-').slice(0, 35);
     }
 };

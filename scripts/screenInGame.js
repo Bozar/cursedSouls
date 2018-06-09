@@ -12,6 +12,18 @@ Main.screens.main.initialize = function () {
     ROT.RNG.setSeed(Main.getEntity('seed').Seed.getSeed());
 
     Main.entity.dungeon();
+
+    // Output the dungeon generation details.
+    if (Main.getDevelop()) {
+        console.log('Seed: '
+            + Main.getEntity('seed').Seed.getSeed());
+        console.log('Floor: '
+            + Main.getEntity('dungeon').Dungeon.getPercent()
+            + '%');
+        console.log('Cycle: '
+            + Main.getEntity('dungeon').Dungeon.getCycle());
+    }
+
     Main.entity.pc();
     Main.entity.marker();
 

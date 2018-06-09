@@ -39,9 +39,16 @@ Main.entity.dungeon = function () {
     let e = new Main.Factory('dungeon');
     e.addComponent(new Main.Component.Dungeon());
 
+    let cycle = 0;
+
     do {
         cellular();
-    } while (floorArea() < e.Dungeon.getFloorArea());
+        cycle++;
+    } while (floorArea() < e.Dungeon.getFloorArea()[0]
+        || floorArea() > e.Dungeon.getFloorArea()[1]);
+
+    e.Dungeon.setPercent(floorArea());
+    e.Dungeon.setCycle(cycle);
 
     e.light = function (x, y) {
         return e.Dungeon.getTerrain().get(x + ',' + y) === 0;

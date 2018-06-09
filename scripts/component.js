@@ -51,29 +51,35 @@ Main.Component.Dungeon = function () {
     this._height = Main.UI.dungeon.getHeight() - 2;
     // Do not draw along the UI border.
     this._padding = 1;
-    // Only draw whatever the PC can see
+    // The switch to turn on/off the fog of war.
     this._hasFov = true;
 
     // Terrain: 'x,y' => wall (1) or floor (0)
     this._terrain = new Map();
-    // The floor-to-wall ratio
-    this._floorArea = 55;
-
     // Explored dungeon
     this._memory = [];
+
+    // The percentage of the floor area
+    this._floorArea = [55, 65];
+    this._percent = 0;
+    this._cycle = 0;
 
     this.getWidth = function () { return this._width; };
     this.getHeight = function () { return this._height; };
     this.getPadding = function () { return this._padding; };
+    this.getFov = function () { return this._hasFov; };
 
     this.getTerrain = function () { return this._terrain; };
-    this.getFloorArea = function () { return this._floorArea; };
-
     this.getMemory = function () { return this._memory; };
-    this.getFov = function () { return this._hasFov; };
+
+    this.getFloorArea = function () { return this._floorArea; };
+    this.getPercent = function () { return this._percent; };
+    this.getCycle = function () { return this._cycle; };
 
     this.setFov = function () { this._hasFov = !this._hasFov; };
     this.setMemory = function (memory) { this._memory = memory; };
+    this.setPercent = function (percent) { this._percent = percent; };
+    this.setCycle = function (cycle) { this._cycle = cycle; };
 };
 
 Main.Component.Display = function (char, color) {

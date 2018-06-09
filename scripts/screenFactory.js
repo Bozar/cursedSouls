@@ -75,12 +75,14 @@ Main.screens.setCurrentMode = function (mode) {
 
 Main.screens.colorfulText = function (text, fgColor, bgColor) {
     return bgColor
-        ? '%c{' + Main.getColor(fgColor) + '}%b{'
-        + Main.getColor(bgColor) + '}' + text + '%b{}%c{}'
-        : '%c{' + Main.getColor(fgColor) + '}' + text + '%c{}';
+        ? '%c{' + Main.getColor(fgColor) + '}'
+        + '%b{' + Main.getColor(bgColor) + '}'
+        + text + '%b{}%c{}'
+        : '%c{' + Main.getColor(fgColor) + '}'
+        + text + '%c{}';
 };
 
-Main.screens.drawAlignRight = function (x, y, width, text, color) {
+Main.screens.drawAlignRight = function (x, y, text, width, color) {
     Main.display.drawText(
         x + width - text.length,
         y,
@@ -90,33 +92,44 @@ Main.screens.drawAlignRight = function (x, y, width, text, color) {
 };
 
 Main.screens.drawBorder = function () {
-    let status = Main.UI.status;
-    let dungeon = Main.UI.dungeon;
+    // Dungeon | Status
+    // ------- | Status
+    // Message | Status
 
-    for (let i = status.getY(); i < status.getHeight(); i++) {
-        Main.display.draw(status.getX() - 1, i, '|');
+    for (let i = Main.UI.status.getY();
+        i < Main.UI.status.getHeight();
+        i++) {
+        Main.display.draw(
+            Main.UI.status.getX() - 1, i, '|');
     }
-    for (let i = dungeon.getX(); i < dungeon.getWidth() + 1; i++) {
-        Main.display.draw(i, dungeon.getY() + dungeon.getHeight(), '-');
+
+    for (let i = Main.UI.dungeon.getX();
+        i < Main.UI.dungeon.getWidth() + 1;
+        i++) {
+        Main.display.draw(
+            i, Main.UI.dungeon.getY() + Main.UI.dungeon.getHeight(), '-');
     }
 };
 
 Main.screens.drawVersion = function () {
-    let version = Main.getVersion();
+    let version = '';
 
     if (Main.getDevelop()) {
-        version = Main.text.ui('wizard') + version;
+        version = Main.text.ui('wizard') + Main.getVersion();
+    } else {
+        version = Main.getVersion();
     }
 
-    Main.screens.drawAlignRight(Main.UI.status.getX(), Main.UI.status.getY(),
-        Main.UI.status.getWidth(), version, 'grey');
+    Main.screens.drawAlignRight(
+        Main.UI.status.getX(), Main.UI.status.getY(),
+        version,
+        Main.UI.status.getWidth(), 'grey');
 };
 
 Main.screens.drawModeLine = function () {
     if (Main.getEntity('message').Message.getModeline()) {
         Main.display.drawText(
-            Main.UI.modeline.getX(),
-            Main.UI.modeline.getY(),
+            Main.UI.modeline.getX(), Main.UI.modeline.getY(),
             Main.getEntity('message').Message.getModeline());
 
         // In the main screen (main mode), draw the modeline text only once.
@@ -132,8 +145,8 @@ Main.screens.drawBottomRight = function (text) {
     Main.screens.drawAlignRight(
         Main.UI.status.getX(),
         Main.UI.status.getY() + Main.UI.status.getHeight() - 1,
-        Main.UI.status.getWidth(),
-        text, 'grey');
+        text,
+        Main.UI.status.getWidth(), 'grey');
 };
 
 // The text cannot be longer than the width of message block.
@@ -163,21 +176,24 @@ Main.screens.drawDescription = function () {
     let npcHere = Main.system.npcHere(
         Main.getEntity('marker').Position.getX(),
         Main.getEntity('marker').Position.getY());
-    let itemHere = Main.system.itemHere(
-        Main.getEntity('marker').Position.getX(),
-        Main.getEntity('marker').Position.getY());
+    let itemHere = null;
+
+    if (!npcHere) {
+        itemHere = Main.system.itemHere(
+            Main.getEntity('marker').Position.getX(),
+            Main.getEntity('marker').Position.getY());
+    }
 
     if (npcHere) {
         drawTextBlock(
             Main.text.info(npcHere.getEntityName()),
-            `[${Main.text.name(npcHere.getEntityName())}]`
-            + `[${Main.text.dungeon(npcHere.Inventory.getItem())}]`
-            + `[${npcHere.HitPoint.getHitPoint()}]`);
+            Main.text.name(npcHere.getEntityName())
+            + Main.text.dungeon(npcHere.Inventory.getItem())
+            + npcHere.HitPoint.getHitPoint());
     } else if (itemHere) {
         drawTextBlock(
             Main.text.info(itemHere.getEntityName()),
-            `[${Main.text.name(itemHere.getEntityName())}]`
-        );
+            Main.text.name(itemHere.getEntityName()));
     } else {
         Main.screens.drawMessage();
     }
@@ -197,30 +213,40 @@ Main.screens.drawDescription = function () {
 };
 
 Main.screens.drawDungeon = function () {
-    let dungeon = Main.getEntity('dungeon');
-    let memory = dungeon.Dungeon.getMemory();
-    let pcX = Main.getEntity('pc').Position.getX();
-    let pcY = Main.getEntity('pc').Position.getY();
-    let sight = Main.getEntity('pc').Position.getRange();
-
-    if (dungeon.Dungeon.getFov()) {
-        if (memory.length > 0) {
-            for (let i = 0; i < memory.length; i++) {
+    // Default: the fog of war is on.
+    if (Main.getEntity('dungeon').Dungeon.getFov()) {
+        // Draw walls and floors that the PC has seen before.
+        if (Main.getEntity('dungeon').Dungeon.getMemory().length > 0) {
+            for (let i = 0;
+                i < Main.getEntity('dungeon').Dungeon.getMemory().length;
+                i++) {
                 drawWallAndFloor(
-                    memory[i].split(',')[0],
-                    memory[i].split(',')[1],
+                    Main.getEntity('dungeon').Dungeon
+                        .getMemory()[i].split(',')[0],
+                    Main.getEntity('dungeon').Dungeon
+                        .getMemory()[i].split(',')[1],
                     'grey');
             }
         }
 
-        dungeon.fov.compute(pcX, pcY, sight, function (x, y) {
-            if (memory.indexOf(x + ',' + y) < 0) {
-                memory.push(x + ',' + y);
-            }
-            drawWallAndFloor(x, y, 'white');
-        });
-    } else {
-        for (const keyValue of dungeon.Dungeon.getTerrain()) {
+        Main.getEntity('dungeon').fov.compute(
+            Main.getEntity('pc').Position.getX(),
+            Main.getEntity('pc').Position.getY(),
+            Main.getEntity('pc').Position.getRange(),
+            function (x, y) {
+                // Remember walls and floors in sight.
+                if (Main.getEntity('dungeon').Dungeon
+                    .getMemory().indexOf(x + ',' + y) < 0) {
+                    Main.getEntity('dungeon').Dungeon
+                        .getMemory().push(x + ',' + y);
+                }
+                // Draw walls and floors in sight.
+                drawWallAndFloor(x, y, 'white');
+            });
+    }
+    // Wizard mode: the fog of war if off. Draw all walls and floors.
+    else {
+        for (const keyValue of Main.getEntity('dungeon').Dungeon.getTerrain()) {
             drawWallAndFloor(
                 keyValue[0].split(',')[0],
                 keyValue[0].split(',')[1],
@@ -233,8 +259,10 @@ Main.screens.drawDungeon = function () {
         y = Number.parseInt(y, 10);
 
         Main.display.draw(
-            x + Main.UI.dungeon.getX() + dungeon.Dungeon.getPadding(),
-            y + Main.UI.dungeon.getY() + dungeon.Dungeon.getPadding(),
+            x + Main.UI.dungeon.getX()
+            + Main.getEntity('dungeon').Dungeon.getPadding(),
+            y + Main.UI.dungeon.getY()
+            + Main.getEntity('dungeon').Dungeon.getPadding(),
             Main.system.isFloor(x, y) ? '.' : '#',
             Main.getColor(color));
     }
@@ -243,26 +271,35 @@ Main.screens.drawDungeon = function () {
 Main.screens.drawActor = function (actor, noFov) {
     let drawThis = false;
 
-    let dungeon = Main.getEntity('dungeon');
-    let pc = Main.getEntity('pc').Position;
-    let actorX = Number.parseInt(actor.Position.getX(), 10);
-    let actorY = Number.parseInt(actor.Position.getY(), 10);
-
-    if (!noFov && dungeon.Dungeon.getFov() && !Main.system.isPC(actor)) {
-        dungeon.fov.compute(pc.getX(), pc.getY(), pc.getRange(),
+    if (// Force to draw this actor.
+        noFov
+        // Switch the fog of war in wizard mode.
+        || !Main.getEntity('dungeon').Dungeon.getFov()
+        // Always draw the PC.
+        || Main.system.isPC(actor)) {
+        drawThis = true;
+    } else {
+        // Draw the actor if he is in PC's sight.
+        Main.getEntity('dungeon').fov.compute(
+            Main.getEntity('pc').Position.getX(),
+            Main.getEntity('pc').Position.getY(),
+            Main.getEntity('pc').Position.getRange(),
             function (x, y) {
-                if (x === actorX && y === actorY) {
+                if (x === Number.parseInt(actor.Position.getX(), 10)
+                    && y === Number.parseInt(actor.Position.getY(), 10)) {
                     drawThis = true;
                 }
             });
-    } else {
-        drawThis = true;
     }
 
     if (drawThis) {
         Main.display.draw(
-            actorX + Main.UI.dungeon.getX() + dungeon.Dungeon.getPadding(),
-            actorY + Main.UI.dungeon.getY() + dungeon.Dungeon.getPadding(),
+            Number.parseInt(actor.Position.getX(), 10)
+            + Main.UI.dungeon.getX()
+            + Main.getEntity('dungeon').Dungeon.getPadding(),
+            Number.parseInt(actor.Position.getY(), 10)
+            + Main.UI.dungeon.getY()
+            + Main.getEntity('dungeon').Dungeon.getPadding(),
             actor.Display.getCharacter(),
             actor.Display.getColor());
     }
@@ -331,9 +368,8 @@ Main.screens.drawHelp = function () {
     Main.screens.drawAlignRight(
         Main.UI.help.getX(),
         Main.UI.help.getY(),
-        Main.UI.help.getWidth(),
         `${Main.text.ui('help')} ${helpKey}`,
-        'grey');
+        Main.UI.help.getWidth(), 'grey');
 };
 
 Main.screens.drawBlankCutScene = function () {

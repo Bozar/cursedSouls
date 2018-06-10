@@ -6,6 +6,12 @@
 
 Main.screens.main = new Main.Screen('main', ['main', 'examine', 'aim']);
 
+// Create & place entities (if necessacry) in this order:
+// Seed, Dungeon, (PC, Downstairs, NPCs, Orbs), Marker.
+// The PC cannot stick to the wall.
+// The downstairs has to be at least 1/4 screen away from the PC.
+// NPCs cannot appear in the PC's sight or stand on the downstairs.
+// Orbs cannot be generated on the downstairs.
 Main.screens.main.initialize = function () {
     Main.entity.seed();
     Main.getEntity('seed').Seed.setSeed(Main.getDevSeed());
@@ -40,6 +46,10 @@ Main.screens.main.initialize = function () {
     }
 };
 
+// Draw entities in this order:
+// Static UI elements, Dungeon, (Orbs, NPCs, Downstairs, PC), Marker.
+// NPCs & the PC can stand on the orb.
+// The marker is on the top layer.
 Main.screens.main.display = function () {
     Main.screens.drawBorder();
     Main.screens.drawVersion();

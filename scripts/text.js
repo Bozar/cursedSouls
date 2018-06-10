@@ -30,7 +30,7 @@ Main.text.initialize = function () {
     text.get('ui').set('help', 'Help:');
     text.get('ui').set('wizard', 'Wiz|');
     text.get('ui').set('studio', 'Red Tabby Studio');
-    text.get('ui').set('examine', 'Exm');
+    text.get('ui').set('examine', 'Ex');
     text.get('ui').set('aim', 'Aim');
     text.get('ui').set('range', 'Range: %%');
 

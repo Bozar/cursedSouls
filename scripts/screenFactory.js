@@ -187,9 +187,9 @@ Main.screens.drawDescription = function () {
     if (npcHere) {
         drawTextBlock(
             Main.text.info(npcHere.getEntityName()),
-            Main.text.name(npcHere.getEntityName())
-            + Main.text.dungeon(npcHere.Inventory.getItem())
-            + npcHere.HitPoint.getHitPoint());
+            '[' + Main.text.name(npcHere.getEntityName())
+            + '][' + Main.text.dungeon(npcHere.Inventory.getInventory(0))
+            + '][' + npcHere.HitPoint.getHitPoint() + ']');
     } else if (itemHere) {
         drawTextBlock(
             Main.text.info(itemHere.getEntityName()),

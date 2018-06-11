@@ -178,12 +178,6 @@ Main.system.unlockEngine = function (duration) {
     Main.screens.main.display();
 };
 
-// TODO: rewrite this function.
-Main.system.itemHere = function () {
-    //Main.system.itemHere = function (x,y) {
-    return false;
-};
-
 Main.system.npcHere = function (x, y) {
     for (const keyValue of Main.getEntity('npc')) {
         if (x === keyValue[1].Position.getX()

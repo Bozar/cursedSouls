@@ -150,7 +150,7 @@ Main.entity.orb = function (orbName) {
     }
 
     e.addComponent(new Main.Component.Position(0));
-    e.addComponent(new Main.Component.Display(orbChar, 'green'));
+    e.addComponent(new Main.Component.Display(orbChar, Main.getOrbColor()));
 
     Main.entities.get('orb').set(e.getID(), e);
 };

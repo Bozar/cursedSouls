@@ -176,10 +176,10 @@ Main.screens.drawDescription = function () {
     let npcHere = Main.system.npcHere(
         Main.getEntity('marker').Position.getX(),
         Main.getEntity('marker').Position.getY());
-    let itemHere = null;
+    let orbHere = null;
 
     if (!npcHere) {
-        itemHere = Main.system.itemHere(
+        orbHere = Main.system.orbHere(
             Main.getEntity('marker').Position.getX(),
             Main.getEntity('marker').Position.getY());
     }
@@ -190,10 +190,10 @@ Main.screens.drawDescription = function () {
             '[' + Main.text.name(npcHere.getEntityName())
             + '][' + Main.text.dungeon(npcHere.Inventory.getInventory(0))
             + '][' + npcHere.HitPoint.getHitPoint() + ']');
-    } else if (itemHere) {
+    } else if (orbHere) {
         drawTextBlock(
-            Main.text.info(itemHere.getEntityName()),
-            Main.text.name(itemHere.getEntityName()));
+            Main.text.info(orbHere.getEntityName()),
+            Main.text.name(orbHere.getEntityName()));
     } else {
         Main.screens.drawMessage();
     }
@@ -270,6 +270,7 @@ Main.screens.drawDungeon = function () {
 
 Main.screens.drawActor = function (actor, noFov) {
     let drawThis = false;
+    let color = null;
 
     if (// Force to draw this actor.
         noFov
@@ -293,15 +294,25 @@ Main.screens.drawActor = function (actor, noFov) {
     }
 
     if (drawThis) {
+        if (Main.system.orbHere(actor.Position.getX(), actor.Position.getY())) {
+            color = Main.getOrbColor();
+        } else {
+            color = actor.Display.getColor();
+        }
+
         Main.display.draw(
-            Number.parseInt(actor.Position.getX(), 10)
-            + Main.UI.dungeon.getX()
-            + Main.getEntity('dungeon').Dungeon.getPadding(),
-            Number.parseInt(actor.Position.getY(), 10)
-            + Main.UI.dungeon.getY()
-            + Main.getEntity('dungeon').Dungeon.getPadding(),
+            // X
+            Main.UI.dungeon.getX()
+            + Main.getEntity('dungeon').Dungeon.getPadding()
+            + Number.parseInt(actor.Position.getX(), 10),
+            // Y
+            Main.UI.dungeon.getY()
+            + Main.getEntity('dungeon').Dungeon.getPadding()
+            + Number.parseInt(actor.Position.getY(), 10),
+            // Character
             actor.Display.getCharacter(),
-            actor.Display.getColor());
+            // Color
+            Main.getColor(color));
     }
 };
 
@@ -373,7 +384,8 @@ Main.screens.drawOrbUnderYourFoot = function () {
         Main.UI.ground.getY(),
         orbName
             ? Main.text.ui('ground') + ' '
-            + Main.screens.colorfulText(Main.text.dungeon(orbName), 'green')
+            + Main.screens.colorfulText(Main.text.dungeon(orbName),
+                Main.getOrbColor())
             : Main.text.ui('ground'));
 };
 

@@ -6,21 +6,47 @@
 
 Main.screens.main = new Main.Screen('main', ['main', 'examine', 'aim']);
 
+// Create & place entities (if necessacry) in this order:
+// Seed, Dungeon, (PC, Downstairs, NPCs, Orbs), Marker.
+// The PC cannot stick to the wall.
+// The downstairs has to be at least 1/4 screen away from the PC.
+// NPCs cannot appear in the PC's sight or stand on the downstairs.
+// Orbs cannot be generated on the downstairs.
 Main.screens.main.initialize = function () {
     Main.entity.seed();
     Main.getEntity('seed').Seed.setSeed(Main.getDevSeed());
     ROT.RNG.setSeed(Main.getEntity('seed').Seed.getSeed());
 
     Main.entity.dungeon();
+
+    // Output the dungeon generation details.
+    if (Main.getDevelop()) {
+        console.log('Seed: '
+            + Main.getEntity('seed').Seed.getSeed());
+        console.log('Floor: '
+            + Main.getEntity('dungeon').Dungeon.getPercent()
+            + '%');
+        console.log('Cycle: '
+            + Main.getEntity('dungeon').Dungeon.getCycle());
+    }
+
     Main.entity.pc();
+    Main.system.createOrbs();
     Main.entity.marker();
 
     Main.entity.timer();
     Main.getEntity('timer').scheduler.add(Main.getEntity('pc'), true);
     Main.getEntity('timer').engine.start();
 
-    Main.system.placePC();
-    //   Main.system.placeItem()
+    Main.system.placeActor(
+        Main.getEntity('pc'),
+        Main.system.verifyPositionPC);
+
+    for (let keyValue of Main.getEntity('orb')) {
+        Main.system.placeActor(
+            keyValue[1],
+            Main.system.verifyPositionOrb);
+    }
 
     Main.getEntity('message').Message.setModeline('this is the modeline');
     for (let i = 0; i < 10; i++) {
@@ -28,6 +54,10 @@ Main.screens.main.initialize = function () {
     }
 };
 
+// Draw entities in this order:
+// Static UI elements, Dungeon, (Orbs, NPCs, Downstairs, PC), Marker.
+// NPCs & the PC can stand on the orb.
+// The marker is on the top layer.
 Main.screens.main.display = function () {
     Main.screens.drawBorder();
     Main.screens.drawVersion();
@@ -36,10 +66,14 @@ Main.screens.main.display = function () {
 
     Main.screens.drawLevelName();
     Main.screens.drawPower();
-    Main.screens.drawOrbOnTheGround();
+    Main.screens.drawOrbUnderYourFoot();
 
     Main.screens.drawDungeon();
-    // Main.screens.drawItem()
+
+    for (const keyValue of Main.getEntity('orb')) {
+        Main.screens.drawActor(keyValue[1]);
+    }
+
     Main.screens.drawActor(Main.getEntity('pc'));
     for (const keyValue of Main.getEntity('npc')) {
         Main.screens.drawActor(keyValue[1]);

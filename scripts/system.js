@@ -7,22 +7,50 @@ Main.system.isFloor = function (x, y) {
         === 0;
 };
 
-Main.system.placePC = function () {
+Main.system.placeActor = function (actor, notQualified) {
     let x = null;
     let y = null;
-    let width = Main.getEntity('dungeon').Dungeon.getWidth();
-    let height = Main.getEntity('dungeon').Dungeon.getHeight();
-    let border = Main.getEntity('pc').Position.getRange();
 
     do {
-        x = Math.floor(width * ROT.RNG.getUniform());
-        y = Math.floor(height * ROT.RNG.getUniform());
-    } while (!Main.system.isFloor(x, y)
-    || x < border || x > width - border
-    || y < border || y > height - border);
+        x = Math.floor(
+            Main.getEntity('dungeon').Dungeon.getWidth()
+            * ROT.RNG.getUniform());
+        y = Math.floor(
+            Main.getEntity('dungeon').Dungeon.getHeight()
+            * ROT.RNG.getUniform());
+    } while (notQualified(x, y));
 
-    Main.getEntity('pc').Position.setX(x);
-    Main.getEntity('pc').Position.setY(y);
+    actor.Position.setX(x);
+    actor.Position.setY(y);
+};
+
+Main.system.verifyPositionPC = function (x, y) {
+    return !Main.system.isFloor(x, y)
+        || x < Main.getEntity('pc').Position.getRange()
+        || x > Main.getEntity('dungeon').Dungeon.getWidth()
+        - Main.getEntity('pc').Position.getRange()
+        || y < Main.getEntity('pc').Position.getRange()
+        || y > Main.getEntity('dungeon').Dungeon.getHeight()
+        - Main.getEntity('pc').Position.getRange();
+};
+
+Main.system.verifyPositionOrb = function (x, y) {
+    return !Main.system.isFloor(x, y)
+        || Main.system.isInSight(Main.getEntity('pc'), x, y)
+        || Main.system.downstairsHere(x, y)
+        || Main.system.orbHere(x, y);
+};
+
+Main.system.createOrbs = function () {
+    // TODO: change the loop based on the dungeon level.
+    let loop = 3;
+
+    for (var i = 0; i < loop; i++) {
+        Main.entity.orb('fire');
+        Main.entity.orb('ice');
+        Main.entity.orb('slime');
+        Main.entity.orb('lump');
+    }
 };
 
 Main.system.isPC = function (actor) {
@@ -41,10 +69,7 @@ Main.system.isInSight = function (source, targetX, targetY) {
         source.Position.getX(),
         source.Position.getY(),
         source.Position.getRange(),
-        (x, y) => {
-            sight.push(x + ',' + y);
-        }
-    );
+        (x, y) => { sight.push(x + ',' + y); });
 
     return sight.indexOf(targetX + ',' + targetY) > -1;
 };
@@ -153,12 +178,6 @@ Main.system.unlockEngine = function (duration) {
     Main.screens.main.display();
 };
 
-// TODO: rewrite this function.
-Main.system.itemHere = function () {
-    //Main.system.itemHere = function (x,y) {
-    return false;
-};
-
 Main.system.npcHere = function (x, y) {
     for (const keyValue of Main.getEntity('npc')) {
         if (x === keyValue[1].Position.getX()
@@ -172,6 +191,21 @@ Main.system.npcHere = function (x, y) {
 Main.system.pcHere = function (x, y) {
     return x === Main.getEntity('pc').Position.getX()
         && y === Main.getEntity('pc').Position.getY();
+};
+
+Main.system.orbHere = function (x, y) {
+    for (let keyValue of Main.getEntity('orb')) {
+        if (x === keyValue[1].Position.getX()
+            && y === keyValue[1].Position.getY()) {
+            return keyValue[1];
+        }
+    }
+    return null;
+};
+
+// TODO: check the downstairs position.
+Main.system.downstairsHere = function () {
+    return false;
 };
 
 Main.system.examineMode = function () {

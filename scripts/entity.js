@@ -10,7 +10,10 @@ Main.entities.set('seed', null);
 Main.entities.set('dungeon', null);
 Main.entities.set('pc', null);
 Main.entities.set('marker', null);
+
+// Key: ID, value: object.
 Main.entities.set('npc', new Map());
+Main.entities.set('orb', new Map());
 
 // =======================
 // Create a single entity.
@@ -39,9 +42,16 @@ Main.entity.dungeon = function () {
     let e = new Main.Factory('dungeon');
     e.addComponent(new Main.Component.Dungeon());
 
+    let cycle = 0;
+
     do {
         cellular();
-    } while (floorArea() < e.Dungeon.getFloorArea());
+        cycle++;
+    } while (floorArea() < e.Dungeon.getFloorArea()[0]
+        || floorArea() > e.Dungeon.getFloorArea()[1]);
+
+    e.Dungeon.setPercent(floorArea());
+    e.Dungeon.setCycle(cycle);
 
     e.light = function (x, y) {
         return e.Dungeon.getTerrain().get(x + ',' + y) === 0;
@@ -118,4 +128,29 @@ Main.entity.timer = function () {
     e.engine = new ROT.Engine(e.scheduler);
 
     Main.entities.set('timer', e);
+};
+
+Main.entity.orb = function (orbName) {
+    let e = new Main.Factory(orbName);
+    let orbChar = '';
+
+    switch (orbName) {
+        case 'fire':
+            orbChar = 'F';
+            break;
+        case 'ice':
+            orbChar = 'I';
+            break;
+        case 'slime':
+            orbChar = 'S';
+            break;
+        case 'lump':
+            orbChar = 'L';
+            break;
+    }
+
+    e.addComponent(new Main.Component.Position(0));
+    e.addComponent(new Main.Component.Display(orbChar, Main.getOrbColor()));
+
+    Main.entities.get('orb').set(e.getID(), e);
 };

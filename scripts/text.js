@@ -30,7 +30,7 @@ Main.text.initialize = function () {
     text.get('ui').set('help', 'Help:');
     text.get('ui').set('wizard', 'Wiz|');
     text.get('ui').set('studio', 'Red Tabby Studio');
-    text.get('ui').set('examine', 'Exm');
+    text.get('ui').set('examine', 'Ex');
     text.get('ui').set('aim', 'Aim');
     text.get('ui').set('range', 'Range: %%');
 
@@ -48,6 +48,10 @@ Main.text.initialize = function () {
     text.get('info').set('dummy', 'This is a dummy.'
         + ' It has 1 hit point.'
         + ' It drops 1 Slime Orb when killed.');
+    text.get('info').set('fire', 'Melee. 100% drop rate.');
+    text.get('info').set('ice', 'Range 2, freeze for 2 turns. 60% drop rate.');
+    text.get('info').set('slime', 'Range 2, teleport yourself.');
+    text.get('info').set('lump', 'Range 2. 60% drop rate.');
 
     Main.text.libraryMap = text;
 };

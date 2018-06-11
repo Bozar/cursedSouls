@@ -61,7 +61,11 @@ Main.screens.main.display = function () {
     Main.screens.drawOrbOnTheGround();
 
     Main.screens.drawDungeon();
-    // Main.screens.drawItem()
+
+    for (const keyValue of Main.getEntity('orb')) {
+        Main.screens.drawActor(keyValue[1]);
+    }
+
     Main.screens.drawActor(Main.getEntity('pc'));
     for (const keyValue of Main.getEntity('npc')) {
         Main.screens.drawActor(keyValue[1]);
@@ -96,6 +100,11 @@ Main.screens.main.keyInput = function (e) {
             console.log(Main.getEntity('timer').scheduler.getTime());
         } else if (keyAction(e, 'fixed') === 'dummy') {
             Main.entity.dummy(
+                Main.getEntity('pc').Position.getX() - 1,
+                Main.getEntity('pc').Position.getY());
+        } else if (e.key === '1') {
+            // TODO: delete this block.
+            Main.entity.orb('lump',
                 Main.getEntity('pc').Position.getX() - 1,
                 Main.getEntity('pc').Position.getY());
         }

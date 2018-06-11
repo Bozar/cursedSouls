@@ -10,7 +10,10 @@ Main.entities.set('seed', null);
 Main.entities.set('dungeon', null);
 Main.entities.set('pc', null);
 Main.entities.set('marker', null);
+
+// Key: ID, value: object.
 Main.entities.set('npc', new Map());
+Main.entities.set('orb', new Map());
 
 // =======================
 // Create a single entity.
@@ -125,4 +128,29 @@ Main.entity.timer = function () {
     e.engine = new ROT.Engine(e.scheduler);
 
     Main.entities.set('timer', e);
+};
+
+Main.entity.orb = function (orbName, x, y) {
+    let e = new Main.Factory(orbName);
+    let orbChar = '';
+
+    switch (orbName) {
+        case 'fire':
+            orbChar = 'F';
+            break;
+        case 'ice':
+            orbChar = 'I';
+            break;
+        case 'slime':
+            orbChar = 'S';
+            break;
+        case 'lump':
+            orbChar = 'L';
+            break;
+    }
+
+    e.addComponent(new Main.Component.Position(0, x, y));
+    e.addComponent(new Main.Component.Display(orbChar, 'green'));
+
+    Main.entities.get('orb').set(e.getID(), e);
 };

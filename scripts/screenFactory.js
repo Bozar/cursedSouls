@@ -176,24 +176,28 @@ Main.screens.drawDescription = function () {
     let npcHere = Main.system.npcHere(
         Main.getEntity('marker').Position.getX(),
         Main.getEntity('marker').Position.getY());
-    let orbHere = null;
-
-    if (!npcHere) {
-        orbHere = Main.system.orbHere(
-            Main.getEntity('marker').Position.getX(),
-            Main.getEntity('marker').Position.getY());
-    }
+    let orbHere = Main.system.orbHere(
+        Main.getEntity('marker').Position.getX(),
+        Main.getEntity('marker').Position.getY());
 
     if (npcHere) {
         drawTextBlock(
+            // Top line
             Main.text.info(npcHere.getEntityName()),
+            // Bottom line
             '[' + Main.text.name(npcHere.getEntityName())
             + '][' + Main.text.dungeon(npcHere.Inventory.getInventory(0))
-            + '][' + npcHere.HitPoint.getHitPoint() + ']');
+            + '][' + npcHere.HitPoint.getHitPoint() + ']'
+            + (orbHere
+                ? '[@ ' + Main.screens.colorfulText(
+                    Main.text.dungeon(orbHere.getEntityName()),
+                    Main.getOrbColor()) + ']'
+                : ''));
     } else if (orbHere) {
         drawTextBlock(
-            Main.text.info(orbHere.getEntityName()),
-            Main.text.name(orbHere.getEntityName()));
+            '[' + Main.text.dungeon(orbHere.getEntityName()) + '] '
+            + Main.text.info(orbHere.getEntityName()),
+            '');
     } else {
         Main.screens.drawMessage();
     }
@@ -294,8 +298,10 @@ Main.screens.drawActor = function (actor, noFov) {
     }
 
     if (drawThis) {
-        if (Main.system.orbHere(actor.Position.getX(), actor.Position.getY())) {
-            color = Main.getOrbColor();
+        if (!Main.system.isMarker(actor)
+            && Main.system.orbHere(
+                actor.Position.getX(), actor.Position.getY())) {
+            color = Main.getColor(Main.getOrbColor());
         } else {
             color = actor.Display.getColor();
         }
@@ -312,7 +318,7 @@ Main.screens.drawActor = function (actor, noFov) {
             // Character
             actor.Display.getCharacter(),
             // Color
-            Main.getColor(color));
+            color);
     }
 };
 

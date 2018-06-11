@@ -197,10 +197,10 @@ Main.system.orbHere = function (x, y) {
     for (let keyValue of Main.getEntity('orb')) {
         if (x === keyValue[1].Position.getX()
             && y === keyValue[1].Position.getY()) {
-            return true;
+            return keyValue[1];
         }
     }
-    return false;
+    return null;
 };
 
 // TODO: check the downstairs position.

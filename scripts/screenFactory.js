@@ -350,15 +350,30 @@ Main.screens.drawPower = function () {
     }
 };
 
-Main.screens.drawOrbOnTheGround = function () {
-    let orb = 'slime';
+Main.screens.drawOrbUnderYourFoot = function () {
+    let orbName = '';
+
+    for (let keyValue of Main.getEntity('orb')) {
+        if (
+            // The first two conditions are necessary to avoid a bug.
+            keyValue[1].Position.getX() >= 0
+            && keyValue[1].Position.getY() >= 0
+            && keyValue[1].Position.getX()
+            === Main.getEntity('pc').Position.getX()
+            && keyValue[1].Position.getY()
+            === Main.getEntity('pc').Position.getY()) {
+            // Update the orbName.
+            orbName = keyValue[1].getEntityName();
+            break;
+        }
+    }
 
     Main.display.drawText(
         Main.UI.ground.getX(),
         Main.UI.ground.getY(),
-        orb
+        orbName
             ? Main.text.ui('ground') + ' '
-            + Main.screens.colorfulText(Main.text.dungeon(orb), 'green')
+            + Main.screens.colorfulText(Main.text.dungeon(orbName), 'green')
             : Main.text.ui('ground'));
 };
 

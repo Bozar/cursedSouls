@@ -66,7 +66,7 @@ Main.screens.main.display = function () {
 
     Main.screens.drawLevelName();
     Main.screens.drawPower();
-    Main.screens.drawOrbOnTheGround();
+    Main.screens.drawOrbUnderYourFoot();
 
     Main.screens.drawDungeon();
 

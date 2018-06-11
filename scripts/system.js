@@ -7,7 +7,7 @@ Main.system.isFloor = function (x, y) {
         === 0;
 };
 
-Main.system.placePC = function () {
+Main.system.placeActor = function (actor, notQualified) {
     let x = null;
     let y = null;
 
@@ -18,17 +18,20 @@ Main.system.placePC = function () {
         y = Math.floor(
             Main.getEntity('dungeon').Dungeon.getHeight()
             * ROT.RNG.getUniform());
-    } while (
-        !Main.system.isFloor(x, y)
+    } while (notQualified(x, y));
+
+    actor.Position.setX(x);
+    actor.Position.setY(y);
+};
+
+Main.system.verifyPositionPC = function (x, y) {
+    return !Main.system.isFloor(x, y)
         || x < Main.getEntity('pc').Position.getRange()
         || x > Main.getEntity('dungeon').Dungeon.getWidth()
         - Main.getEntity('pc').Position.getRange()
         || y < Main.getEntity('pc').Position.getRange()
         || y > Main.getEntity('dungeon').Dungeon.getHeight()
-        - Main.getEntity('pc').Position.getRange());
-
-    Main.getEntity('pc').Position.setX(x);
-    Main.getEntity('pc').Position.setY(y);
+        - Main.getEntity('pc').Position.getRange();
 };
 
 Main.system.isPC = function (actor) {

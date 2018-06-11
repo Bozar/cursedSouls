@@ -37,8 +37,9 @@ Main.screens.main.initialize = function () {
     Main.getEntity('timer').scheduler.add(Main.getEntity('pc'), true);
     Main.getEntity('timer').engine.start();
 
-    Main.system.placePC();
-    //   Main.system.placeItem()
+    Main.system.placeActor(
+        Main.getEntity('pc'),
+        Main.system.verifyPositionPC);
 
     Main.getEntity('message').Message.setModeline('this is the modeline');
     for (let i = 0; i < 10; i++) {

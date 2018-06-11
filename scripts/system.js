@@ -34,6 +34,25 @@ Main.system.verifyPositionPC = function (x, y) {
         - Main.getEntity('pc').Position.getRange();
 };
 
+Main.system.verifyPositionOrb = function (x, y) {
+    return !Main.system.isFloor(x, y)
+        || Main.system.isInSight(Main.getEntity('pc'), x, y)
+        || Main.system.downstairsHere(x, y)
+        || Main.system.orbHere(x, y);
+};
+
+Main.system.createOrbs = function () {
+    // TODO: change the loop based on the dungeon level.
+    let loop = 3;
+
+    for (var i = 0; i < loop; i++) {
+        Main.entity.orb('fire');
+        Main.entity.orb('ice');
+        Main.entity.orb('slime');
+        Main.entity.orb('lump');
+    }
+};
+
 Main.system.isPC = function (actor) {
     return actor.getID() === Main.getEntity('pc').getID();
 };
@@ -178,6 +197,21 @@ Main.system.npcHere = function (x, y) {
 Main.system.pcHere = function (x, y) {
     return x === Main.getEntity('pc').Position.getX()
         && y === Main.getEntity('pc').Position.getY();
+};
+
+Main.system.orbHere = function (x, y) {
+    for (let keyValue of Main.getEntity('orb')) {
+        if (x === keyValue[1].Position.getX()
+            && y === keyValue[1].Position.getY()) {
+            return true;
+        }
+    }
+    return false;
+};
+
+// TODO: check the downstairs position.
+Main.system.downstairsHere = function () {
+    return false;
 };
 
 Main.system.examineMode = function () {

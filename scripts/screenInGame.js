@@ -31,6 +31,7 @@ Main.screens.main.initialize = function () {
     }
 
     Main.entity.pc();
+    Main.system.createOrbs();
     Main.entity.marker();
 
     Main.entity.timer();
@@ -40,6 +41,12 @@ Main.screens.main.initialize = function () {
     Main.system.placeActor(
         Main.getEntity('pc'),
         Main.system.verifyPositionPC);
+
+    for (let keyValue of Main.getEntity('orb')) {
+        Main.system.placeActor(
+            keyValue[1],
+            Main.system.verifyPositionOrb);
+    }
 
     Main.getEntity('message').Message.setModeline('this is the modeline');
     for (let i = 0; i < 10; i++) {
@@ -101,11 +108,6 @@ Main.screens.main.keyInput = function (e) {
             console.log(Main.getEntity('timer').scheduler.getTime());
         } else if (keyAction(e, 'fixed') === 'dummy') {
             Main.entity.dummy(
-                Main.getEntity('pc').Position.getX() - 1,
-                Main.getEntity('pc').Position.getY());
-        } else if (e.key === '1') {
-            // TODO: delete this block.
-            Main.entity.orb('lump',
                 Main.getEntity('pc').Position.getX() - 1,
                 Main.getEntity('pc').Position.getY());
         }

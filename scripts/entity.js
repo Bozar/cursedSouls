@@ -130,7 +130,7 @@ Main.entity.timer = function () {
     Main.entities.set('timer', e);
 };
 
-Main.entity.orb = function (orbName, x, y) {
+Main.entity.orb = function (orbName) {
     let e = new Main.Factory(orbName);
     let orbChar = '';
 
@@ -149,7 +149,7 @@ Main.entity.orb = function (orbName, x, y) {
             break;
     }
 
-    e.addComponent(new Main.Component.Position(0, x, y));
+    e.addComponent(new Main.Component.Position(0));
     e.addComponent(new Main.Component.Display(orbChar, 'green'));
 
     Main.entities.get('orb').set(e.getID(), e);

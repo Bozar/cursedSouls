@@ -41,6 +41,7 @@ Main.input.keybind.get('move').set('wait', ['z', '.']);
 // Interaction
 Main.input.keybind.set('interact', new Map());
 Main.input.keybind.get('interact').set('examine', ['x']);
+Main.input.keybind.get('interact').set('pickOrUse', [' ']);
 Main.input.keybind.get('interact').set('next', ['n', 'o', 'PageDown']);
 Main.input.keybind.get('interact').set('previous', ['p', 'i', 'PageUp']);
 

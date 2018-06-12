@@ -104,6 +104,8 @@ Main.screens.main.keyInput = function (e) {
         Main.system.move(keyAction(e, 'move'));
     } else if (keyAction(e, 'interact') === 'examine') {
         Main.system.examineMode();
+    } else if (keyAction(e, 'interact') === 'pickOrUse') {
+        Main.system.pcPickOrUse();
     } else if (keyAction(e, 'fixed') === 'seed') {
         console.log(Main.getEntity('seed').Seed.getSeed());
     } else if (Main.getDevelop()) {

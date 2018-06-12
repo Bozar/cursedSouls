@@ -138,6 +138,8 @@ Main.Component.Inventory = function (capacity, firstItem) {
         this._inventory.push(firstItem);
     }
 
+    this.getCapacity = function () { return this._capacity; };
+
     this.getInventory = function (index) {
         if (this._inventory[index]) {
             return this._inventory[index];

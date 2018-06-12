@@ -39,6 +39,7 @@ Main.text.initialize = function () {
     text.set('action', new Map());
     text.get('action').set('continue', 'Press Space to continue.');
     text.get('action').set('end', '=====The End=====');
+    text.get('action').set('pick', 'You pick up the %% Orb.');
 
     text.get('action').set('deathGeneral', 'Rest in peace, ashen one.');
     text.get('action').set('deathBoss1',
@@ -101,6 +102,14 @@ Main.text.modeLine = function (mode) {
     text = `[${Main.text.ui(mode)}][${Main.text.ui('range')}]`;
     text = text.replace('%%', Main.system.getDistance(
         Main.getEntity('pc'), Main.getEntity('marker')));
+
+    return text;
+};
+
+Main.text.pickUp = function (orb) {
+    let text = Main.text.action('pick');
+
+    text = text.replace('%%', Main.text.dungeon(orb));
 
     return text;
 };

@@ -82,14 +82,18 @@ Main.Component.Dungeon = function () {
     this.setCycle = function (cycle) { this._cycle = cycle; };
 };
 
-Main.Component.Display = function (char, color) {
+Main.Component.Display = function (char, color, altColor) {
     this._name = 'Display';
 
     this._character = char;
-    this._color = Main.getColor(color || 'white');
+    // [The default color, the color when standing on an orb]
+    this._color = [
+        Main.getColor(color || 'white'),
+        Main.getColor(altColor || 'green')];
 
     this.getCharacter = function () { return this._character; };
-    this.getColor = function () { return this._color; };
+    this.getColor = function () { return this._color[0]; };
+    this.getAltColor = function () { return this._color[1]; };
 };
 
 Main.Component.Position = function (range, x, y) {

@@ -117,7 +117,7 @@ Main.entity.marker = function () {
     let e = new Main.Factory('marker');
 
     e.addComponent(new Main.Component.Position());
-    e.addComponent(new Main.Component.Display('X', 'orange'));
+    e.addComponent(new Main.Component.Display('X', 'orange', 'orange'));
 
     Main.entities.set('marker', e);
 };
@@ -151,7 +151,7 @@ Main.entity.orb = function (orbName) {
     }
 
     e.addComponent(new Main.Component.Position(0));
-    e.addComponent(new Main.Component.Display(orbChar, Main.getOrbColor()));
+    e.addComponent(new Main.Component.Display(orbChar, 'green'));
 
     Main.entities.get('orb').set(e.getID(), e);
 };

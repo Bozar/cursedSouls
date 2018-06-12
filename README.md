@@ -9,7 +9,7 @@ Play the game [on-line](https://bozar.github.io/cursedSouls/).
 Cursed Souls: Giovanni's Orchestra is a roguelike game written in JavaScript with [rot.js](https://github.com/ondras/rot.js). The dungeon has 4 levels: 1 aboveground and 3 underground. Your goal is simple:
 
 * Find the downstairs.
-* Bump into the downstairs to summon the level boss.
+* Stand on the downstairs and press Space to summon the level boss.
 * Beat the boss and then go downstairs.
 
 So why bother killing grunts along the way? That's a good question.

@@ -4,6 +4,8 @@
 
 ## Goal
 
+Play the game [on-line](https://bozar.github.io/cursedSouls/).
+
 Cursed Souls: Giovanni's Orchestra is a roguelike game written in JavaScript with [rot.js](https://github.com/ondras/rot.js). The dungeon has 4 levels: 1 aboveground and 3 underground. Your goal is simple:
 
 * Find the downstairs.

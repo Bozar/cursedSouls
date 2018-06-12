@@ -24,8 +24,12 @@ Main._color.set('grey', '#666666');
 Main._color.set('orange', '#FF9900');
 Main._color.set('green', '#A0D86C');
 
-Main.getColor = function (color) { return Main._color.get(color); };
-Main.getOrbColor = function () { return 'green'; };
+Main.getColor = function (color) {
+    if (Main._color.get(color)) {
+        return Main._color.get(color);
+    }
+    return color;
+};
 
 // ==============
 // Initialization

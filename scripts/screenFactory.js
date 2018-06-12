@@ -191,7 +191,7 @@ Main.screens.drawDescription = function () {
             + (orbHere
                 ? '[@ ' + Main.screens.colorfulText(
                     Main.text.dungeon(orbHere.getEntityName()),
-                    Main.getOrbColor()) + ']'
+                    orbHere.Display.getColor()) + ']'
                 : ''));
     } else if (orbHere) {
         drawTextBlock(
@@ -301,7 +301,7 @@ Main.screens.drawActor = function (actor, noFov) {
         if (!Main.system.isMarker(actor)
             && Main.system.orbHere(
                 actor.Position.getX(), actor.Position.getY())) {
-            color = Main.getColor(Main.getOrbColor());
+            color = actor.Display.getAltColor();
         } else {
             color = actor.Display.getColor();
         }
@@ -332,14 +332,7 @@ Main.screens.drawLevelName = function () {
 };
 
 Main.screens.drawPower = function () {
-    let powers = [
-        Main.text.dungeon('fire'),
-        Main.text.dungeon('fire'),
-        Main.text.dungeon('ice'),
-        Main.text.dungeon('slime'),
-        Main.text.dungeon('ice'),
-        Main.text.dungeon('lump')
-    ];
+    let powers = Main.getEntity('pc').Inventory.getInventory();
     let enhance = false;
 
     // Power orbs
@@ -347,7 +340,7 @@ Main.screens.drawPower = function () {
         Main.display.drawText(
             Main.UI.power.getX() + 2,
             Main.UI.power.getY() + i * 1.1,
-            powers[i]);
+            Main.text.dungeon(powers[i]));
     }
 
     // HP bar
@@ -369,6 +362,7 @@ Main.screens.drawPower = function () {
 
 Main.screens.drawOrbUnderYourFoot = function () {
     let orbName = '';
+    let orbColor = null;
 
     for (let keyValue of Main.getEntity('orb')) {
         if (
@@ -381,6 +375,7 @@ Main.screens.drawOrbUnderYourFoot = function () {
             === Main.getEntity('pc').Position.getY()) {
             // Update the orbName.
             orbName = keyValue[1].getEntityName();
+            orbColor = keyValue[1].Display.getColor();
             break;
         }
     }
@@ -391,7 +386,7 @@ Main.screens.drawOrbUnderYourFoot = function () {
         orbName
             ? Main.text.ui('ground') + ' '
             + Main.screens.colorfulText(Main.text.dungeon(orbName),
-                Main.getOrbColor())
+                orbColor)
             : Main.text.ui('ground'));
 };
 

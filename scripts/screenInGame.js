@@ -31,6 +31,11 @@ Main.screens.main.initialize = function () {
     }
 
     Main.entity.pc();
+    Main.getEntity('pc').Inventory.addItem('slime');
+    Main.getEntity('pc').Inventory.addItem('fire');
+    Main.getEntity('pc').Inventory.addItem('fire');
+    Main.getEntity('pc').Inventory.addItem('lump');
+
     Main.system.createOrbs();
     Main.entity.marker();
 
@@ -99,6 +104,8 @@ Main.screens.main.keyInput = function (e) {
         Main.system.move(keyAction(e, 'move'));
     } else if (keyAction(e, 'interact') === 'examine') {
         Main.system.examineMode();
+    } else if (keyAction(e, 'interact') === 'pickOrUse') {
+        Main.system.pcPickOrUse();
     } else if (keyAction(e, 'fixed') === 'seed') {
         console.log(Main.getEntity('seed').Seed.getSeed());
     } else if (Main.getDevelop()) {
@@ -110,6 +117,16 @@ Main.screens.main.keyInput = function (e) {
             Main.entity.dummy(
                 Main.getEntity('pc').Position.getX() - 1,
                 Main.getEntity('pc').Position.getY());
+        } else if (keyAction(e, 'fixed') === 'addFire') {
+            Main.getEntity('pc').Inventory.addItem('fire');
+        } else if (keyAction(e, 'fixed') === 'addIce') {
+            Main.getEntity('pc').Inventory.addItem('ice');
+        } else if (keyAction(e, 'fixed') === 'addSlime') {
+            Main.getEntity('pc').Inventory.addItem('slime');
+        } else if (keyAction(e, 'fixed') === 'addLump') {
+            Main.getEntity('pc').Inventory.addItem('lump');
+        } else if (keyAction(e, 'fixed') === 'removeOrb') {
+            Main.getEntity('pc').Inventory.removeItem(1);
         }
     }
 

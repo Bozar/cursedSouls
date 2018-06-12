@@ -92,6 +92,7 @@ Main.entity.pc = function () {
     e.addComponent(new Main.Component.Position(5));
     e.addComponent(new Main.Component.Display('@'));
     e.addComponent(new Main.Component.ActionDuration());
+    e.addComponent(new Main.Component.Inventory(6));
 
     e.act = Main.system.pcAct;
 
@@ -104,7 +105,7 @@ Main.entity.dummy = function (x, y) {
     e.addComponent(new Main.Component.Position(5, x, y));
     e.addComponent(new Main.Component.Display('d'));
     e.addComponent(new Main.Component.ActionDuration());
-    e.addComponent(new Main.Component.Inventory('slime'));
+    e.addComponent(new Main.Component.Inventory(1, 'slime'));
     e.addComponent(new Main.Component.HitPoint(1));
 
     e.act = Main.system.dummyAct;
@@ -116,7 +117,7 @@ Main.entity.marker = function () {
     let e = new Main.Factory('marker');
 
     e.addComponent(new Main.Component.Position());
-    e.addComponent(new Main.Component.Display('X', 'orange'));
+    e.addComponent(new Main.Component.Display('X', 'orange', 'orange'));
 
     Main.entities.set('marker', e);
 };
@@ -150,7 +151,7 @@ Main.entity.orb = function (orbName) {
     }
 
     e.addComponent(new Main.Component.Position(0));
-    e.addComponent(new Main.Component.Display(orbChar, Main.getOrbColor()));
+    e.addComponent(new Main.Component.Display(orbChar, 'green'));
 
     Main.entities.get('orb').set(e.getID(), e);
 };

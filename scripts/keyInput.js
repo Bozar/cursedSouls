@@ -24,6 +24,12 @@ Main.input.keybind.get('fixed').set('fov', [']']);
 Main.input.keybind.get('fixed').set('turn', ['\\']);
 Main.input.keybind.get('fixed').set('dummy', ['d']);
 
+Main.input.keybind.get('fixed').set('addFire', ['1']);
+Main.input.keybind.get('fixed').set('addIce', ['2']);
+Main.input.keybind.get('fixed').set('addSlime', ['3']);
+Main.input.keybind.get('fixed').set('addLump', ['4']);
+Main.input.keybind.get('fixed').set('removeOrb', ['-']);
+
 // Movement
 Main.input.keybind.set('move', new Map());
 Main.input.keybind.get('move').set('left', ['h', 'ArrowLeft']);
@@ -35,6 +41,7 @@ Main.input.keybind.get('move').set('wait', ['z', '.']);
 // Interaction
 Main.input.keybind.set('interact', new Map());
 Main.input.keybind.get('interact').set('examine', ['x']);
+Main.input.keybind.get('interact').set('pickOrUse', [' ']);
 Main.input.keybind.get('interact').set('next', ['n', 'o', 'PageDown']);
 Main.input.keybind.get('interact').set('previous', ['p', 'i', 'PageUp']);
 

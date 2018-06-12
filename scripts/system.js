@@ -83,6 +83,45 @@ Main.system.pcAct = function () {
     Main.screens.main.display();
 };
 
+Main.system.pcTakeDamage = function (damage) {
+    let pcIsDead
+        = damage > Main.getEntity('pc').Inventory.getInventory().length;
+
+    Main.getEntity('pc').Inventory.removeItem(damage);
+
+    return pcIsDead;
+};
+
+// The hub function to handle the 'pickOrUse' key.
+Main.system.pcPickOrUse = function () {
+    if (Main.system.orbHere(
+        Main.getEntity('pc').Position.getX(),
+        Main.getEntity('pc').Position.getY())
+        && Main.getEntity('pc').Inventory.getInventory().length
+        < Main.getEntity('pc').Inventory.getCapacity()) {
+        Main.system.pickUpOrb();
+    } else {
+        console.log('press space');
+    }
+};
+
+Main.system.pickUpOrb = function () {
+    let orbHere = Main.system.orbHere(
+        Main.getEntity('pc').Position.getX(),
+        Main.getEntity('pc').Position.getY());
+
+    Main.getEntity('pc').Inventory.addItem(
+        orbHere.getEntityName());
+
+    Main.getEntity('message').Message.pushMsg(
+        Main.text.pickUp(orbHere.getEntityName()));
+
+    Main.getEntity('orb').delete(orbHere.getID());
+
+    Main.system.unlockEngine(
+        Main.getEntity('pc').ActionDuration.getPickUpOrb());
+};
+
 Main.system.move = function (direction, who) {
     let actor = who || Main.getEntity('pc');
     let x = actor.Position.getX();

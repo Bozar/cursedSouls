@@ -115,6 +115,16 @@ Main.screens.main.keyInput = function (e) {
             Main.entity.dummy(
                 Main.getEntity('pc').Position.getX() - 1,
                 Main.getEntity('pc').Position.getY());
+        } else if (keyAction(e, 'fixed') === 'addFire') {
+            Main.getEntity('pc').Inventory.addItem('fire');
+        } else if (keyAction(e, 'fixed') === 'addIce') {
+            Main.getEntity('pc').Inventory.addItem('ice');
+        } else if (keyAction(e, 'fixed') === 'addSlime') {
+            Main.getEntity('pc').Inventory.addItem('slime');
+        } else if (keyAction(e, 'fixed') === 'addLump') {
+            Main.getEntity('pc').Inventory.addItem('lump');
+        } else if (keyAction(e, 'fixed') === 'removeOrb') {
+            Main.getEntity('pc').Inventory.removeItem(1);
         }
     }
 

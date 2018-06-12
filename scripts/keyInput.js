@@ -24,6 +24,12 @@ Main.input.keybind.get('fixed').set('fov', [']']);
 Main.input.keybind.get('fixed').set('turn', ['\\']);
 Main.input.keybind.get('fixed').set('dummy', ['d']);
 
+Main.input.keybind.get('fixed').set('addFire', ['1']);
+Main.input.keybind.get('fixed').set('addIce', ['2']);
+Main.input.keybind.get('fixed').set('addSlime', ['3']);
+Main.input.keybind.get('fixed').set('addLump', ['4']);
+Main.input.keybind.get('fixed').set('removeOrb', ['-']);
+
 // Movement
 Main.input.keybind.set('move', new Map());
 Main.input.keybind.get('move').set('left', ['h', 'ArrowLeft']);

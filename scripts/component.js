@@ -122,15 +122,16 @@ Main.Component.ActionDuration = function (move) {
     this.getWait = function () { return this._wait; };
 };
 
-Main.Component.Inventory = function (firstItem) {
+Main.Component.Inventory = function (capacity, firstItem) {
     this._name = 'Inventory';
 
+    this._inventory = [];
+    this._capacity = capacity || 1;
+
     // Enemies have only one of the four orbs: fire, ice, slime & lump.
-    // Give the PC one fire orb at the beginning of the game.
+    // Give the PC four orbs at the beginning of the game.
     if (firstItem) {
-        this._inventory = [firstItem];
-    } else {
-        this._inventory = [];
+        this._inventory.push(firstItem);
     }
 
     this.getInventory = function (index) {
@@ -141,7 +142,7 @@ Main.Component.Inventory = function (firstItem) {
     };
 
     this.addItem = function (item) {
-        if (item) {
+        if (item && this._inventory.length < this._capacity) {
             this._inventory.push(item);
         }
     };
@@ -150,10 +151,10 @@ Main.Component.Inventory = function (firstItem) {
         amount = Math.min(amount, this._inventory.length);
 
         for (var i = 0; i < amount - 1; i++) {
-            this._inventory.shift();
+            this._inventory.pop();
         }
 
-        return this._inventory.shift();
+        return this._inventory.pop();
     };
 };
 

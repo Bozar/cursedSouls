@@ -332,14 +332,7 @@ Main.screens.drawLevelName = function () {
 };
 
 Main.screens.drawPower = function () {
-    let powers = [
-        Main.text.dungeon('fire'),
-        Main.text.dungeon('fire'),
-        Main.text.dungeon('ice'),
-        Main.text.dungeon('slime'),
-        Main.text.dungeon('ice'),
-        Main.text.dungeon('lump')
-    ];
+    let powers = Main.getEntity('pc').Inventory.getInventory();
     let enhance = false;
 
     // Power orbs
@@ -347,7 +340,7 @@ Main.screens.drawPower = function () {
         Main.display.drawText(
             Main.UI.power.getX() + 2,
             Main.UI.power.getY() + i * 1.1,
-            powers[i]);
+            Main.text.dungeon(powers[i]));
     }
 
     // HP bar

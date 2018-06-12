@@ -92,6 +92,7 @@ Main.entity.pc = function () {
     e.addComponent(new Main.Component.Position(5));
     e.addComponent(new Main.Component.Display('@'));
     e.addComponent(new Main.Component.ActionDuration());
+    e.addComponent(new Main.Component.Inventory());
 
     e.act = Main.system.pcAct;
 

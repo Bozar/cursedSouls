@@ -31,6 +31,11 @@ Main.screens.main.initialize = function () {
     }
 
     Main.entity.pc();
+    Main.getEntity('pc').Inventory.addItem('slime');
+    Main.getEntity('pc').Inventory.addItem('fire');
+    Main.getEntity('pc').Inventory.addItem('fire');
+    Main.getEntity('pc').Inventory.addItem('lump');
+
     Main.system.createOrbs();
     Main.entity.marker();
 

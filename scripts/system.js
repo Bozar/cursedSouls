@@ -83,6 +83,15 @@ Main.system.pcAct = function () {
     Main.screens.main.display();
 };
 
+Main.system.pcTakeDamage = function (damage) {
+    let pcIsDead
+        = damage > Main.getEntity('pc').Inventory.getInventory().length;
+
+    Main.getEntity('pc').Inventory.removeItem(damage);
+
+    return pcIsDead;
+};
+
 Main.system.move = function (direction, who) {
     let actor = who || Main.getEntity('pc');
     let x = actor.Position.getX();

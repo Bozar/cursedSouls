@@ -38,6 +38,11 @@ Main.text.initialize = function () {
     // action.
     text.set('action', new Map());
     text.get('action').set('continue', 'Press Space to continue.');
+    text.get('action').set('end', '=====The End=====');
+
+    text.get('action').set('deathGeneral', 'Rest in peace, ashen one.');
+    text.get('action').set('deathBoss1',
+        'Ashen one, hearest thou my voice, still?');
 
     // NPC's names
     text.set('name', new Map());
@@ -48,6 +53,7 @@ Main.text.initialize = function () {
     text.get('info').set('dummy', 'This is a dummy.'
         + ' It has 1 hit point.'
         + ' It drops 1 Slime Orb when killed.');
+
     text.get('info').set('fire', 'Melee. 100% drop rate.');
     text.get('info').set('ice', 'Range 2, freeze for 2 turns. 60% drop rate.');
     text.get('info').set('slime', 'Range 2, teleport yourself.');

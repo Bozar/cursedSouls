@@ -322,6 +322,17 @@ Main.screens.drawActor = function (actor, noFov) {
     }
 };
 
+Main.screens.drawDownstairs = function () {
+    if (Main.getEntity('dungeon').Dungeon.getMemory()
+        .indexOf(Main.getEntity('downstairs').Position.getX()
+            + ',' + Main.getEntity('downstairs').Position.getY())
+        > -1) {
+        Main.screens.drawActor(Main.getEntity('downstairs'), true);
+    } else {
+        Main.screens.drawActor(Main.getEntity('downstairs'), false);
+    }
+};
+
 Main.screens.drawLevelName = function () {
     let levelName = Main.text.dungeon('grave');
 

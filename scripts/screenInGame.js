@@ -36,6 +36,8 @@ Main.screens.main.initialize = function () {
     Main.getEntity('pc').Inventory.addItem('fire');
     Main.getEntity('pc').Inventory.addItem('lump');
 
+    Main.entity.downstairs();
+
     Main.system.createOrbs();
     Main.entity.marker();
 
@@ -46,6 +48,10 @@ Main.screens.main.initialize = function () {
     Main.system.placeActor(
         Main.getEntity('pc'),
         Main.system.verifyPositionPC);
+
+    Main.system.placeActor(
+        Main.getEntity('downstairs'),
+        Main.system.verifyPositionDownstairs);
 
     for (let keyValue of Main.getEntity('orb')) {
         Main.system.placeActor(
@@ -79,10 +85,13 @@ Main.screens.main.display = function () {
         Main.screens.drawActor(keyValue[1]);
     }
 
-    Main.screens.drawActor(Main.getEntity('pc'));
     for (const keyValue of Main.getEntity('npc')) {
         Main.screens.drawActor(keyValue[1]);
     }
+
+    Main.screens.drawDownstairs();
+
+    Main.screens.drawActor(Main.getEntity('pc'));
     Main.screens.drawActor(Main.getEntity('marker'));
 
     if (Main.screens.getCurrentMode() !== 'main') {

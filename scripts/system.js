@@ -10,6 +10,7 @@ Main.system.isFloor = function (x, y) {
 Main.system.placeActor = function (actor, notQualified) {
     let x = null;
     let y = null;
+    let retry = 0;
 
     do {
         x = Math.floor(
@@ -18,7 +19,12 @@ Main.system.placeActor = function (actor, notQualified) {
         y = Math.floor(
             Main.getEntity('dungeon').Dungeon.getHeight()
             * ROT.RNG.getUniform());
-    } while (notQualified(x, y));
+        retry++;
+    } while (notQualified(x, y) && retry < 99);
+
+    if (Main.getDevelop() && retry > 10) {
+        console.log('Retry, ' + actor.getEntityName() + ': ' + retry);
+    }
 
     actor.Position.setX(x);
     actor.Position.setY(y);
@@ -39,6 +45,29 @@ Main.system.verifyPositionOrb = function (x, y) {
         || Main.system.isInSight(Main.getEntity('pc'), x, y)
         || Main.system.downstairsHere(x, y)
         || Main.system.orbHere(x, y);
+};
+
+Main.system.verifyPositionDownstairs = function (x, y) {
+    return !Main.system.isFloor(x, y)
+        || Math.abs(x - Main.getEntity('pc').Position.getX())
+        < Math.floor(Main.getEntity('dungeon').Dungeon.getWidth() / 4)
+        || floorInSight() < 40;
+
+    // Helper function.
+    function floorInSight() {
+        let floor = 0;
+
+        Main.getEntity('dungeon').fov.compute(
+            x, y,
+            Main.getEntity('downstairs').Position.getRange(),
+            (x, y) => {
+                if (Main.system.isFloor(x, y)) {
+                    floor++;
+                }
+            })
+
+        return floor;
+    }
 };
 
 Main.system.createOrbs = function () {
@@ -242,9 +271,9 @@ Main.system.orbHere = function (x, y) {
     return null;
 };
 
-// TODO: check the downstairs position.
-Main.system.downstairsHere = function () {
-    return false;
+Main.system.downstairsHere = function (x, y) {
+    return x === Main.getEntity('downstairs').Position.getX()
+        && y === Main.getEntity('downstairs').Position.getY();
 };
 
 Main.system.examineMode = function () {

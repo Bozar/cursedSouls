@@ -184,11 +184,15 @@ Main.system.move = function (direction, who) {
     switch (actorType) {
         case 'pc':
             isMoveable
-                = Main.system.isFloor(x, y) && !Main.system.npcHere(x, y);
+                = Main.system.isFloor(x, y)
+                && !Main.system.npcHere(x, y);
             break;
         case 'npc':
             isMoveable
-                = Main.system.isFloor(x, y) && !Main.system.pcHere(x, y);
+                = Main.system.isFloor(x, y)
+                && !Main.system.pcHere(x, y)
+                && !Main.system.npcHere(x, y)
+                && !Main.system.downstairsHere(x, y);
             break;
         case 'marker':
             isMoveable

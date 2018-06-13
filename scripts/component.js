@@ -86,14 +86,18 @@ Main.Component.Display = function (char, color, altColor) {
     this._name = 'Display';
 
     this._character = char;
-    // [The default color, the color when standing on an orb]
+    // [The default color,
+    // the color when standing on an orb,
+    // the color when standing on the downstairs]
     this._color = [
         Main.getColor(color || 'white'),
-        Main.getColor(altColor || 'green')];
+        Main.getColor(altColor || 'green'),
+        Main.getColor(altColor || 'orange')];
 
     this.getCharacter = function () { return this._character; };
     this.getColor = function () { return this._color[0]; };
-    this.getAltColor = function () { return this._color[1]; };
+    this.getOrbColor = function () { return this._color[1]; };
+    this.getDownstairsColor = function () { return this._color[2]; };
 };
 
 Main.Component.Position = function (range, x, y) {

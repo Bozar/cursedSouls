@@ -303,10 +303,14 @@ Main.screens.drawActor = function (actor, noFov) {
     }
 
     if (drawThis) {
-        if (!Main.system.isMarker(actor)
-            && Main.system.orbHere(
+        if (!Main.system.isMarker(actor)) {
+            if (Main.system.downstairsHere(
                 actor.Position.getX(), actor.Position.getY())) {
-            color = actor.Display.getAltColor();
+                color = actor.Display.getDownstairsColor();
+            } else if (Main.system.orbHere(
+                actor.Position.getX(), actor.Position.getY())) {
+                color = actor.Display.getOrbColor();
+            }
         } else {
             color = actor.Display.getColor();
         }
@@ -344,7 +348,7 @@ Main.screens.drawLevelName = function () {
     Main.display.drawText(
         Main.UI.level.getX(),
         Main.UI.level.getY(),
-        `${Main.text.dungeon('stairs')} ${levelName}`);
+        `${Main.text.dungeon('downstairsIcon')} ${levelName}`);
 };
 
 Main.screens.drawPower = function () {
@@ -376,33 +380,25 @@ Main.screens.drawPower = function () {
     }
 };
 
-Main.screens.drawOrbUnderYourFoot = function () {
-    let orbName = '';
-    let orbColor = null;
+Main.screens.drawItemUnderYourFoot = function () {
+    let itemFound = null;
 
-    for (let keyValue of Main.getEntity('orb')) {
-        if (
-            // The first two conditions are necessary to avoid a bug.
-            keyValue[1].Position.getX() >= 0
-            && keyValue[1].Position.getY() >= 0
-            && keyValue[1].Position.getX()
-            === Main.getEntity('pc').Position.getX()
-            && keyValue[1].Position.getY()
-            === Main.getEntity('pc').Position.getY()) {
-            // Update the orbName.
-            orbName = keyValue[1].getEntityName();
-            orbColor = keyValue[1].Display.getColor();
-            break;
-        }
-    }
+    itemFound
+        = Main.system.downstairsHere(
+            Main.getEntity('pc').Position.getX(),
+            Main.getEntity('pc').Position.getY())
+        || Main.system.orbHere(
+            Main.getEntity('pc').Position.getX(),
+            Main.getEntity('pc').Position.getY());
 
     Main.display.drawText(
         Main.UI.ground.getX(),
         Main.UI.ground.getY(),
-        orbName
+        itemFound
             ? Main.text.ui('ground') + ' '
-            + Main.screens.colorfulText(Main.text.dungeon(orbName),
-                orbColor)
+            + Main.screens.colorfulText(Main.text.dungeon(
+                itemFound.getEntityName()),
+                itemFound.Display.getColor())
             : Main.text.ui('ground'));
 };
 

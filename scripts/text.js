@@ -13,7 +13,8 @@ Main.text.initialize = function () {
 
     // Buildings or items in the dungeon
     text.set('dungeon', new Map());
-    text.get('dungeon').set('stairs', '>');
+    text.get('dungeon').set('downstairsIcon', '>');
+    text.get('dungeon').set('downstairs', 'Downstairs');
     text.get('dungeon').set('grave', 'Graveyard');
 
     text.get('dungeon').set('fire', 'Fire');

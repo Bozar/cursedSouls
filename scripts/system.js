@@ -64,7 +64,7 @@ Main.system.verifyPositionDownstairs = function (x, y) {
                 if (Main.system.isFloor(x, y)) {
                     floor++;
                 }
-            })
+            });
 
         return floor;
     }
@@ -123,7 +123,11 @@ Main.system.pcTakeDamage = function (damage) {
 
 // The hub function to handle the 'pickOrUse' key.
 Main.system.pcPickOrUse = function () {
-    if (Main.system.orbHere(
+    if (Main.system.downstairsHere(
+        Main.getEntity('pc').Position.getX(),
+        Main.getEntity('pc').Position.getY())) {
+        Main.system.useDownstairs();
+    } else if (Main.system.orbHere(
         Main.getEntity('pc').Position.getX(),
         Main.getEntity('pc').Position.getY())
         && Main.getEntity('pc').Inventory.getInventory().length
@@ -149,6 +153,10 @@ Main.system.pickUpOrb = function () {
 
     Main.system.unlockEngine(
         Main.getEntity('pc').ActionDuration.getPickUpOrb());
+};
+
+Main.system.useDownstairs = function () {
+    console.log('Use downstairs.');
 };
 
 Main.system.move = function (direction, who) {
@@ -251,33 +259,46 @@ Main.system.unlockEngine = function (duration) {
 };
 
 Main.system.npcHere = function (x, y) {
-    for (const keyValue of Main.getEntity('npc')) {
-        if (x === keyValue[1].Position.getX()
-            && y === keyValue[1].Position.getY()) {
-            return keyValue[1];
+    if (x >= 0 && y >= 0) {
+        for (const keyValue of Main.getEntity('npc')) {
+            if (x === keyValue[1].Position.getX()
+                && y === keyValue[1].Position.getY()) {
+                return keyValue[1];
+            }
         }
     }
     return null;
 };
 
 Main.system.pcHere = function (x, y) {
-    return x === Main.getEntity('pc').Position.getX()
-        && y === Main.getEntity('pc').Position.getY();
+    if (x >= 0 && y >= 0
+        && x === Main.getEntity('pc').Position.getX()
+        && y === Main.getEntity('pc').Position.getY()) {
+        return Main.getEntity('pc');
+    }
+    return null;
 };
 
 Main.system.orbHere = function (x, y) {
-    for (let keyValue of Main.getEntity('orb')) {
-        if (x === keyValue[1].Position.getX()
-            && y === keyValue[1].Position.getY()) {
-            return keyValue[1];
+    if (x >= 0 && y >= 0) {
+        for (let keyValue of Main.getEntity('orb')) {
+            if (
+                x === keyValue[1].Position.getX()
+                && y === keyValue[1].Position.getY()) {
+                return keyValue[1];
+            }
         }
     }
     return null;
 };
 
 Main.system.downstairsHere = function (x, y) {
-    return x === Main.getEntity('downstairs').Position.getX()
-        && y === Main.getEntity('downstairs').Position.getY();
+    if (x >= 0 && y >= 0
+        && x === Main.getEntity('downstairs').Position.getX()
+        && y === Main.getEntity('downstairs').Position.getY()) {
+        return Main.getEntity('downstairs');
+    }
+    return null;
 };
 
 Main.system.examineMode = function () {

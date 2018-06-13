@@ -18,11 +18,13 @@ Main.Screen = function (name, mode) {
 Main.Screen.prototype.getName = function () { return this._name; };
 Main.Screen.prototype.getMode = function (index) { return this._mode[index]; };
 
-Main.Screen.prototype.enter = function () {
+Main.Screen.prototype.enter = function (doNotInitialize) {
     Main.screens.setCurrentName(this.getName());
     Main.screens.setCurrentMode(this.getMode(0));
 
-    this.initialize(this.getName());
+    if (!doNotInitialize) {
+        this.initialize(this.getName());
+    }
     this.display();
 };
 

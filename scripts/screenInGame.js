@@ -7,10 +7,10 @@
 Main.screens.main = new Main.Screen('main', ['main', 'examine', 'aim']);
 
 // Create & place entities (if necessacry) in this order:
-// Seed, Dungeon, (PC, Downstairs, NPCs, Orbs), Marker.
+// Seed, Dungeon, (PC, NPCs, Downstairs, Orbs), Marker.
 // The PC cannot stick to the wall.
+// NPCs cannot appear in the PC's sight.
 // The downstairs has to be at least 1/4 screen away from the PC.
-// NPCs cannot appear in the PC's sight or stand on the downstairs.
 // Orbs cannot be generated on the downstairs.
 Main.screens.main.initialize = function () {
     Main.entity.seed();
@@ -66,7 +66,7 @@ Main.screens.main.initialize = function () {
 };
 
 // Draw entities in this order:
-// Static UI elements, Dungeon, (Orbs, NPCs, Downstairs, PC), Marker.
+// Static UI elements, Dungeon, (Orbs, Downstairs, NPCs, PC), Marker.
 // NPCs & the PC can stand on the orb.
 // The marker is on the top layer.
 Main.screens.main.display = function () {
@@ -85,11 +85,11 @@ Main.screens.main.display = function () {
         Main.screens.drawActor(keyValue[1]);
     }
 
+    Main.screens.drawDownstairs();
+
     for (const keyValue of Main.getEntity('npc')) {
         Main.screens.drawActor(keyValue[1]);
     }
-
-    Main.screens.drawDownstairs();
 
     Main.screens.drawActor(Main.getEntity('pc'));
     Main.screens.drawActor(Main.getEntity('marker'));
@@ -99,6 +99,7 @@ Main.screens.main.display = function () {
     } else {
         Main.screens.drawMessage();
     }
+
     Main.screens.drawModeLine();
 };
 
@@ -137,8 +138,13 @@ Main.screens.main.keyInput = function (e) {
         } else if (keyAction(e, 'fixed') === 'removeOrb') {
             Main.getEntity('pc').Inventory.removeItem(1);
         }
+        // Redraw the screen after pressing a development key.
+        Main.display.clear();
+        Main.screens.main.display();
     }
 
-    Main.display.clear();
-    Main.screens.main.display();
+    // DO NOT redraw the screen here. Let action functions to decide themselves
+    // when to redraw the screen.
+    // Main.display.clear();
+    // Main.screens.main.display();
 };

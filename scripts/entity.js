@@ -42,6 +42,7 @@ Main.entity.seed = function () {
 Main.entity.dungeon = function () {
     let e = new Main.Factory('dungeon');
     e.addComponent(new Main.Component.Dungeon());
+    e.addComponent(new Main.Component.BossFight());
 
     let cycle = 0;
 

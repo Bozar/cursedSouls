@@ -82,6 +82,23 @@ Main.Component.Dungeon = function () {
     this.setCycle = function (cycle) { this._cycle = cycle; };
 };
 
+Main.Component.BossFight = function () {
+    this._name = 'BossFight';
+
+    this._progress = ['inactive', 'active', 'win'];
+    this._bossFight = this._progress[0];
+
+    this.getBossFightStatus = function () { return this._bossFight; };
+
+    this.goToNextStage = function () {
+        let nextIndex = Math.min(
+            this._progress.indexOf(this._bossFight) + 1,
+            this._progress.length - 1);
+
+        this._bossFight = this._progress[nextIndex];
+    };
+};
+
 Main.Component.Display = function (char, color, altColor) {
     this._name = 'Display';
 
@@ -123,11 +140,13 @@ Main.Component.ActionDuration = function (move) {
     this._useOrb = 1;
     this._pickUpOrb = 1;
     this._wait = 1;
+    this._goDownstairs = 1;
 
     this.getMove = function () { return this._move; };
     this.getUseOrb = function () { return this._useOrb; };
     this.getPickUpOrb = function () { return this._pickUpOrb; };
     this.getWait = function () { return this._wait; };
+    this.getGoDownstairs = function () { return this._goDownstairs; };
 };
 
 Main.Component.Inventory = function (capacity, firstItem) {

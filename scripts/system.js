@@ -107,8 +107,9 @@ Main.system.pcAct = function () {
 
     Main.input.listenEvent('add', 'main');
 
-    Main.display.clear();
-    Main.screens.main.display();
+    // Do NOT redraw the screen here. Let every action to decide the moment.
+    // Main.display.clear();
+    // Main.screens.main.display();
 };
 
 Main.system.pcTakeDamage = function (damage) {
@@ -124,7 +125,9 @@ Main.system.pcTakeDamage = function (damage) {
 Main.system.pcPickOrUse = function () {
     if (Main.system.downstairsHere(
         Main.getEntity('pc').Position.getX(),
-        Main.getEntity('pc').Position.getY())) {
+        Main.getEntity('pc').Position.getY())
+        && Main.getEntity('dungeon').BossFight.getBossFightStatus()
+        !== 'active') {
         Main.system.useDownstairs();
     } else if (Main.system.orbHere(
         Main.getEntity('pc').Position.getX(),
@@ -133,6 +136,7 @@ Main.system.pcPickOrUse = function () {
         < Main.getEntity('pc').Inventory.getCapacity()) {
         Main.system.pickUpOrb();
     } else {
+        // TODO: add more actions.
         console.log('press space');
     }
 };
@@ -155,7 +159,45 @@ Main.system.pickUpOrb = function () {
 };
 
 Main.system.useDownstairs = function () {
-    console.log('Use downstairs.');
+    switch (Main.getEntity('dungeon').BossFight.getBossFightStatus()) {
+        case 'inactive':
+            Main.input.listenEvent('remove', 'main');
+            Main.input.listenEvent('add', backToMain);
+
+            Main.getEntity('dungeon').BossFight.goToNextStage();
+
+            Main.screens.main.exit();
+
+            // TODO: add a new screen.
+            Main.display.drawText(5, 5,
+                'A Shakespearean monologue by the boss.');
+            Main.display.drawText(5, 7,
+                'Thou shalt not press Space to skip this screen.');
+
+            break;
+        case 'win':
+            // TODO: delete this line and call the save function.
+            console.log('you win');
+            break;
+    }
+
+    return Main.getEntity('dungeon').BossFight.getBossFightStatus();
+
+    // Helper function.
+    function backToMain(e) {
+        if (Main.input.getAction(e, 'fixed') === 'yes') {
+            Main.input.listenEvent('remove', backToMain);
+            Main.input.listenEvent('add', 'main');
+
+            // TODO: delete this line and call the boss-summoning function.
+            console.log('start the boss fight');
+
+            Main.screens.main.enter(true);
+
+            Main.system.unlockEngine(
+                Main.getEntity('pc').ActionDuration.getGoDownstairs());
+        }
+    }
 };
 
 Main.system.move = function (direction, who) {

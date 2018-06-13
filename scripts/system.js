@@ -199,8 +199,7 @@ Main.system.move = function (direction, who) {
             isMoveable
                 = Main.system.isFloor(x, y)
                 && !Main.system.pcHere(x, y)
-                && !Main.system.npcHere(x, y)
-                && !Main.system.downstairsHere(x, y);
+                && !Main.system.npcHere(x, y);
             break;
         case 'marker':
             isMoveable

@@ -49,8 +49,7 @@ Main.system.verifyPositionOrb = function (x, y) {
 
 Main.system.verifyPositionDownstairs = function (x, y) {
     return !Main.system.isFloor(x, y)
-        || Math.abs(x - Main.getEntity('pc').Position.getX())
-        < Math.floor(Main.getEntity('dungeon').Dungeon.getWidth() / 4)
+        || Main.system.pcHere(x, y)
         || floorInSight() < 40;
 
     // Helper function.

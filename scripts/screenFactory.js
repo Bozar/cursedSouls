@@ -173,6 +173,9 @@ Main.screens.drawMessage = function (text) {
 };
 
 Main.screens.drawDescription = function () {
+    let downstairsHere = Main.system.downstairsHere(
+        Main.getEntity('marker').Position.getX(),
+        Main.getEntity('marker').Position.getY());
     let npcHere = Main.system.npcHere(
         Main.getEntity('marker').Position.getX(),
         Main.getEntity('marker').Position.getY());
@@ -180,7 +183,9 @@ Main.screens.drawDescription = function () {
         Main.getEntity('marker').Position.getX(),
         Main.getEntity('marker').Position.getY());
 
-    if (npcHere) {
+    if (downstairsHere) {
+        drawTextBlock(Main.text.downstairs(), '');
+    } else if (npcHere) {
         drawTextBlock(
             // Top line
             Main.text.info(npcHere.getEntityName()),

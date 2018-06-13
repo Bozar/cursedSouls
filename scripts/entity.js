@@ -10,6 +10,7 @@ Main.entities.set('seed', null);
 Main.entities.set('dungeon', null);
 Main.entities.set('pc', null);
 Main.entities.set('marker', null);
+Main.entities.set('downstairs', null);
 
 // Key: ID, value: object.
 Main.entities.set('npc', new Map());
@@ -41,6 +42,7 @@ Main.entity.seed = function () {
 Main.entity.dungeon = function () {
     let e = new Main.Factory('dungeon');
     e.addComponent(new Main.Component.Dungeon());
+    e.addComponent(new Main.Component.BossFight());
 
     let cycle = 0;
 
@@ -120,6 +122,15 @@ Main.entity.marker = function () {
     e.addComponent(new Main.Component.Display('X', 'orange', 'orange'));
 
     Main.entities.set('marker', e);
+};
+
+Main.entity.downstairs = function () {
+    let e = new Main.Factory('downstairs');
+
+    e.addComponent(new Main.Component.Position(5));
+    e.addComponent(new Main.Component.Display('>', 'orange', 'orange'));
+
+    Main.entities.set('downstairs', e);
 };
 
 Main.entity.timer = function () {

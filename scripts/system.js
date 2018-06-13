@@ -10,6 +10,7 @@ Main.system.isFloor = function (x, y) {
 Main.system.placeActor = function (actor, notQualified) {
     let x = null;
     let y = null;
+    let retry = 0;
 
     do {
         x = Math.floor(
@@ -18,7 +19,12 @@ Main.system.placeActor = function (actor, notQualified) {
         y = Math.floor(
             Main.getEntity('dungeon').Dungeon.getHeight()
             * ROT.RNG.getUniform());
-    } while (notQualified(x, y));
+        retry++;
+    } while (notQualified(x, y) && retry < 99);
+
+    if (Main.getDevelop() && retry > 10) {
+        console.log('Retry, ' + actor.getEntityName() + ': ' + retry);
+    }
 
     actor.Position.setX(x);
     actor.Position.setY(y);
@@ -39,6 +45,28 @@ Main.system.verifyPositionOrb = function (x, y) {
         || Main.system.isInSight(Main.getEntity('pc'), x, y)
         || Main.system.downstairsHere(x, y)
         || Main.system.orbHere(x, y);
+};
+
+Main.system.verifyPositionDownstairs = function (x, y) {
+    return !Main.system.isFloor(x, y)
+        || Main.system.pcHere(x, y)
+        || floorInSight() < 40;
+
+    // Helper function.
+    function floorInSight() {
+        let floor = 0;
+
+        Main.getEntity('dungeon').fov.compute(
+            x, y,
+            Main.getEntity('downstairs').Position.getRange(),
+            (x, y) => {
+                if (Main.system.isFloor(x, y)) {
+                    floor++;
+                }
+            });
+
+        return floor;
+    }
 };
 
 Main.system.createOrbs = function () {
@@ -79,8 +107,9 @@ Main.system.pcAct = function () {
 
     Main.input.listenEvent('add', 'main');
 
-    Main.display.clear();
-    Main.screens.main.display();
+    // Do NOT redraw the screen here. Let every action to decide the moment.
+    // Main.display.clear();
+    // Main.screens.main.display();
 };
 
 Main.system.pcTakeDamage = function (damage) {
@@ -94,13 +123,20 @@ Main.system.pcTakeDamage = function (damage) {
 
 // The hub function to handle the 'pickOrUse' key.
 Main.system.pcPickOrUse = function () {
-    if (Main.system.orbHere(
+    if (Main.system.downstairsHere(
+        Main.getEntity('pc').Position.getX(),
+        Main.getEntity('pc').Position.getY())
+        && Main.getEntity('dungeon').BossFight.getBossFightStatus()
+        !== 'active') {
+        Main.system.useDownstairs();
+    } else if (Main.system.orbHere(
         Main.getEntity('pc').Position.getX(),
         Main.getEntity('pc').Position.getY())
         && Main.getEntity('pc').Inventory.getInventory().length
         < Main.getEntity('pc').Inventory.getCapacity()) {
         Main.system.pickUpOrb();
     } else {
+        // TODO: add more actions.
         console.log('press space');
     }
 };
@@ -120,6 +156,48 @@ Main.system.pickUpOrb = function () {
 
     Main.system.unlockEngine(
         Main.getEntity('pc').ActionDuration.getPickUpOrb());
+};
+
+Main.system.useDownstairs = function () {
+    switch (Main.getEntity('dungeon').BossFight.getBossFightStatus()) {
+        case 'inactive':
+            Main.input.listenEvent('remove', 'main');
+            Main.input.listenEvent('add', backToMain);
+
+            Main.getEntity('dungeon').BossFight.goToNextStage();
+
+            Main.screens.main.exit();
+
+            // TODO: add a new screen.
+            Main.display.drawText(5, 5,
+                'A Shakespearean monologue by the boss.');
+            Main.display.drawText(5, 7,
+                'Thou shalt not press Space to skip this screen.');
+
+            break;
+        case 'win':
+            // TODO: delete this line and call the save function.
+            console.log('you win');
+            break;
+    }
+
+    return Main.getEntity('dungeon').BossFight.getBossFightStatus();
+
+    // Helper function.
+    function backToMain(e) {
+        if (Main.input.getAction(e, 'fixed') === 'yes') {
+            Main.input.listenEvent('remove', backToMain);
+            Main.input.listenEvent('add', 'main');
+
+            // TODO: delete this line and call the boss-summoning function.
+            console.log('start the boss fight');
+
+            Main.screens.main.enter(true);
+
+            Main.system.unlockEngine(
+                Main.getEntity('pc').ActionDuration.getGoDownstairs());
+        }
+    }
 };
 
 Main.system.move = function (direction, who) {
@@ -155,11 +233,14 @@ Main.system.move = function (direction, who) {
     switch (actorType) {
         case 'pc':
             isMoveable
-                = Main.system.isFloor(x, y) && !Main.system.npcHere(x, y);
+                = Main.system.isFloor(x, y)
+                && !Main.system.npcHere(x, y);
             break;
         case 'npc':
             isMoveable
-                = Main.system.isFloor(x, y) && !Main.system.pcHere(x, y);
+                = Main.system.isFloor(x, y)
+                && !Main.system.pcHere(x, y)
+                && !Main.system.npcHere(x, y);
             break;
         case 'marker':
             isMoveable
@@ -218,33 +299,46 @@ Main.system.unlockEngine = function (duration) {
 };
 
 Main.system.npcHere = function (x, y) {
-    for (const keyValue of Main.getEntity('npc')) {
-        if (x === keyValue[1].Position.getX()
-            && y === keyValue[1].Position.getY()) {
-            return keyValue[1];
+    if (x >= 0 && y >= 0) {
+        for (const keyValue of Main.getEntity('npc')) {
+            if (x === keyValue[1].Position.getX()
+                && y === keyValue[1].Position.getY()) {
+                return keyValue[1];
+            }
         }
     }
     return null;
 };
 
 Main.system.pcHere = function (x, y) {
-    return x === Main.getEntity('pc').Position.getX()
-        && y === Main.getEntity('pc').Position.getY();
+    if (x >= 0 && y >= 0
+        && x === Main.getEntity('pc').Position.getX()
+        && y === Main.getEntity('pc').Position.getY()) {
+        return Main.getEntity('pc');
+    }
+    return null;
 };
 
 Main.system.orbHere = function (x, y) {
-    for (let keyValue of Main.getEntity('orb')) {
-        if (x === keyValue[1].Position.getX()
-            && y === keyValue[1].Position.getY()) {
-            return keyValue[1];
+    if (x >= 0 && y >= 0) {
+        for (let keyValue of Main.getEntity('orb')) {
+            if (
+                x === keyValue[1].Position.getX()
+                && y === keyValue[1].Position.getY()) {
+                return keyValue[1];
+            }
         }
     }
     return null;
 };
 
-// TODO: check the downstairs position.
-Main.system.downstairsHere = function () {
-    return false;
+Main.system.downstairsHere = function (x, y) {
+    if (x >= 0 && y >= 0
+        && x === Main.getEntity('downstairs').Position.getX()
+        && y === Main.getEntity('downstairs').Position.getY()) {
+        return Main.getEntity('downstairs');
+    }
+    return null;
 };
 
 Main.system.examineMode = function () {

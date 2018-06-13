@@ -9,8 +9,9 @@ Play the game [on-line](https://bozar.github.io/cursedSouls/).
 Cursed Souls: Giovanni's Orchestra is a roguelike game written in JavaScript with [rot.js](https://github.com/ondras/rot.js). The dungeon has 4 levels: 1 aboveground and 3 underground. Your goal is simple:
 
 * Find the downstairs.
-* Bump into the downstairs to summon the level boss.
-* Beat the boss and then go downstairs.
+* Stand on the downstairs and press Space to summon the boss.
+* Beat the boss.
+* Stand on the downstairs and press Space to continue.
 
 So why bother killing grunts along the way? That's a good question.
 
@@ -53,7 +54,7 @@ Orbs can be found on the ground or dropped by the enemy. Bosses always drop 1 lu
 * Base/lump vs. frozen: 60%
 * Fire vs. frozen: 100%
 
-Orbs do not stack on the dungeon floor. If two orbs appear in the same place, the newer orb will replace the older one.
+Orbs do not stack on the dungeon floor. If two orbs appear in the same place, the newer orb will replace the older one. If the orb drops on the downstairs, it will disappear.
 
 ## Power Stack
 

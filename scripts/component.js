@@ -82,18 +82,39 @@ Main.Component.Dungeon = function () {
     this.setCycle = function (cycle) { this._cycle = cycle; };
 };
 
+Main.Component.BossFight = function () {
+    this._name = 'BossFight';
+
+    this._progress = ['inactive', 'active', 'win'];
+    this._bossFight = this._progress[0];
+
+    this.getBossFightStatus = function () { return this._bossFight; };
+
+    this.goToNextStage = function () {
+        let nextIndex = Math.min(
+            this._progress.indexOf(this._bossFight) + 1,
+            this._progress.length - 1);
+
+        this._bossFight = this._progress[nextIndex];
+    };
+};
+
 Main.Component.Display = function (char, color, altColor) {
     this._name = 'Display';
 
     this._character = char;
-    // [The default color, the color when standing on an orb]
+    // [The default color,
+    // the color when standing on an orb,
+    // the color when standing on the downstairs]
     this._color = [
         Main.getColor(color || 'white'),
-        Main.getColor(altColor || 'green')];
+        Main.getColor(altColor || 'green'),
+        Main.getColor(altColor || 'orange')];
 
     this.getCharacter = function () { return this._character; };
     this.getColor = function () { return this._color[0]; };
-    this.getAltColor = function () { return this._color[1]; };
+    this.getOrbColor = function () { return this._color[1]; };
+    this.getDownstairsColor = function () { return this._color[2]; };
 };
 
 Main.Component.Position = function (range, x, y) {
@@ -119,11 +140,13 @@ Main.Component.ActionDuration = function (move) {
     this._useOrb = 1;
     this._pickUpOrb = 1;
     this._wait = 1;
+    this._goDownstairs = 1;
 
     this.getMove = function () { return this._move; };
     this.getUseOrb = function () { return this._useOrb; };
     this.getPickUpOrb = function () { return this._pickUpOrb; };
     this.getWait = function () { return this._wait; };
+    this.getGoDownstairs = function () { return this._goDownstairs; };
 };
 
 Main.Component.Inventory = function (capacity, firstItem) {

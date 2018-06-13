@@ -13,7 +13,8 @@ Main.text.initialize = function () {
 
     // Buildings or items in the dungeon
     text.set('dungeon', new Map());
-    text.get('dungeon').set('stairs', '>');
+    text.get('dungeon').set('downstairsIcon', '>');
+    text.get('dungeon').set('downstairs', 'Downstairs');
     text.get('dungeon').set('grave', 'Graveyard');
 
     text.get('dungeon').set('fire', 'Fire');
@@ -59,6 +60,14 @@ Main.text.initialize = function () {
     text.get('info').set('ice', 'Range 2, freeze for 2 turns. 60% drop rate.');
     text.get('info').set('slime', 'Range 2, teleport yourself.');
     text.get('info').set('lump', 'Range 2. 60% drop rate.');
+
+    text.get('info').set('downstairs1',
+        'In the center of the dusty round pool, there stands a grotesque figure.'
+        + ' His eyes fixed on the ground,'
+        + ' and he carries an empty jar on the right shoulder.');
+    text.get('info').set('downstairs2', 'Level 2 downstairs.');
+    text.get('info').set('downstairs3', 'Level 3 downstairs.');
+    text.get('info').set('downstairs4', 'Level 4 downstairs.');
 
     Main.text.libraryMap = text;
 };
@@ -112,4 +121,11 @@ Main.text.pickUp = function (orb) {
     text = text.replace('%%', Main.text.dungeon(orb));
 
     return text;
+};
+
+Main.text.downstairs = function () {
+    // TODO: get the current level from the dungeon object.
+    let dungeonLevel = 1;
+
+    return Main.text.info('downstairs' + dungeonLevel);
 };

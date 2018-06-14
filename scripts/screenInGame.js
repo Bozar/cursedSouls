@@ -13,6 +13,8 @@ Main.screens.main = new Main.Screen('main', ['main', 'examine', 'aim']);
 // The downstairs has to be at least 1/4 screen away from the PC.
 // Orbs cannot be generated on the downstairs.
 Main.screens.main.initialize = function () {
+    let pcCanSee = [];
+
     Main.entity.seed();
     Main.getEntity('seed').Seed.setSeed(Main.getDevSeed());
     ROT.RNG.setSeed(Main.getEntity('seed').Seed.getSeed());
@@ -49,6 +51,12 @@ Main.screens.main.initialize = function () {
         Main.getEntity('pc'),
         Main.system.verifyPositionPC);
 
+    Main.getEntity('dungeon').fov.compute(
+        Main.getEntity('pc').Position.getX(),
+        Main.getEntity('pc').Position.getY(),
+        Main.getEntity('pc').Position.getRange(),
+        (x, y) => { pcCanSee.push(x + ',' + y); });
+
     Main.system.placeActor(
         Main.getEntity('downstairs'),
         Main.system.verifyPositionDownstairs);
@@ -56,7 +64,8 @@ Main.screens.main.initialize = function () {
     for (let keyValue of Main.getEntity('orb')) {
         Main.system.placeActor(
             keyValue[1],
-            Main.system.verifyPositionOrb);
+            Main.system.verifyPositionOrb,
+            pcCanSee);
     }
 
     Main.getEntity('message').Message.setModeline('this is the modeline');

@@ -7,7 +7,7 @@ Main.system.isFloor = function (x, y) {
         === 0;
 };
 
-Main.system.placeActor = function (actor, notQualified) {
+Main.system.placeActor = function (actor, notQualified, forbidden) {
     let x = null;
     let y = null;
     let retry = 0;
@@ -20,7 +20,11 @@ Main.system.placeActor = function (actor, notQualified) {
             Main.getEntity('dungeon').Dungeon.getHeight()
             * ROT.RNG.getUniform());
         retry++;
-    } while (notQualified(x, y) && retry < 99);
+    }
+    // Some notQualified callback functions require an extra argument, forbidden,
+    // which is a string array [x + ',' + y], so that they do not need to
+    // calculate the forbidden zone every time when placing a new entity.
+    while (notQualified(x, y, forbidden) && retry < 99);
 
     if (Main.getDevelop() && retry > 10) {
         console.log('Retry, ' + actor.getEntityName() + ': ' + retry);
@@ -40,17 +44,21 @@ Main.system.verifyPositionPC = function (x, y) {
         - Main.getEntity('pc').Position.getRange();
 };
 
-Main.system.verifyPositionOrb = function (x, y) {
+Main.system.verifyPositionOrb = function (x, y, forbidden) {
     return !Main.system.isFloor(x, y)
-        || Main.system.isInSight(Main.getEntity('pc'), x, y)
+        || pcCanSee()
         || Main.system.downstairsHere(x, y)
         || Main.system.orbHere(x, y);
+
+    function pcCanSee() {
+        return forbidden.indexOf(x + ',' + y) > -1;
+    }
 };
 
 Main.system.verifyPositionDownstairs = function (x, y) {
     return !Main.system.isFloor(x, y)
         || Main.system.pcHere(x, y)
-        || floorInSight() < 40;
+        || floorInSight() < 36;
 
     // Helper function.
     function floorInSight() {

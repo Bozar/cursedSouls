@@ -43,6 +43,7 @@ Main.Component.Seed = function () {
     };
 };
 
+// Generate walls and floors in the dungeon.
 Main.Component.Dungeon = function () {
     this._name = 'Dungeon';
 
@@ -82,20 +83,32 @@ Main.Component.Dungeon = function () {
     this.setCycle = function (cycle) { this._cycle = cycle; };
 };
 
+// Record the game progress.
 Main.Component.BossFight = function () {
     this._name = 'BossFight';
 
     this._progress = ['inactive', 'active', 'win'];
     this._bossFight = this._progress[0];
+    this._dungeonLevel = 1;
+    this._maxDungeonLevel = 4;
 
     this.getBossFightStatus = function () { return this._bossFight; };
+    this.getDungeonLevel = function () { return this._dungeonLevel; };
 
-    this.goToNextStage = function () {
+    this.goToNextBossFightStage = function () {
         let nextIndex = Math.min(
             this._progress.indexOf(this._bossFight) + 1,
             this._progress.length - 1);
 
         this._bossFight = this._progress[nextIndex];
+    };
+
+    this.goToNextDungeonLevel = function () {
+        let nextLevel = Math.min(
+            this._dungeonLevel + 1,
+            this._maxDungeonLevel);
+
+        this._dungeonLevel = nextLevel;
     };
 };
 

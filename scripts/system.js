@@ -7,7 +7,7 @@ Main.system.isFloor = function (x, y) {
         === 0;
 };
 
-Main.system.placeActor = function (actor, notQualified) {
+Main.system.placeActor = function (actor, notQualified, forbidden) {
     let x = null;
     let y = null;
     let retry = 0;
@@ -20,7 +20,11 @@ Main.system.placeActor = function (actor, notQualified) {
             Main.getEntity('dungeon').Dungeon.getHeight()
             * ROT.RNG.getUniform());
         retry++;
-    } while (notQualified(x, y) && retry < 99);
+    }
+    // Some notQualified callback functions require an extra argument, forbidden,
+    // which is a string array [x + ',' + y], so that they do not need to
+    // calculate the forbidden zone every time when placing a new entity.
+    while (notQualified(x, y, forbidden) && retry < 99);
 
     if (Main.getDevelop() && retry > 10) {
         console.log('Retry, ' + actor.getEntityName() + ': ' + retry);
@@ -40,17 +44,21 @@ Main.system.verifyPositionPC = function (x, y) {
         - Main.getEntity('pc').Position.getRange();
 };
 
-Main.system.verifyPositionOrb = function (x, y) {
+Main.system.verifyPositionOrb = function (x, y, forbidden) {
     return !Main.system.isFloor(x, y)
-        || Main.system.isInSight(Main.getEntity('pc'), x, y)
+        || pcCanSee()
         || Main.system.downstairsHere(x, y)
         || Main.system.orbHere(x, y);
+
+    function pcCanSee() {
+        return forbidden.indexOf(x + ',' + y) > -1;
+    }
 };
 
 Main.system.verifyPositionDownstairs = function (x, y) {
     return !Main.system.isFloor(x, y)
         || Main.system.pcHere(x, y)
-        || floorInSight() < 40;
+        || floorInSight() < 36;
 
     // Helper function.
     function floorInSight() {
@@ -162,41 +170,25 @@ Main.system.useDownstairs = function () {
     switch (Main.getEntity('dungeon').BossFight.getBossFightStatus()) {
         case 'inactive':
             Main.input.listenEvent('remove', 'main');
-            Main.input.listenEvent('add', backToMain);
-
-            Main.getEntity('dungeon').BossFight.goToNextStage();
-
             Main.screens.main.exit();
 
-            // TODO: add a new screen.
-            Main.display.drawText(5, 5,
-                'A Shakespearean monologue by the boss.');
-            Main.display.drawText(5, 7,
-                'Thou shalt not press Space to skip this screen.');
-
-            break;
-        case 'win':
-            // TODO: delete this line and call the save function.
-            console.log('you win');
-            break;
-    }
-
-    return Main.getEntity('dungeon').BossFight.getBossFightStatus();
-
-    // Helper function.
-    function backToMain(e) {
-        if (Main.input.getAction(e, 'fixed') === 'yes') {
-            Main.input.listenEvent('remove', backToMain);
-            Main.input.listenEvent('add', 'main');
+            Main.getEntity('dungeon').BossFight.goToNextBossFightStage();
 
             // TODO: delete this line and call the boss-summoning function.
             console.log('start the boss fight');
 
-            Main.screens.main.enter(true);
+            Main.screens.cutScene.enter();
+            Main.input.listenEvent('add', 'cutScene');
+            break;
+        case 'win':
+            Main.input.listenEvent('remove', 'main');
+            Main.screens.main.exit();
 
-            Main.system.unlockEngine(
-                Main.getEntity('pc').ActionDuration.getGoDownstairs());
-        }
+            // TODO: delete this line and call the save function.
+            console.log('you win');
+
+            // Enter the save screen.
+            break;
     }
 };
 
@@ -504,4 +496,20 @@ Main.system.getDistance = function (source, target) {
     let y = Math.abs(source.Position.getY() - target.Position.getY());
 
     return Math.max(x, y);
+};
+
+Main.system.exitCutScene = function () {
+    Main.input.listenEvent('remove', 'cutScene');
+    Main.screens.cutScene.exit();
+
+    if (Main.getEntity('pc')) {
+        Main.screens.main.enter(true);
+
+        Main.system.unlockEngine(
+            Main.getEntity('pc').ActionDuration.getGoDownstairs());
+    } else {
+        Main.screens.main.enter(false);
+    }
+
+    Main.input.listenEvent('add', 'main');
 };

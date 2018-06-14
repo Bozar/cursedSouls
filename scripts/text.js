@@ -69,6 +69,19 @@ Main.text.initialize = function () {
     text.get('info').set('downstairs3', 'Level 3 downstairs.');
     text.get('info').set('downstairs4', 'Level 4 downstairs.');
 
+    // Cut-scenes.
+    text.set('scene', new Map());
+    text.get('scene').set('enterLevel1',
+        'You find yourself lying on the ground,'
+        + ' like a nameless body in the morgue,'
+        + ' who is unknown to death, nor known to life.'
+        + ' Weeping and whispers echo in your mind.'
+        + ' One of the voices is calling to you: come here, ashen one.');
+    text.get('scene').set('beforeBossFight1',
+        'A Shakespearean monologue by the boss.'
+        + '\n\n Thou shalt not press Space to skip this screen.');
+    text.get('scene').set('afterBossFight1', 'You win.');
+
     Main.text.libraryMap = text;
 };
 
@@ -94,6 +107,10 @@ Main.text.name = function (id) {
 
 Main.text.info = function (id) {
     return Main.text.libraryMap.get('info').get(id);
+};
+
+Main.text.cutScene = function (id) {
+    return Main.text.libraryMap.get('scene').get(id);
 };
 
 // ==========================

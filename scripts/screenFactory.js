@@ -41,9 +41,9 @@ Main.Screen.prototype.keyInput = function (e) {
     }
 };
 
-Main.Screen.prototype.initialize = function (name) {
+Main.Screen.prototype.initialize = function () {
     if (Main.getDevelop()) {
-        console.log('Enter screen: ' + name + '.');
+        console.log('Enter screen: ' + this._name + '.');
     }
 };
 
@@ -414,9 +414,30 @@ Main.screens.drawHelp = function () {
         Main.UI.help.getWidth(), 'grey');
 };
 
-Main.screens.drawBlankCutScene = function () {
-    Main.getEntity('message').Message.setModeline(Main.text.action('continue'));
+Main.screens.drawCutScene = function () {
+    let level
+        = Main.getEntity('dungeon')
+            ? Main.getEntity('dungeon').BossFight.getDungeonLevel()
+            : 1;
 
-    Main.screens.drawModeLine();
-    Main.screens.drawBottomRight(Main.text.ui('studio'));
+    let bossFight
+        = Main.getEntity('dungeon')
+            ? Main.getEntity('dungeon').BossFight.getBossFightStatus()
+            : 'inactive';
+
+    let text = '';
+
+    switch (bossFight) {
+        case 'inactive':
+            text = Main.text.cutScene('enterLevel' + level);
+            break;
+        case 'active':
+            text = Main.text.cutScene('beforeBossFight' + level);
+            break;
+        case 'win':
+            text = Main.text.cutScene('afterBossFight' + level);
+            break;
+    }
+
+    Main.display.drawText(8, 3, text, Main.UI.canvas.getWidth() - 16);
 };

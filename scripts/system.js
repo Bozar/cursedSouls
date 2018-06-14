@@ -170,41 +170,25 @@ Main.system.useDownstairs = function () {
     switch (Main.getEntity('dungeon').BossFight.getBossFightStatus()) {
         case 'inactive':
             Main.input.listenEvent('remove', 'main');
-            Main.input.listenEvent('add', backToMain);
-
-            Main.getEntity('dungeon').BossFight.goToNextStage();
-
             Main.screens.main.exit();
 
-            // TODO: add a new screen.
-            Main.display.drawText(5, 5,
-                'A Shakespearean monologue by the boss.');
-            Main.display.drawText(5, 7,
-                'Thou shalt not press Space to skip this screen.');
-
-            break;
-        case 'win':
-            // TODO: delete this line and call the save function.
-            console.log('you win');
-            break;
-    }
-
-    return Main.getEntity('dungeon').BossFight.getBossFightStatus();
-
-    // Helper function.
-    function backToMain(e) {
-        if (Main.input.getAction(e, 'fixed') === 'yes') {
-            Main.input.listenEvent('remove', backToMain);
-            Main.input.listenEvent('add', 'main');
+            Main.getEntity('dungeon').BossFight.goToNextBossFightStage();
 
             // TODO: delete this line and call the boss-summoning function.
             console.log('start the boss fight');
 
-            Main.screens.main.enter(true);
+            Main.screens.cutScene.enter();
+            Main.input.listenEvent('add', 'cutScene');
+            break;
+        case 'win':
+            Main.input.listenEvent('remove', 'main');
+            Main.screens.main.exit();
 
-            Main.system.unlockEngine(
-                Main.getEntity('pc').ActionDuration.getGoDownstairs());
-        }
+            // TODO: delete this line and call the save function.
+            console.log('you win');
+
+            // Enter the save screen.
+            break;
     }
 };
 
@@ -512,4 +496,20 @@ Main.system.getDistance = function (source, target) {
     let y = Math.abs(source.Position.getY() - target.Position.getY());
 
     return Math.max(x, y);
+};
+
+Main.system.exitCutScene = function () {
+    Main.input.listenEvent('remove', 'cutScene');
+    Main.screens.cutScene.exit();
+
+    if (Main.getEntity('pc')) {
+        Main.screens.main.enter(true);
+
+        Main.system.unlockEngine(
+            Main.getEntity('pc').ActionDuration.getGoDownstairs());
+    } else {
+        Main.screens.main.enter(false);
+    }
+
+    Main.input.listenEvent('add', 'main');
 };

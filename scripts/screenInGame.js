@@ -118,6 +118,9 @@ Main.screens.main.keyInput = function (e) {
     if (e.shiftKey) {
         if (keyAction(e, 'fixed') === 'develop') {
             Main.setDevelop();
+
+            Main.display.clear();
+            Main.screens.main.display();
         }
     } else if (keyAction(e, 'move')) {
         Main.system.move(keyAction(e, 'move'));
@@ -156,4 +159,25 @@ Main.screens.main.keyInput = function (e) {
     // when to redraw the screen.
     // Main.display.clear();
     // Main.screens.main.display();
+};
+
+// ====================
+// The cut-scene screen
+// ====================
+
+Main.screens.cutScene = new Main.Screen('cutScene', ['main']);
+
+Main.screens.cutScene.display = function () {
+    Main.getEntity('message').Message.setModeline(
+        Main.text.action('continue'));
+
+    Main.screens.drawCutScene();
+    Main.screens.drawModeLine();
+    Main.screens.drawBottomRight(Main.text.ui('studio'));
+};
+
+Main.screens.cutScene.keyInput = function (e) {
+    if (Main.input.getAction(e, 'fixed') === 'yes') {
+        Main.system.exitCutScene();
+    }
 };

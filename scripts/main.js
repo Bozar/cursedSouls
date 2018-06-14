@@ -6,9 +6,11 @@
 
 var Main = {};
 Main._version = '0.0.1';
-Main._develop = true;
+//Main._develop = true;
+
 Main.getVersion = function () { return this._version; };
 Main.getDevelop = function () { return this._develop; };
+
 Main.setDevelop = function () { this._develop = !this._develop; };
 
 // Set seed manually for testing. '#' can be omitted.
@@ -45,10 +47,12 @@ window.onload = function () {
     Main.entity.message();
 
     Main.display.clear();
-    Main.screens.main.enter();
-    //Main.screens.drawBlankCutScene();
 
-    //window.localStorage.setItem('hello', 'world');
-    //let myObj = window.localStorage.getItem('hello');
-    //console.log(myObj);
+    if (Main.getDevelop()) {
+        Main.screens.main.enter();
+        Main.input.listenEvent('add', 'main');
+    } else {
+        Main.screens.cutScene.enter();
+        Main.input.listenEvent('add', 'cutScene');
+    }
 };

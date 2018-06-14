@@ -261,6 +261,9 @@ Main.system.move = function (direction, who) {
     else {
         Main.getEntity('message').Message.setModeline('invalid move');
         // message.setModeline(Main.text.interact('forbidMove'))
+
+        Main.display.clear();
+        Main.screens.main.display();
     }
 
     // Helper functions

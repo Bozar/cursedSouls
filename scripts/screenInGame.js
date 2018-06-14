@@ -75,9 +75,17 @@ Main.screens.main.initialize = function () {
 };
 
 // Draw entities in this order:
-// Static UI elements, Dungeon, (Orbs, Downstairs, NPCs, PC), Marker.
-// NPCs & the PC can stand on the orb.
-// The marker is on the top layer.
+//      Static UI elements, Dungeon, (Orbs, Downstairs, NPCs, PC), Marker.
+//      NPCs & the PC can stand on the orb.
+//      The marker is on the top layer.
+
+// The moment to redraw the main screen is kinda messy. Please note these
+// conditions are exclusive. Do not redraw the screen multiple times.
+//      Press a development key with or without Shift.
+//      Unlock the engine.
+//      Enter or exit the examine mode.
+//      Press any key in the examine mode.
+//      Perform an invalid movement.
 Main.screens.main.display = function () {
     Main.screens.drawBorder();
     Main.screens.drawVersion();

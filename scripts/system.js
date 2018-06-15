@@ -257,6 +257,9 @@ Main.system.move = function (direction, who) {
             Main.system.unlockEngine(duration);
         }
     }
+    else if (Main.system.npcHere(x, y)) {
+        Main.system.useBaseAttack(Main.system.npcHere(x, y));
+    }
     // TODO: add more available actions.
     else {
         Main.getEntity('message').Message.setModeline('invalid move');
@@ -515,4 +518,30 @@ Main.system.exitCutScene = function () {
     }
 
     Main.input.listenEvent('add', 'main');
+};
+
+Main.system.useBaseAttack = function (target) {
+    let dropRate = 0;
+    target.HitPoint.takeDamage(Main.getEntity('pc').Damage.getDamage());
+
+    if (target.HitPoint.isDead()) {
+        if (target.Status.getFrozen()) {
+            dropRate = Main.getEntity('pc').DropRate.getDropRate('ice');
+        } else {
+            dropRate = Main.getEntity('pc').DropRate.getDropRate('base');
+        }
+
+        // TODO: add a function to drop an orb is possible.
+        console.log('drop rate: ' + dropRate);
+
+        Main.getEntity('message').Message.pushMsg(
+            Main.text.killTarget(target));
+
+        Main.getEntity('npc').delete(target.getID());
+    } else {
+        Main.getEntity('message').Message.pushMsg(
+            Main.text.hitTarget(target));
+    }
+
+    Main.system.unlockEngine(Main.getEntity('pc').ActionDuration.getAttack());
 };

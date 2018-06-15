@@ -151,14 +151,16 @@ Main.Component.ActionDuration = function () {
 
     this._duration = new Map();
 
+    // No need to seperate these actions since they all take 1 turn. This is just
+    // an example.
     this._duration.set('move', 1);
     this._duration.set('useOrb', 1);
-    this._duration.set('pickUpOrb', 1);
+    this._duration.set('attack', 1);
     this._duration.set('wait', 1);
 
     this.getMove = function () { return this._duration.get('move'); };
     this.getUseOrb = function () { return this._duration.get('useOrb'); };
-    this.getPickUpOrb = function () { return this._duration.get('pickUpOrb'); };
+    this.getAttack = function () { return this._duration.get('attack'); };
     this.getWait = function () { return this._duration.get('wait'); };
 };
 
@@ -207,5 +209,46 @@ Main.Component.HitPoint = function (hp) {
 
     this.getHitPoint = function () { return this._hitPoint; };
     this.takeDamage = function (damage) { this._hitPoint -= damage; };
-    this.isDead = function () { return this._hitPoint > 0; };
+    this.isDead = function () { return this._hitPoint <= 0; };
+};
+
+Main.Component.Damage = function (baseDamage) {
+    this._name = 'Damage';
+
+    this._damage = new Map([['base', baseDamage || 1]]);
+
+    this.getDamage = function (attackType) {
+        return this._damage.get(attackType || 'base');
+    };
+
+    this.setDamage = function (attackType, damage) {
+        this._damage.set(attackType, damage);
+    };
+};
+
+Main.Component.DropRate = function () {
+    this._name = 'DropRate';
+
+    this._dropRate = new Map(
+        [['base', 20],
+        ['fire', 100],
+        ['ice', 60],
+        ['lump', 60]]);
+
+    this.getDropRate = function (attackType) {
+        return this._dropRate.get(attackType);
+    };
+};
+
+Main.Component.Status = function () {
+    this._name = 'Status';
+
+    this._frozen = new Map([
+        ['active', false],
+        ['start', null],
+        ['duration', null]]);
+
+    this.getFrozen = function () { return this._frozen.get('active'); };
+
+    // TODO: add methods to change the frozen status.
 };

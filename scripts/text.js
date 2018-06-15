@@ -41,6 +41,8 @@ Main.text.initialize = function () {
     text.get('action').set('continue', 'Press Space to continue.');
     text.get('action').set('end', '=====The End=====');
     text.get('action').set('pick', 'You pick up the %% Orb.');
+    text.get('action').set('hit', 'You hit the %%.');
+    text.get('action').set('kill', 'You kill the %%.');
 
     text.get('action').set('deathGeneral', 'Rest in peace, ashen one.');
     text.get('action').set('deathBoss1',
@@ -136,6 +138,22 @@ Main.text.pickUp = function (orb) {
     let text = Main.text.action('pick');
 
     text = text.replace('%%', Main.text.dungeon(orb));
+
+    return text;
+};
+
+Main.text.hitTarget = function (target) {
+    let text = Main.text.action('hit');
+
+    text = text.replace('%%', Main.text.name(target.getEntityName()));
+
+    return text;
+};
+
+Main.text.killTarget = function (target) {
+    let text = Main.text.action('kill');
+
+    text = text.replace('%%', Main.text.name(target.getEntityName()));
 
     return text;
 };

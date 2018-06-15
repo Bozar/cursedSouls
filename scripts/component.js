@@ -146,20 +146,20 @@ Main.Component.Position = function (range, x, y) {
     this.setY = function (pos) { this._y = pos; };
 };
 
-Main.Component.ActionDuration = function (move) {
+Main.Component.ActionDuration = function () {
     this._name = 'ActionDuration';
 
-    this._move = move || 1;
-    this._useOrb = 1;
-    this._pickUpOrb = 1;
-    this._wait = 1;
-    this._goDownstairs = 1;
+    this._duration = new Map();
 
-    this.getMove = function () { return this._move; };
-    this.getUseOrb = function () { return this._useOrb; };
-    this.getPickUpOrb = function () { return this._pickUpOrb; };
-    this.getWait = function () { return this._wait; };
-    this.getGoDownstairs = function () { return this._goDownstairs; };
+    this._duration.set('move', 1);
+    this._duration.set('useOrb', 1);
+    this._duration.set('pickUpOrb', 1);
+    this._duration.set('wait', 1);
+
+    this.getMove = function () { return this._duration.get('move'); };
+    this.getUseOrb = function () { return this._duration.get('useOrb'); };
+    this.getPickUpOrb = function () { return this._duration.get('pickUpOrb'); };
+    this.getWait = function () { return this._duration.get('wait'); };
 };
 
 Main.Component.Inventory = function (capacity, firstItem) {

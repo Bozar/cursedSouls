@@ -509,7 +509,7 @@ Main.system.exitCutScene = function () {
         Main.screens.main.enter(true);
 
         Main.system.unlockEngine(
-            Main.getEntity('pc').ActionDuration.getGoDownstairs());
+            Main.getEntity('pc').ActionDuration.getWait());
     } else {
         Main.screens.main.enter(false);
     }

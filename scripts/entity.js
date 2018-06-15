@@ -117,6 +117,8 @@ Main.entity.dummy = function (x, y) {
     e.act = Main.system.dummyAct;
 
     Main.entities.get('npc').set(e.getID(), e);
+
+    return e.getID();
 };
 
 Main.entity.marker = function () {
@@ -169,4 +171,6 @@ Main.entity.orb = function (orbName) {
     e.addComponent(new Main.Component.Display(orbChar, 'green'));
 
     Main.entities.get('orb').set(e.getID(), e);
+
+    return e.getID();
 };

@@ -43,6 +43,7 @@ Main.text.initialize = function () {
     text.get('action').set('pick', 'You pick up the %% Orb.');
     text.get('action').set('hit', 'You hit the %%.');
     text.get('action').set('kill', 'You kill the %%.');
+    text.get('action').set('drop', 'The %1% drops the %2% Orb.');
 
     text.get('action').set('deathGeneral', 'Rest in peace, ashen one.');
     text.get('action').set('deathBoss1',
@@ -154,6 +155,15 @@ Main.text.killTarget = function (target) {
     let text = Main.text.action('kill');
 
     text = text.replace('%%', Main.text.name(target.getEntityName()));
+
+    return text;
+};
+
+Main.text.targetDropOrb = function (target, orb) {
+    let text = Main.text.action('drop');
+
+    text = text.replace('%1%', Main.text.name(target.getEntityName()));
+    text = text.replace('%2%', Main.text.dungeon(orb.getEntityName()));
 
     return text;
 };

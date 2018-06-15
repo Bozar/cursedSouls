@@ -522,6 +522,7 @@ Main.system.exitCutScene = function () {
 
 Main.system.useBaseAttack = function (target) {
     let dropRate = 0;
+
     target.HitPoint.takeDamage(Main.getEntity('pc').Damage.getDamage());
 
     if (target.HitPoint.isDead()) {
@@ -531,11 +532,11 @@ Main.system.useBaseAttack = function (target) {
             dropRate = Main.getEntity('pc').DropRate.getDropRate('base');
         }
 
-        // TODO: add a function to drop an orb is possible.
-        console.log('drop rate: ' + dropRate);
-
         Main.getEntity('message').Message.pushMsg(
             Main.text.killTarget(target));
+
+        // Main.system.npcDropOrb(target, 100);
+        Main.system.npcDropOrb(target, dropRate);
 
         Main.getEntity('npc').delete(target.getID());
     } else {
@@ -544,4 +545,30 @@ Main.system.useBaseAttack = function (target) {
     }
 
     Main.system.unlockEngine(Main.getEntity('pc').ActionDuration.getAttack());
+};
+
+Main.system.npcDropOrb = function (actor, dropRate) {
+    let orbID = null;
+    let orbHere = Main.system.orbHere(
+        actor.Position.getX(), actor.Position.getY());
+
+    if (// Orbs will not drop on the downstairs.
+        !Main.system.downstairsHere(
+            actor.Position.getX(), actor.Position.getY())
+        // Orbs have a chance to drop.
+        && ROT.RNG.getPercentage() <= dropRate) {
+        // Two orbs cannot appear in the same position.
+        if (orbHere) {
+            Main.getEntity('orb').delete(orbHere.getID());
+        }
+
+        // The NPC drops an orb.
+        orbID = Main.entity.orb(actor.Inventory.getInventory(0));
+
+        Main.getEntity('orb').get(orbID).Position.setX(actor.Position.getX());
+        Main.getEntity('orb').get(orbID).Position.setY(actor.Position.getY());
+
+        Main.getEntity('message').Message.pushMsg(
+            Main.text.targetDropOrb(actor, Main.getEntity('orb').get(orbID)));
+    }
 };

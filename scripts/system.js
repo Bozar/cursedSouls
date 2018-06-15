@@ -163,7 +163,7 @@ Main.system.pickUpOrb = function () {
     Main.getEntity('orb').delete(orbHere.getID());
 
     Main.system.unlockEngine(
-        Main.getEntity('pc').ActionDuration.getPickUpOrb());
+        Main.getEntity('pc').ActionDuration.getUseOrb());
 };
 
 Main.system.useDownstairs = function () {
@@ -512,7 +512,7 @@ Main.system.exitCutScene = function () {
         Main.screens.main.enter(true);
 
         Main.system.unlockEngine(
-            Main.getEntity('pc').ActionDuration.getWait());
+            Main.getEntity('pc').ActionDuration.getMove());
     } else {
         Main.screens.main.enter(false);
     }

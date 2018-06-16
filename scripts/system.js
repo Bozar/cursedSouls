@@ -360,10 +360,7 @@ Main.system.examineMode = function () {
     function examine(e) {
         // Exit the examine mode.
         if (Main.input.getAction(e, 'fixed') === 'no') {
-            Main.input.listenEvent('remove', examine);
-            Main.input.listenEvent('add', 'main');
-
-            setOrRemoveMarker(false);
+            exitExamineOrAimMode();
         }
         // Move the marker.
         else if (Main.input.getAction(e, 'move')) {
@@ -400,13 +397,20 @@ Main.system.examineMode = function () {
             Main.getEntity('marker').Position.setX(null);
             Main.getEntity('marker').Position.setY(null);
 
-            // Change mode: examine --> main.
+            // Change mode: examine or aim --> main.
             Main.screens.setCurrentMode(Main.screens.main.getMode(0));
         }
 
         setExModeLine();
         Main.display.clear();
         Main.screens.main.display();
+    }
+
+    function exitExamineOrAimMode() {
+        Main.input.listenEvent('remove', examine);
+        Main.input.listenEvent('add', 'main');
+
+        setOrRemoveMarker(false);
     }
 
     function lockTarget(who) {
@@ -513,6 +517,9 @@ Main.system.examineMode = function () {
     }
 
     function useOrbInTheInventory() {
+        let orb = Main.getEntity('pc').Inventory.getInventory(
+            Main.getEntity('pc').Inventory.getInventory().length - 1);
+
         if (Main.screens.getCurrentMode() === 'aim'
             && Main.system.npcHere(
                 Main.getEntity('marker').Position.getX(),
@@ -532,6 +539,10 @@ Main.system.examineMode = function () {
                     Main.system.useLumpOrb();
                     break;
             }
+
+            exitExamineOrAimMode();
+            Main.system.unlockEngine(
+                Main.getEntity('pc').ActionDuration.getUseOrb());
         }
     }
 };
@@ -622,10 +633,7 @@ Main.system.npcDropOrb = function (actor, dropRate) {
 };
 
 Main.system.useFireOrb = function () {
-    if (Main.system.getDistance(Main.getEntity('pc'), Main.getEntity('marker'))
-        <= Main.getEntity('pc').AttackRange.getRange('fire')) {
-        console.log('use fire');
-    }
+    console.log('use fire');
 };
 
 Main.system.useIceOrb = function () {

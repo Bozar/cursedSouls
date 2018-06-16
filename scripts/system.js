@@ -144,21 +144,10 @@ Main.system.pcPickOrUse = function () {
         < Main.getEntity('pc').Inventory.getCapacity()) {
         Main.system.pickUpOrb();
     } else if (Main.getEntity('pc').Inventory.getInventory().length > 0) {
-        switch (Main.getEntity('pc').Inventory.getInventory(
-            Main.getEntity('pc').Inventory.getInventory().length - 1)) {
-            case 'fire':
-                Main.system.useFireOrb();
-                break;
-            case 'ice':
-                Main.system.useIceOrb();
-                break;
-            case 'slime':
-                Main.system.useSlimeOrb();
-                break;
-            case 'lump':
-                Main.system.useLumpOrb();
-                break;
-        }
+        // Change mode: main --> aim.
+        Main.screens.setCurrentMode(Main.screens.main.getMode(2));
+
+        Main.system.examineMode();
     } else {
         // TODO: add more actions.
         console.log('press space');
@@ -369,20 +358,30 @@ Main.system.examineMode = function () {
 
     // The hub function to handle key inputs and call other functions.
     function examine(e) {
+        // Exit the examine mode.
         if (Main.input.getAction(e, 'fixed') === 'no') {
-            // Exit the examine mode.
             Main.input.listenEvent('remove', examine);
             Main.input.listenEvent('add', 'main');
 
             setOrRemoveMarker(false);
-        } else if (Main.input.getAction(e, 'move')) {
-            // Move the marker.
+        }
+        // Move the marker.
+        else if (Main.input.getAction(e, 'move')) {
             Main.system.move(Main.input.getAction(e, 'move'),
                 Main.getEntity('marker'));
-        } else if (Main.input.getAction(e, 'interact') === 'next'
+        }
+        // Lock the previous or next target.
+        else if (Main.input.getAction(e, 'interact') === 'next'
             || Main.input.getAction(e, 'interact') === 'previous') {
-            // Lock the previous or next target.
             lockTarget(Main.input.getAction(e, 'interact'));
+        }
+        // Use an orb.
+        else if (Main.input.getAction(e, 'interact') === 'pickOrUse'
+            && Main.screens.getCurrentMode() === 'aim'
+            && Main.system.npcHere(
+                Main.getEntity('marker').Position.getX(),
+                Main.getEntity('marker').Position.getY())) {
+            useOrbInTheInventory();
         }
 
         setExModeLine();
@@ -398,7 +397,9 @@ Main.system.examineMode = function () {
                 Main.getEntity('pc').Position.getY());
 
             // Change mode: main --> examine.
-            Main.screens.setCurrentMode(Main.screens.main.getMode(1));
+            if (Main.screens.getCurrentMode() === 'main') {
+                Main.screens.setCurrentMode(Main.screens.main.getMode(1));
+            }
         } else {
             Main.getEntity('marker').Position.setX(null);
             Main.getEntity('marker').Position.setY(null);
@@ -507,8 +508,29 @@ Main.system.examineMode = function () {
         if (Main.screens.getCurrentMode() === 'examine') {
             Main.getEntity('message').Message.setModeline(
                 Main.text.modeLine('examine'));
+        } else if (Main.screens.getCurrentMode() === 'aim') {
+            Main.getEntity('message').Message.setModeline(
+                Main.text.modeLine('aim'));
         } else {
             Main.getEntity('message').Message.setModeline('');
+        }
+    }
+
+    function useOrbInTheInventory() {
+        switch (Main.getEntity('pc').Inventory.getInventory(
+            Main.getEntity('pc').Inventory.getInventory().length - 1)) {
+            case 'fire':
+                Main.system.useFireOrb();
+                break;
+            case 'ice':
+                Main.system.useIceOrb();
+                break;
+            case 'slime':
+                Main.system.useSlimeOrb();
+                break;
+            case 'lump':
+                Main.system.useLumpOrb();
+                break;
         }
     }
 };

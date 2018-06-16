@@ -123,12 +123,19 @@ Main.text.cutScene = function (id) {
 Main.text.modeLine = function (mode) {
     let check = ['examine', 'aim'];
     let text = '';
+    let colorfulMode = '';
 
     if (check.indexOf(mode) < 0) {
         mode = check[0];
     }
 
-    text = `[${Main.text.ui(mode)}][${Main.text.ui('range')}]`;
+    if (mode === 'aim') {
+        colorfulMode = Main.screens.colorfulText(Main.text.ui(mode), 'orange');
+    } else {
+        colorfulMode = Main.text.ui(mode);
+    }
+
+    text = `[${colorfulMode}][${Main.text.ui('range')}]`;
     text = text.replace('%%', Main.system.getDistance(
         Main.getEntity('pc'), Main.getEntity('marker')));
 

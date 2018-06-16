@@ -98,6 +98,12 @@ Main.entity.pc = function () {
     e.addComponent(new Main.Component.Damage(1));
     e.addComponent(new Main.Component.DropRate());
     e.addComponent(new Main.Component.Status());
+    e.addComponent(new Main.Component.AttackRange());
+
+    e.AttackRange.setRange('fire', 1);
+    e.AttackRange.setRange('ice', 2);
+    e.AttackRange.setRange('slime', 2);
+    e.AttackRange.setRange('lump', 2);
 
     e.act = Main.system.pcAct;
 

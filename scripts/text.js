@@ -40,6 +40,7 @@ Main.text.initialize = function () {
     text.set('action', new Map());
     text.get('action').set('continue', 'Press Space to continue.');
     text.get('action').set('end', '=====The End=====');
+    text.get('action').set('range', 'Out of range!');
     text.get('action').set('pick', 'You pick up the %% Orb.');
     text.get('action').set('hit', 'You hit the %%.');
     text.get('action').set('kill', 'You kill the %%.');
@@ -124,6 +125,7 @@ Main.text.modeLine = function (mode) {
     let check = ['examine', 'aim'];
     let text = '';
     let colorfulMode = '';
+    let outOfRange = '';
 
     if (check.indexOf(mode) < 0) {
         mode = check[0];
@@ -131,11 +133,16 @@ Main.text.modeLine = function (mode) {
 
     if (mode === 'aim') {
         colorfulMode = Main.screens.colorfulText(Main.text.ui(mode), 'orange');
+
+        if (!Main.system.insideOrbRange()) {
+            outOfRange = `[${Main.screens.colorfulText(
+                Main.text.action('range'), 'orange')}]`;
+        }
     } else {
         colorfulMode = Main.text.ui(mode);
     }
 
-    text = `[${colorfulMode}][${Main.text.ui('range')}]`;
+    text = `[${colorfulMode}][${Main.text.ui('range')}]${outOfRange}`;
     text = text.replace('%%', Main.system.getDistance(
         Main.getEntity('pc'), Main.getEntity('marker')));
 

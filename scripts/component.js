@@ -240,6 +240,22 @@ Main.Component.DropRate = function () {
     };
 };
 
+Main.Component.AttackRange = function (baseRange) {
+    this._name = 'AttackRange';
+
+    this._range = new Map();
+
+    if (baseRange) {
+        this._range.set('base', baseRange);
+    }
+
+    this.getRange = function (rangeKey) { return this._range.get(rangeKey); };
+
+    this.setRange = function (rangeKey, rangeValue) {
+        this._range.set(rangeKey, rangeValue);
+    };
+};
+
 Main.Component.Status = function () {
     this._name = 'Status';
 

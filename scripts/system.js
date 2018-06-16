@@ -376,11 +376,7 @@ Main.system.examineMode = function () {
             lockTarget(Main.input.getAction(e, 'interact'));
         }
         // Use an orb.
-        else if (Main.input.getAction(e, 'interact') === 'pickOrUse'
-            && Main.screens.getCurrentMode() === 'aim'
-            && Main.system.npcHere(
-                Main.getEntity('marker').Position.getX(),
-                Main.getEntity('marker').Position.getY())) {
+        else if (Main.input.getAction(e, 'interact') === 'pickOrUse') {
             useOrbInTheInventory();
         }
 
@@ -517,20 +513,25 @@ Main.system.examineMode = function () {
     }
 
     function useOrbInTheInventory() {
-        switch (Main.getEntity('pc').Inventory.getInventory(
-            Main.getEntity('pc').Inventory.getInventory().length - 1)) {
-            case 'fire':
-                Main.system.useFireOrb();
-                break;
-            case 'ice':
-                Main.system.useIceOrb();
-                break;
-            case 'slime':
-                Main.system.useSlimeOrb();
-                break;
-            case 'lump':
-                Main.system.useLumpOrb();
-                break;
+        if (Main.screens.getCurrentMode() === 'aim'
+            && Main.system.npcHere(
+                Main.getEntity('marker').Position.getX(),
+                Main.getEntity('marker').Position.getY())
+            && Main.system.insideOrbRange()) {
+            switch (orb) {
+                case 'fire':
+                    Main.system.useFireOrb();
+                    break;
+                case 'ice':
+                    Main.system.useIceOrb();
+                    break;
+                case 'slime':
+                    Main.system.useSlimeOrb();
+                    break;
+                case 'lump':
+                    Main.system.useLumpOrb();
+                    break;
+            }
         }
     }
 };
@@ -540,6 +541,15 @@ Main.system.getDistance = function (source, target) {
     let y = Math.abs(source.Position.getY() - target.Position.getY());
 
     return Math.max(x, y);
+};
+
+Main.system.insideOrbRange = function () {
+    let orb = Main.getEntity('pc').Inventory.getInventory(
+        Main.getEntity('pc').Inventory.getInventory().length - 1);
+
+    return Main.system.getDistance(
+        Main.getEntity('pc'), Main.getEntity('marker'))
+        <= Main.getEntity('pc').AttackRange.getRange(orb);
 };
 
 Main.system.exitCutScene = function () {
@@ -612,7 +622,10 @@ Main.system.npcDropOrb = function (actor, dropRate) {
 };
 
 Main.system.useFireOrb = function () {
-    console.log('use fire');
+    if (Main.system.getDistance(Main.getEntity('pc'), Main.getEntity('marker'))
+        <= Main.getEntity('pc').AttackRange.getRange('fire')) {
+        console.log('use fire');
+    }
 };
 
 Main.system.useIceOrb = function () {

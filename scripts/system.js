@@ -143,6 +143,22 @@ Main.system.pcPickOrUse = function () {
         && Main.getEntity('pc').Inventory.getInventory().length
         < Main.getEntity('pc').Inventory.getCapacity()) {
         Main.system.pickUpOrb();
+    } else if (Main.getEntity('pc').Inventory.getInventory().length > 0) {
+        switch (Main.getEntity('pc').Inventory.getInventory(
+            Main.getEntity('pc').Inventory.getInventory().length - 1)) {
+            case 'fire':
+                Main.system.useFireOrb();
+                break;
+            case 'ice':
+                Main.system.useIceOrb();
+                break;
+            case 'slime':
+                Main.system.useSlimeOrb();
+                break;
+            case 'lump':
+                Main.system.useLumpOrb();
+                break;
+        }
     } else {
         // TODO: add more actions.
         console.log('press space');
@@ -571,4 +587,20 @@ Main.system.npcDropOrb = function (actor, dropRate) {
         Main.getEntity('message').Message.pushMsg(
             Main.text.targetDropOrb(actor, Main.getEntity('orb').get(orbID)));
     }
+};
+
+Main.system.useFireOrb = function () {
+    console.log('use fire');
+};
+
+Main.system.useIceOrb = function () {
+    console.log('use ice');
+};
+
+Main.system.useSlimeOrb = function () {
+    console.log('use slime');
+};
+
+Main.system.useLumpOrb = function () {
+    console.log('use lump');
 };

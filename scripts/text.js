@@ -43,7 +43,7 @@ Main.text.initialize = function () {
     text.get('action').set('pick', 'You pick up the %% Orb.');
     text.get('action').set('hit', 'You hit the %%.');
     text.get('action').set('kill', 'You kill the %%.');
-    text.get('action').set('drop', 'The %1% drops the %2% Orb.');
+    text.get('action').set('drop', 'The %1% drops a %2% Orb.');
 
     text.get('action').set('deathGeneral', 'Rest in peace, ashen one.');
     text.get('action').set('deathBoss1',

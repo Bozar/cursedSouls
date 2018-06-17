@@ -190,17 +190,11 @@ Main.screens.drawDescription = function () {
             // Top line
             Main.text.info(npcHere.getEntityName()),
             // Bottom line
-            '[' + Main.text.name(npcHere.getEntityName())
-            + '][' + Main.text.dungeon(npcHere.Inventory.getInventory(0))
-            + '][' + npcHere.HitPoint.getHitPoint() + ']'
-            + itemUnderTheFoot());
+            Main.text.npcBottomDescription());
     } else if (downstairsHere) {
         drawTextBlock(Main.text.downstairs(), '');
     } else if (orbHere) {
-        drawTextBlock(
-            '[' + Main.text.dungeon(orbHere.getEntityName()) + '] '
-            + Main.text.info(orbHere.getEntityName()),
-            '');
+        drawTextBlock(Main.text.orbTopDescription(), '');
     } else {
         Main.screens.drawMessage();
     }
@@ -216,17 +210,6 @@ Main.screens.drawDescription = function () {
             Main.UI.message.getX(),
             Main.UI.message.getY() + Main.UI.message.getHeight() - 1,
             bottom);
-    }
-
-    function itemUnderTheFoot() {
-        let entityHere = downstairsHere || orbHere || null;
-
-        if (entityHere) {
-            return '[@ ' + Main.screens.colorfulText(
-                Main.text.dungeon(entityHere.getEntityName()),
-                entityHere.Display.getColor()) + ']';
-        }
-        return '';
     }
 };
 

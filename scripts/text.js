@@ -149,6 +149,54 @@ Main.text.modeLine = function (mode) {
     return text;
 };
 
+Main.text.npcBottomDescription = function () {
+    let npcHere = Main.system.npcHere(
+        Main.getEntity('marker').Position.getX(),
+        Main.getEntity('marker').Position.getY());
+    let downstairsHere = Main.system.downstairsHere(
+        Main.getEntity('marker').Position.getX(),
+        Main.getEntity('marker').Position.getY());
+    let orbHere = Main.system.orbHere(
+        Main.getEntity('marker').Position.getX(),
+        Main.getEntity('marker').Position.getY());
+    let text = '';
+
+    text += '[' + Main.text.name(npcHere.getEntityName()) + ']';
+    text += '[' + Main.screens.colorfulText(
+        Main.text.dungeon(npcHere.Inventory.getInventory(0)), 'white')
+        //Main.text.dungeon(npcHere.Inventory.getInventory(0)), 'green')
+        + ']';
+    text += '[' + Main.screens.colorfulText(
+        npcHere.HitPoint.getHitPoint(), 'white')
+        //npcHere.HitPoint.getHitPoint(), 'orange')
+        + ']' + itemUnderTheFoot();
+
+    return text;
+
+    function itemUnderTheFoot() {
+        let entityHere = downstairsHere || orbHere || null;
+
+        if (entityHere) {
+            return '[@ ' + Main.screens.colorfulText(
+                Main.text.dungeon(entityHere.getEntityName()),
+                entityHere.Display.getColor()) + ']';
+        }
+        return '';
+    }
+};
+
+Main.text.orbTopDescription = function () {
+    let orbHere = Main.system.orbHere(
+        Main.getEntity('marker').Position.getX(),
+        Main.getEntity('marker').Position.getY());
+    let text = '';
+
+    text += '[' + Main.text.dungeon(orbHere.getEntityName()) + '] '
+        + Main.text.info(orbHere.getEntityName());
+
+    return text;
+};
+
 Main.text.pickUp = function (orb) {
     let text = Main.text.action('pick');
 

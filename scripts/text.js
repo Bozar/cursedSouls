@@ -149,32 +149,23 @@ Main.text.modeLine = function (mode) {
     return text;
 };
 
-Main.text.npcBottomDescription = function () {
-    let npcHere = Main.system.npcHere(
-        Main.getEntity('marker').Position.getX(),
-        Main.getEntity('marker').Position.getY());
-    let downstairsHere = Main.system.downstairsHere(
-        Main.getEntity('marker').Position.getX(),
-        Main.getEntity('marker').Position.getY());
-    let orbHere = Main.system.orbHere(
-        Main.getEntity('marker').Position.getX(),
-        Main.getEntity('marker').Position.getY());
+Main.text.npcBottomDescription = function (downstairs, npc, orb) {
     let text = '';
 
-    text += '[' + Main.text.name(npcHere.getEntityName()) + ']';
+    text += '[' + Main.text.name(npc.getEntityName()) + ']';
     text += '[' + Main.screens.colorfulText(
-        Main.text.dungeon(npcHere.Inventory.getInventory(0)), 'white')
+        Main.text.dungeon(npc.Inventory.getInventory(0)), 'white')
         //Main.text.dungeon(npcHere.Inventory.getInventory(0)), 'green')
         + ']';
     text += '[' + Main.screens.colorfulText(
-        npcHere.HitPoint.getHitPoint(), 'white')
+        npc.HitPoint.getHitPoint(), 'white')
         //npcHere.HitPoint.getHitPoint(), 'orange')
         + ']' + itemUnderTheFoot();
 
     return text;
 
     function itemUnderTheFoot() {
-        let entityHere = downstairsHere || orbHere || null;
+        let entityHere = downstairs || orb || null;
 
         if (entityHere) {
             return '[@ ' + Main.screens.colorfulText(
@@ -185,14 +176,11 @@ Main.text.npcBottomDescription = function () {
     }
 };
 
-Main.text.orbTopDescription = function () {
-    let orbHere = Main.system.orbHere(
-        Main.getEntity('marker').Position.getX(),
-        Main.getEntity('marker').Position.getY());
+Main.text.orbTopDescription = function (orb) {
     let text = '';
 
-    text += '[' + Main.text.dungeon(orbHere.getEntityName()) + '] '
-        + Main.text.info(orbHere.getEntityName());
+    text += '[' + Main.text.dungeon(orb.getEntityName()) + '] '
+        + Main.text.info(orb.getEntityName());
 
     return text;
 };

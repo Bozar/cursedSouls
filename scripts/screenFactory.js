@@ -190,11 +190,11 @@ Main.screens.drawDescription = function () {
             // Top line
             Main.text.info(npcHere.getEntityName()),
             // Bottom line
-            Main.text.npcBottomDescription());
+            Main.text.npcBottomDescription(downstairsHere, npcHere, orbHere));
     } else if (downstairsHere) {
         drawTextBlock(Main.text.downstairs(), '');
     } else if (orbHere) {
-        drawTextBlock(Main.text.orbTopDescription(), '');
+        drawTextBlock(Main.text.orbTopDescription(orbHere), '');
     } else {
         Main.screens.drawMessage();
     }

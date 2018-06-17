@@ -519,27 +519,41 @@ Main.system.examineMode = function () {
     function useOrbInTheInventory() {
         let orb = Main.getEntity('pc').Inventory.getInventory(
             Main.getEntity('pc').Inventory.getInventory().length - 1);
+        let takeAction = false;
 
         if (Main.screens.getCurrentMode() === 'aim'
-            && Main.system.npcHere(
-                Main.getEntity('marker').Position.getX(),
-                Main.getEntity('marker').Position.getY())
             && Main.system.insideOrbRange()) {
-            switch (orb) {
-                case 'fire':
-                    Main.system.useFireOrb();
-                    break;
-                case 'ice':
-                    Main.system.useIceOrb();
-                    break;
-                case 'slime':
-                    Main.system.useSlimeOrb();
-                    break;
-                case 'lump':
-                    Main.system.useLumpOrb();
-                    break;
-            }
+            if (orb !== 'slime'
+                && Main.system.npcHere(
+                    Main.getEntity('marker').Position.getX(),
+                    Main.getEntity('marker').Position.getY())) {
+                takeAction = true;
 
+                switch (orb) {
+                    case 'fire':
+                        Main.system.useFireOrb();
+                        break;
+                    case 'ice':
+                        Main.system.useIceOrb();
+                        break;
+                    case 'lump':
+                        Main.system.useLumpOrb();
+                        break;
+                }
+            } else if (orb === 'slime'
+                && Main.system.isFloor(
+                    Main.getEntity('marker').Position.getX(),
+                    Main.getEntity('marker').Position.getY())
+                && !Main.system.npcHere(
+                    Main.getEntity('marker').Position.getX(),
+                    Main.getEntity('marker').Position.getY())) {
+                takeAction = true;
+
+                Main.system.useSlimeOrb();
+            }
+        }
+
+        if (takeAction) {
             exitExamineOrAimMode();
             Main.system.unlockEngine(
                 Main.getEntity('pc').ActionDuration.getUseOrb());

@@ -136,13 +136,13 @@ Main.system.pcPickOrUse = function () {
         Main.getEntity('pc').Position.getY())
         && Main.getEntity('dungeon').BossFight.getBossFightStatus()
         !== 'active') {
-        Main.system.useDownstairs();
+        Main.system.pcUseDownstairs();
     } else if (Main.system.orbHere(
         Main.getEntity('pc').Position.getX(),
         Main.getEntity('pc').Position.getY())
         && Main.getEntity('pc').Inventory.getInventory().length
         < Main.getEntity('pc').Inventory.getCapacity()) {
-        Main.system.pickUpOrb();
+        Main.system.pcPickUpOrb();
     } else if (Main.getEntity('pc').Inventory.getInventory().length > 0) {
         // Change mode: main --> aim.
         Main.screens.setCurrentMode(Main.screens.main.getMode(2));
@@ -154,7 +154,7 @@ Main.system.pcPickOrUse = function () {
     }
 };
 
-Main.system.pickUpOrb = function () {
+Main.system.pcPickUpOrb = function () {
     let orbHere = Main.system.orbHere(
         Main.getEntity('pc').Position.getX(),
         Main.getEntity('pc').Position.getY());
@@ -171,7 +171,7 @@ Main.system.pickUpOrb = function () {
         Main.getEntity('pc').ActionDuration.getUseOrb());
 };
 
-Main.system.useDownstairs = function () {
+Main.system.pcUseDownstairs = function () {
     switch (Main.getEntity('dungeon').BossFight.getBossFightStatus()) {
         case 'inactive':
             Main.input.listenEvent('remove', 'main');
@@ -263,7 +263,7 @@ Main.system.move = function (direction, who) {
         }
     }
     else if (Main.system.npcHere(x, y)) {
-        Main.system.useBaseAttack(Main.system.npcHere(x, y));
+        Main.system.pcAttack(Main.system.npcHere(x, y), 'base');
     }
     // TODO: add more available actions.
     else {
@@ -519,34 +519,32 @@ Main.system.examineMode = function () {
     function useOrbInTheInventory() {
         let orb = Main.getEntity('pc').Inventory.getInventory(
             Main.getEntity('pc').Inventory.getInventory().length - 1);
+        let npcHere = Main.system.npcHere(
+            Main.getEntity('marker').Position.getX(),
+            Main.getEntity('marker').Position.getY());
         let takeAction = false;
 
         if (Main.screens.getCurrentMode() === 'aim'
             && Main.system.insideOrbRange()) {
-            if (orb !== 'slime'
-                && Main.system.npcHere(
-                    Main.getEntity('marker').Position.getX(),
-                    Main.getEntity('marker').Position.getY())) {
+            if (orb !== 'slime' && npcHere) {
                 takeAction = true;
 
                 switch (orb) {
                     case 'fire':
-                        Main.system.useFireOrb();
+                        Main.system.pcAttack(npcHere, 'fire');
                         break;
                     case 'ice':
                         Main.system.useIceOrb();
                         break;
                     case 'lump':
-                        Main.system.useLumpOrb();
+                        Main.system.pcAttack(npcHere, 'lump');
                         break;
                 }
             } else if (orb === 'slime'
                 && Main.system.isFloor(
                     Main.getEntity('marker').Position.getX(),
                     Main.getEntity('marker').Position.getY())
-                && !Main.system.npcHere(
-                    Main.getEntity('marker').Position.getX(),
-                    Main.getEntity('marker').Position.getY())) {
+                && !npcHere) {
                 takeAction = true;
 
                 Main.system.useSlimeOrb();
@@ -555,8 +553,9 @@ Main.system.examineMode = function () {
 
         if (takeAction) {
             exitExamineOrAimMode();
-            Main.system.unlockEngine(
-                Main.getEntity('pc').ActionDuration.getUseOrb());
+            // NOTE: unlock the engine after use ice & slime.
+            // Main.system.unlockEngine(
+            //     Main.getEntity('pc').ActionDuration.getUseOrb());
         }
     }
 };
@@ -593,16 +592,29 @@ Main.system.exitCutScene = function () {
     Main.input.listenEvent('add', 'main');
 };
 
-Main.system.useBaseAttack = function (target) {
+Main.system.pcAttack = function (target, attackType) {
     let dropRate = 0;
 
     target.HitPoint.takeDamage(Main.getEntity('pc').Damage.getDamage());
 
     if (target.HitPoint.isDead()) {
-        if (target.Status.getFrozen()) {
-            dropRate = Main.getEntity('pc').DropRate.getDropRate('ice');
+        if (attackType === 'base') {
+            if (target.Status.getFrozen()) {
+                dropRate = Main.getEntity('pc').DropRate.getDropRate('ice');
+            } else {
+                dropRate = Main.getEntity('pc').DropRate.getDropRate('base');
+            }
         } else {
-            dropRate = Main.getEntity('pc').DropRate.getDropRate('base');
+            switch (attackType) {
+                case 'fire':
+                    dropRate
+                        = Main.getEntity('pc').DropRate.getDropRate('fire');
+                    break;
+                case 'lump':
+                    dropRate
+                        = Main.getEntity('pc').DropRate.getDropRate('lump');
+                    break;
+            }
         }
 
         Main.getEntity('message').Message.pushMsg(
@@ -646,18 +658,16 @@ Main.system.npcDropOrb = function (actor, dropRate) {
     }
 };
 
-Main.system.useFireOrb = function () {
-    console.log('use fire');
-};
-
 Main.system.useIceOrb = function () {
     console.log('use ice');
+
+    Main.system.unlockEngine(
+        Main.getEntity('pc').ActionDuration.getUseOrb());
 };
 
 Main.system.useSlimeOrb = function () {
     console.log('use slime');
-};
 
-Main.system.useLumpOrb = function () {
-    console.log('use lump');
+    Main.system.unlockEngine(
+        Main.getEntity('pc').ActionDuration.getUseOrb());
 };

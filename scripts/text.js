@@ -23,6 +23,7 @@ Main.text.initialize = function () {
     // text.get('dungeon').set('candy', 'Candy');
     // LSP: Yay, it's me, babe.
     text.get('dungeon').set('lump', 'Lump');
+    text.get('dungeon').set('armor', 'Icy Armor');
 
     // UI elements outside the dungeon section
     text.set('ui', new Map());
@@ -42,6 +43,8 @@ Main.text.initialize = function () {
     text.get('action').set('end', '=====The End=====');
     text.get('action').set('range', 'Out of range!');
     text.get('action').set('pick', 'You pick up the %% Orb.');
+    text.get('action').set('teleport', 'You teleport yourself.');
+
     text.get('action').set('hit', 'You hit the %%.');
     text.get('action').set('kill', 'You kill the %%.');
     text.get('action').set('drop', 'The %1% drops a %2% Orb.');

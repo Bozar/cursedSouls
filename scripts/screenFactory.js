@@ -358,7 +358,7 @@ Main.screens.drawPower = function () {
     // HP bar
     for (let i = 0; i < 6; i++) {
         Main.display.drawText(
-            Main.UI.power.getX() + 9,
+            Main.UI.power.getX() + Main.UI.power.getWidth() - 1,
             Main.UI.power.getY() + i * 1.1,
             (i + 1).toString(10));
     }

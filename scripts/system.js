@@ -547,7 +547,7 @@ Main.system.examineMode = function () {
                 && !npcHere) {
                 takeAction = true;
 
-                Main.system.useSlimeOrb();
+                Main.system.pcUseSlimeOrb();
             }
         }
 
@@ -632,6 +632,18 @@ Main.system.pcAttack = function (target, attackType) {
     Main.system.unlockEngine(Main.getEntity('pc').ActionDuration.getAttack());
 };
 
+Main.system.pcUseSlimeOrb = function () {
+    Main.getEntity('pc').Position.setX(
+        Main.getEntity('marker').Position.getX());
+    Main.getEntity('pc').Position.setY(
+        Main.getEntity('marker').Position.getY());
+
+    Main.getEntity('message').Message.pushMsg(Main.text.action('teleport'));
+
+    Main.system.unlockEngine(
+        Main.getEntity('pc').ActionDuration.getUseOrb());
+};
+
 Main.system.npcDropOrb = function (actor, dropRate) {
     let orbID = null;
     let orbHere = Main.system.orbHere(
@@ -660,13 +672,6 @@ Main.system.npcDropOrb = function (actor, dropRate) {
 
 Main.system.useIceOrb = function () {
     console.log('use ice');
-
-    Main.system.unlockEngine(
-        Main.getEntity('pc').ActionDuration.getUseOrb());
-};
-
-Main.system.useSlimeOrb = function () {
-    console.log('use slime');
 
     Main.system.unlockEngine(
         Main.getEntity('pc').ActionDuration.getUseOrb());

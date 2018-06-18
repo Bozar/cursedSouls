@@ -9,50 +9,55 @@ Play the game [on-line](https://bozar.github.io/cursedSouls/).
 Cursed Souls: Giovanni's Orchestra is a roguelike game written in JavaScript with [rot.js](https://github.com/ondras/rot.js). The dungeon has 4 levels: 1 aboveground and 3 underground. Your goal is simple:
 
 * Find the downstairs.
-* Stand on the downstairs and press Space to summon the boss.
+* Stand on the downstairs and press `Space` to summon the boss.
 * Beat the boss.
-* Stand on the downstairs and press Space to continue.
+* Stand on the downstairs and press `Space` to go to the next level.
 
 So why bother killing grunts along the way? That's a good question.
 
 ## Key-bindings
 
-Normal mode:
+Normal Mode:
 
-* Move: arrow keys, hjkl
-* Pick up: Space
-* Wait: z, .
-* Help: ?
+* Move: `arrow keys`, `hjkl`.
+* Pick up orbs or use the downstairs: `Space`.
+* Wait: `z`, `.`.
+* Help: `?`.
 
-Examine mode, aim mode:
+Examine Mode, Aim Mode:
 
-* Enter: x, Space
-* Use orb (aim mode only): Space
-* Lock next target: o, n, PgDn
-* Lock previous target: i, p, PgUp
-* Move cursor: arrow keys, hjkl
-* Exit: Esc
+* Enter: `x`, `Space`.
+* Use orb (aim mode only): `Space`.
+* Lock next target: `PgDn`, `n`, `o`.
+* Lock previous target: `PgUp`, `p`, `i`.
+* Move cursor: `arrow keys`, `hjkl`.
+* Exit: `Esc`.
 
-When pressing Space in normal mode, your character will try to pick up the orb. If that fails for some reason, enter aim mode instead.
+When pressing `Space` in the Normal Mode, your character will try to do actions in this order:
+
+* Use the downstairs.
+* Pick up the orb.
+* Enter aim mode.
+
+If all these actions fail for some reason, you remain in the Normal Mode and still have 1 turn to go.
 
 ## Power Orbs
 
 There are 4 types of power orbs:
 
-* Fire: melee, damage 1
-* Ice: range 2, freeze the target for 2 turns
-* Slime: range 2, teleport yourself
-* Lump: range 2, damage 1
-
-A frozen target can do nothing (including attack passively). It is also immune to ice orbs.
+* Fire: melee, damage 1.
+* Ice: grant you at most 2 layers of Icy Armor.
+* Slime: range 2, teleport yourself.
+* Lump: range 2, damage 1.
 
 Orbs can be found on the ground or dropped by the enemy. Bosses always drop 1 lump orb. As for the grunts, the drop rate depends on how they are killed:
 
-* Base attack: 20%
-* Fire: 100%
-* Lump: 60%
-* Base/lump vs. frozen: 60%
-* Fire vs. frozen: 100%
+* Base attack: 20%.
+* Base attack with Icy Armor: 60%.
+* Fire: 100%.
+* Lump: 60%.
+
+You cannot press `Space` to use the Icy Armor, but if it is the last 'orb' in the inventory, the drop rate from your base attack is raised to 60%.
 
 Orbs do not stack on the dungeon floor. If two orbs appear in the same place, the newer orb will replace the older one. If the orb drops on the downstairs, it will disappear.
 

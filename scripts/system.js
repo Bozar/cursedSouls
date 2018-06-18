@@ -521,19 +521,20 @@ Main.system.examineMode = function () {
         let npcHere = Main.system.npcHere(
             Main.getEntity('marker').Position.getX(),
             Main.getEntity('marker').Position.getY());
+        let pcHere = Main.system.pcHere(
+            Main.getEntity('marker').Position.getX(),
+            Main.getEntity('marker').Position.getY());
         let takeAction = false;
 
         if (Main.screens.getCurrentMode() === 'aim'
             && Main.system.insideOrbRange()) {
-            if (orb !== 'slime' && npcHere) {
+            if ((orb === 'fire' || orb === 'lump')
+                && npcHere) {
                 takeAction = true;
 
                 switch (orb) {
                     case 'fire':
                         Main.system.pcAttack(npcHere, 'fire');
-                        break;
-                    case 'ice':
-                        Main.system.useIceOrb();
                         break;
                     case 'lump':
                         Main.system.pcAttack(npcHere, 'lump');
@@ -543,10 +544,15 @@ Main.system.examineMode = function () {
                 && Main.system.isFloor(
                     Main.getEntity('marker').Position.getX(),
                     Main.getEntity('marker').Position.getY())
-                && !npcHere) {
+                && !npcHere
+                && !pcHere) {
                 takeAction = true;
 
                 Main.system.pcUseSlimeOrb();
+            } else if (orb === 'ice') {
+                takeAction = true;
+
+                Main.system.pcUseIceOrb();
             }
         }
 
@@ -642,6 +648,13 @@ Main.system.pcUseSlimeOrb = function () {
         Main.getEntity('pc').ActionDuration.getUseOrb());
 };
 
+Main.system.pcUseIceOrb = function () {
+    console.log('use ice');
+
+    Main.system.unlockEngine(
+        Main.getEntity('pc').ActionDuration.getUseOrb());
+};
+
 Main.system.npcDropOrb = function (actor, dropRate) {
     let orbID = null;
     let orbHere = Main.system.orbHere(
@@ -666,11 +679,4 @@ Main.system.npcDropOrb = function (actor, dropRate) {
         Main.getEntity('message').Message.pushMsg(
             Main.text.targetDropOrb(actor, Main.getEntity('orb').get(orbID)));
     }
-};
-
-Main.system.useIceOrb = function () {
-    console.log('use ice');
-
-    Main.system.unlockEngine(
-        Main.getEntity('pc').ActionDuration.getUseOrb());
 };

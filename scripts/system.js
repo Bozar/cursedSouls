@@ -143,7 +143,8 @@ Main.system.pcPickOrUse = function () {
         && Main.getEntity('pc').Inventory.getLength()
         < Main.getEntity('pc').Inventory.getCapacity()) {
         Main.system.pcPickUpOrb();
-    } else if (Main.getEntity('pc').Inventory.getLength() > 0) {
+    } else if (Main.getEntity('pc').Inventory.getLength() > 0
+        && Main.getEntity('pc').Inventory.getLastOrb() !== 'armor') {
         // Change mode: main --> aim.
         Main.screens.setCurrentMode(Main.screens.main.getMode(2));
 
@@ -524,6 +525,7 @@ Main.system.examineMode = function () {
         let pcHere = Main.system.pcHere(
             Main.getEntity('marker').Position.getX(),
             Main.getEntity('marker').Position.getY());
+
         let takeAction = false;
 
         if (Main.screens.getCurrentMode() === 'aim'
@@ -558,9 +560,6 @@ Main.system.examineMode = function () {
 
         if (takeAction) {
             exitExamineOrAimMode();
-            // NOTE: unlock the engine after use ice & slime.
-            // Main.system.unlockEngine(
-            //     Main.getEntity('pc').ActionDuration.getUseOrb());
         }
     }
 };
@@ -603,7 +602,7 @@ Main.system.pcAttack = function (target, attackType) {
 
     if (target.HitPoint.isDead()) {
         if (attackType === 'base') {
-            if (target.Status.getFrozen()) {
+            if (Main.getEntity('pc').Inventory.getLastOrb() === 'armor') {
                 dropRate = Main.getEntity('pc').DropRate.getDropRate('ice');
             } else {
                 dropRate = Main.getEntity('pc').DropRate.getDropRate('base');
@@ -649,7 +648,11 @@ Main.system.pcUseSlimeOrb = function () {
 };
 
 Main.system.pcUseIceOrb = function () {
-    console.log('use ice');
+    Main.getEntity('pc').Inventory.removeItem(1);
+    Main.getEntity('pc').Inventory.addItem('armor');
+    Main.getEntity('pc').Inventory.addItem('armor');
+
+    Main.getEntity('message').Message.pushMsg(Main.text.action('armor'));
 
     Main.system.unlockEngine(
         Main.getEntity('pc').ActionDuration.getUseOrb());

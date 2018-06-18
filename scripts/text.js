@@ -44,6 +44,7 @@ Main.text.initialize = function () {
     text.get('action').set('range', 'Out of range!');
     text.get('action').set('pick', 'You pick up the %% Orb.');
     text.get('action').set('teleport', 'You teleport yourself.');
+    text.get('action').set('armor', 'You are protected with the Icy Armor.');
 
     text.get('action').set('hit', 'You hit the %%.');
     text.get('action').set('kill', 'You kill the %%.');

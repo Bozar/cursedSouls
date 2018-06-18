@@ -266,16 +266,3 @@ Main.Component.AttackRange = function (baseRange) {
         this._range.set(rangeKey, rangeValue);
     };
 };
-
-Main.Component.Status = function () {
-    this._name = 'Status';
-
-    this._frozen = new Map([
-        ['active', false],
-        ['start', null],
-        ['duration', null]]);
-
-    this.getFrozen = function () { return this._frozen.get('active'); };
-
-    // TODO: add methods to change the frozen status.
-};

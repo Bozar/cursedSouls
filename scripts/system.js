@@ -122,7 +122,7 @@ Main.system.pcAct = function () {
 
 Main.system.pcTakeDamage = function (damage) {
     let pcIsDead
-        = damage > Main.getEntity('pc').Inventory.getInventory().length;
+        = damage > Main.getEntity('pc').Inventory.getLength();
 
     Main.getEntity('pc').Inventory.removeItem(damage);
 
@@ -140,10 +140,10 @@ Main.system.pcPickOrUse = function () {
     } else if (Main.system.orbHere(
         Main.getEntity('pc').Position.getX(),
         Main.getEntity('pc').Position.getY())
-        && Main.getEntity('pc').Inventory.getInventory().length
+        && Main.getEntity('pc').Inventory.getLength()
         < Main.getEntity('pc').Inventory.getCapacity()) {
         Main.system.pcPickUpOrb();
-    } else if (Main.getEntity('pc').Inventory.getInventory().length > 0) {
+    } else if (Main.getEntity('pc').Inventory.getLength() > 0) {
         // Change mode: main --> aim.
         Main.screens.setCurrentMode(Main.screens.main.getMode(2));
 
@@ -517,8 +517,7 @@ Main.system.examineMode = function () {
     }
 
     function useOrbInTheInventory() {
-        let orb = Main.getEntity('pc').Inventory.getInventory(
-            Main.getEntity('pc').Inventory.getInventory().length - 1);
+        let orb = Main.getEntity('pc').Inventory.getLastOrb();
         let npcHere = Main.system.npcHere(
             Main.getEntity('marker').Position.getX(),
             Main.getEntity('marker').Position.getY());
@@ -568,8 +567,7 @@ Main.system.getDistance = function (source, target) {
 };
 
 Main.system.insideOrbRange = function () {
-    let orb = Main.getEntity('pc').Inventory.getInventory(
-        Main.getEntity('pc').Inventory.getInventory().length - 1);
+    let orb = Main.getEntity('pc').Inventory.getLastOrb();
 
     return Main.system.getDistance(
         Main.getEntity('pc'), Main.getEntity('marker'))

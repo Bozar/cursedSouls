@@ -177,6 +177,17 @@ Main.Component.Inventory = function (capacity, firstItem) {
     }
 
     this.getCapacity = function () { return this._capacity; };
+    this.getLength = function () { return this._inventory.length; };
+    this.getLastOrb = function () {
+        return this._inventory[this._inventory.length - 1];
+    };
+    this.isEnhanced = function () {
+        if (this._inventory.length > 1) {
+            return this._inventory[this._inventory.length - 1]
+                === this._inventory[this._inventory.length - 2];
+        }
+        return false;
+    };
 
     this.getInventory = function (index) {
         if (this._inventory[index]) {

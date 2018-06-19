@@ -101,8 +101,8 @@ Main.entity.pc = function () {
 
     e.AttackRange.setRange('fire', 1);
     e.AttackRange.setRange('ice', 0);
-    e.AttackRange.setRange('slime', 2);
-    e.AttackRange.setRange('lump', 2);
+    e.AttackRange.setRange('slime', 3);
+    e.AttackRange.setRange('lump', 3);
 
     e.act = Main.system.pcAct;
 

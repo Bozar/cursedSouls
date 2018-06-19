@@ -122,7 +122,7 @@ Main.entity.dummy = function (x, y) {
 
     Main.entities.get('npc').set(e.getID(), e);
 
-    return e.getID();
+    return e;
 };
 
 Main.entity.marker = function () {

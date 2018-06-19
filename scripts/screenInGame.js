@@ -144,9 +144,11 @@ Main.screens.main.keyInput = function (e) {
         } else if (keyAction(e, 'fixed') === 'turn') {
             console.log(Main.getEntity('timer').scheduler.getTime());
         } else if (keyAction(e, 'fixed') === 'dummy') {
-            Main.entity.dummy(
-                Main.getEntity('pc').Position.getX() - 1,
-                Main.getEntity('pc').Position.getY());
+            Main.getEntity('timer').scheduler.add(
+                Main.entity.dummy(
+                    Main.getEntity('pc').Position.getX() - 1,
+                    Main.getEntity('pc').Position.getY()),
+                true);
         } else if (keyAction(e, 'fixed') === 'addFire') {
             Main.getEntity('pc').Inventory.addItem('fire');
         } else if (keyAction(e, 'fixed') === 'addIce') {

@@ -626,6 +626,7 @@ Main.system.pcAttack = function (target, attackType) {
         // Main.system.npcDropOrb(target, 100);
         Main.system.npcDropOrb(target, dropRate);
 
+        Main.getEntity('timer').scheduler.remove(target);
         Main.getEntity('npc').delete(target.getID());
     } else {
         Main.getEntity('message').Message.pushMsg(
@@ -682,4 +683,18 @@ Main.system.npcDropOrb = function (actor, dropRate) {
         Main.getEntity('message').Message.pushMsg(
             Main.text.targetDropOrb(actor, Main.getEntity('orb').get(orbID)));
     }
+};
+
+Main.system.dummyAct = function () {
+    Main.getEntity('timer').engine.lock();
+
+    if (Main.system.isInSight(this,
+        Main.getEntity('pc').Position.getX(),
+        Main.getEntity('pc').Position.getY())) {
+        console.log('I see you.');
+    } else {
+        console.log('Wait 1 turn.');
+    }
+
+    Main.system.unlockEngine(1);
 };

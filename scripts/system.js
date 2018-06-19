@@ -228,27 +228,31 @@ Main.system.move = function (direction, who) {
     }
 
     // Verify the new position.
-    switch (actorType) {
-        case 'pc':
-            isMoveable
-                = Main.system.isFloor(x, y)
-                && !Main.system.npcHere(x, y);
-            break;
-        case 'npc':
-            isMoveable
-                = Main.system.isFloor(x, y)
-                && !Main.system.pcHere(x, y)
-                && !Main.system.npcHere(x, y);
-            break;
-        case 'marker':
-            isMoveable
-                = Main.system.isInSight(Main.getEntity('pc'), x, y);
-            break;
+    if (direction === 'wait') {
+        isMoveable = true;
+    } else {
+        switch (actorType) {
+            case 'pc':
+                isMoveable
+                    = Main.system.isFloor(x, y)
+                    && !Main.system.npcHere(x, y);
+                break;
+            case 'npc':
+                isMoveable
+                    = Main.system.isFloor(x, y)
+                    && !Main.system.pcHere(x, y)
+                    && !Main.system.npcHere(x, y);
+                break;
+            case 'marker':
+                isMoveable
+                    = Main.system.isInSight(Main.getEntity('pc'), x, y);
+                break;
+        }
     }
 
     // Taking actions:
     //      Change the position & unlock the engine;
-    //      Bump into the nearby target;
+    //      PC bumps into the nearby target;
     //      Report invalid action.
     if (isMoveable) {
         actor.Position.setX(x);
@@ -262,17 +266,9 @@ Main.system.move = function (direction, who) {
         if (actorType !== 'marker') {
             Main.system.unlockEngine(duration);
         }
-    }
-    else if (Main.system.npcHere(x, y)) {
+    } else if (actorType === 'pc'
+        && Main.system.npcHere(x, y)) {
         Main.system.pcAttack(Main.system.npcHere(x, y), 'base');
-    }
-    // TODO: add more available actions.
-    else {
-        Main.getEntity('message').Message.setModeline('invalid move');
-        // message.setModeline(Main.text.interact('forbidMove'))
-
-        Main.display.clear();
-        Main.screens.main.display();
     }
 
     // Helper functions
@@ -685,16 +681,24 @@ Main.system.npcDropOrb = function (actor, dropRate) {
     }
 };
 
+Main.system.canDoMeleeAttack = function (attacker, target) {
+    return Main.system.getDistance(attacker, target) === 1
+        && (attacker.Position.getX() === target.Position.getX()
+            || attacker.Position.getY() === target.Position.getY());
+};
+
 Main.system.dummyAct = function () {
     Main.getEntity('timer').engine.lock();
 
-    if (Main.system.isInSight(this,
+    if (!Main.system.isInSight(this,
         Main.getEntity('pc').Position.getX(),
         Main.getEntity('pc').Position.getY())) {
-        console.log('I see you.');
+        Main.system.move('wait', this);
+    } else if (Main.system.canDoMeleeAttack(this, Main.getEntity('pc'))) {
+        console.log('Dummy attack.');
+        Main.system.unlockEngine(1);
     } else {
-        console.log('Wait 1 turn.');
+        console.log('I see you.');
+        Main.system.unlockEngine(1);
     }
-
-    Main.system.unlockEngine(1);
 };

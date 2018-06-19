@@ -28,6 +28,7 @@ Main.input.keybind.get('fixed').set('addFire', ['1']);
 Main.input.keybind.get('fixed').set('addIce', ['2']);
 Main.input.keybind.get('fixed').set('addSlime', ['3']);
 Main.input.keybind.get('fixed').set('addLump', ['4']);
+Main.input.keybind.get('fixed').set('addArmor', ['5']);
 Main.input.keybind.get('fixed').set('removeOrb', ['-']);
 
 // Movement

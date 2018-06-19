@@ -23,6 +23,7 @@ Main.text.initialize = function () {
     // text.get('dungeon').set('candy', 'Candy');
     // LSP: Yay, it's me, babe.
     text.get('dungeon').set('lump', 'Lump');
+    text.get('dungeon').set('armor', 'Icy Armor');
 
     // UI elements outside the dungeon section
     text.set('ui', new Map());
@@ -40,7 +41,14 @@ Main.text.initialize = function () {
     text.set('action', new Map());
     text.get('action').set('continue', 'Press Space to continue.');
     text.get('action').set('end', '=====The End=====');
+    text.get('action').set('range', 'Out of range!');
     text.get('action').set('pick', 'You pick up the %% Orb.');
+    text.get('action').set('teleport', 'You teleport yourself.');
+    text.get('action').set('armor', 'You are protected with the Icy Armor.');
+
+    text.get('action').set('hit', 'You hit the %%.');
+    text.get('action').set('kill', 'You kill the %%.');
+    text.get('action').set('drop', 'The %1% drops a %2% Orb.');
 
     text.get('action').set('deathGeneral', 'Rest in peace, ashen one.');
     text.get('action').set('deathBoss1',
@@ -120,14 +128,63 @@ Main.text.cutScene = function (id) {
 Main.text.modeLine = function (mode) {
     let check = ['examine', 'aim'];
     let text = '';
+    let colorfulMode = '';
+    let outOfRange = '';
 
     if (check.indexOf(mode) < 0) {
         mode = check[0];
     }
 
-    text = `[${Main.text.ui(mode)}][${Main.text.ui('range')}]`;
+    if (mode === 'aim') {
+        colorfulMode = Main.screens.colorfulText(Main.text.ui(mode), 'orange');
+
+        if (!Main.system.insideOrbRange()) {
+            outOfRange = `[${Main.screens.colorfulText(
+                Main.text.action('range'), 'orange')}]`;
+        }
+    } else {
+        colorfulMode = Main.text.ui(mode);
+    }
+
+    text = `[${colorfulMode}][${Main.text.ui('range')}]${outOfRange}`;
     text = text.replace('%%', Main.system.getDistance(
         Main.getEntity('pc'), Main.getEntity('marker')));
+
+    return text;
+};
+
+Main.text.npcBottomDescription = function (downstairs, npc, orb) {
+    let text = '';
+
+    text += '[' + Main.text.name(npc.getEntityName()) + ']';
+    text += '[' + Main.screens.colorfulText(
+        Main.text.dungeon(npc.Inventory.getInventory(0)), 'white')
+        //Main.text.dungeon(npcHere.Inventory.getInventory(0)), 'green')
+        + ']';
+    text += '[' + Main.screens.colorfulText(
+        npc.HitPoint.getHitPoint(), 'white')
+        //npcHere.HitPoint.getHitPoint(), 'orange')
+        + ']' + itemUnderTheFoot();
+
+    return text;
+
+    function itemUnderTheFoot() {
+        let entityHere = downstairs || orb || null;
+
+        if (entityHere) {
+            return '[@ ' + Main.screens.colorfulText(
+                Main.text.dungeon(entityHere.getEntityName()),
+                entityHere.Display.getColor()) + ']';
+        }
+        return '';
+    }
+};
+
+Main.text.orbTopDescription = function (orb) {
+    let text = '';
+
+    text += '[' + Main.text.dungeon(orb.getEntityName()) + '] '
+        + Main.text.info(orb.getEntityName());
 
     return text;
 };
@@ -136,6 +193,31 @@ Main.text.pickUp = function (orb) {
     let text = Main.text.action('pick');
 
     text = text.replace('%%', Main.text.dungeon(orb));
+
+    return text;
+};
+
+Main.text.hitTarget = function (target) {
+    let text = Main.text.action('hit');
+
+    text = text.replace('%%', Main.text.name(target.getEntityName()));
+
+    return text;
+};
+
+Main.text.killTarget = function (target) {
+    let text = Main.text.action('kill');
+
+    text = text.replace('%%', Main.text.name(target.getEntityName()));
+
+    return text;
+};
+
+Main.text.targetDropOrb = function (target, orb) {
+    let text = Main.text.action('drop');
+
+    text = text.replace('%1%', Main.text.name(target.getEntityName()));
+    text = text.replace('%2%', Main.text.dungeon(orb.getEntityName()));
 
     return text;
 };

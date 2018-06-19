@@ -146,20 +146,22 @@ Main.Component.Position = function (range, x, y) {
     this.setY = function (pos) { this._y = pos; };
 };
 
-Main.Component.ActionDuration = function (move) {
+Main.Component.ActionDuration = function () {
     this._name = 'ActionDuration';
 
-    this._move = move || 1;
-    this._useOrb = 1;
-    this._pickUpOrb = 1;
-    this._wait = 1;
-    this._goDownstairs = 1;
+    this._duration = new Map();
 
-    this.getMove = function () { return this._move; };
-    this.getUseOrb = function () { return this._useOrb; };
-    this.getPickUpOrb = function () { return this._pickUpOrb; };
-    this.getWait = function () { return this._wait; };
-    this.getGoDownstairs = function () { return this._goDownstairs; };
+    // No need to seperate these actions since they all take 1 turn. This is just
+    // an example.
+    this._duration.set('move', 1);
+    this._duration.set('useOrb', 1);
+    this._duration.set('attack', 1);
+    this._duration.set('wait', 1);
+
+    this.getMove = function () { return this._duration.get('move'); };
+    this.getUseOrb = function () { return this._duration.get('useOrb'); };
+    this.getAttack = function () { return this._duration.get('attack'); };
+    this.getWait = function () { return this._duration.get('wait'); };
 };
 
 Main.Component.Inventory = function (capacity, firstItem) {
@@ -175,6 +177,17 @@ Main.Component.Inventory = function (capacity, firstItem) {
     }
 
     this.getCapacity = function () { return this._capacity; };
+    this.getLength = function () { return this._inventory.length; };
+    this.getLastOrb = function () {
+        return this._inventory[this._inventory.length - 1];
+    };
+    this.isEnhanced = function () {
+        if (this._inventory.length > 1) {
+            return this._inventory[this._inventory.length - 1]
+                === this._inventory[this._inventory.length - 2];
+        }
+        return false;
+    };
 
     this.getInventory = function (index) {
         if (this._inventory[index]) {
@@ -207,5 +220,49 @@ Main.Component.HitPoint = function (hp) {
 
     this.getHitPoint = function () { return this._hitPoint; };
     this.takeDamage = function (damage) { this._hitPoint -= damage; };
-    this.isDead = function () { return this._hitPoint > 0; };
+    this.isDead = function () { return this._hitPoint <= 0; };
+};
+
+Main.Component.Damage = function (baseDamage) {
+    this._name = 'Damage';
+
+    this._damage = new Map([['base', baseDamage || 1]]);
+
+    this.getDamage = function (attackType) {
+        return this._damage.get(attackType || 'base');
+    };
+
+    this.setDamage = function (attackType, damage) {
+        this._damage.set(attackType, damage);
+    };
+};
+
+Main.Component.DropRate = function () {
+    this._name = 'DropRate';
+
+    this._dropRate = new Map(
+        [['base', 20],
+        ['fire', 100],
+        ['ice', 60],
+        ['lump', 60]]);
+
+    this.getDropRate = function (attackType) {
+        return this._dropRate.get(attackType);
+    };
+};
+
+Main.Component.AttackRange = function (baseRange) {
+    this._name = 'AttackRange';
+
+    this._range = new Map();
+
+    if (baseRange) {
+        this._range.set('base', baseRange);
+    }
+
+    this.getRange = function (rangeKey) { return this._range.get(rangeKey); };
+
+    this.setRange = function (rangeKey, rangeValue) {
+        this._range.set(rangeKey, rangeValue);
+    };
 };

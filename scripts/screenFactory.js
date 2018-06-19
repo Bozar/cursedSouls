@@ -175,36 +175,26 @@ Main.screens.drawMessage = function (text) {
 };
 
 Main.screens.drawDescription = function () {
-    let downstairsHere = Main.system.downstairsHere(
+    let npcHere = Main.system.npcHere(
         Main.getEntity('marker').Position.getX(),
         Main.getEntity('marker').Position.getY());
-    let npcHere = Main.system.npcHere(
+    let downstairsHere = Main.system.downstairsHere(
         Main.getEntity('marker').Position.getX(),
         Main.getEntity('marker').Position.getY());
     let orbHere = Main.system.orbHere(
         Main.getEntity('marker').Position.getX(),
         Main.getEntity('marker').Position.getY());
 
-    if (downstairsHere) {
-        drawTextBlock(Main.text.downstairs(), '');
-    } else if (npcHere) {
+    if (npcHere) {
         drawTextBlock(
             // Top line
             Main.text.info(npcHere.getEntityName()),
             // Bottom line
-            '[' + Main.text.name(npcHere.getEntityName())
-            + '][' + Main.text.dungeon(npcHere.Inventory.getInventory(0))
-            + '][' + npcHere.HitPoint.getHitPoint() + ']'
-            + (orbHere
-                ? '[@ ' + Main.screens.colorfulText(
-                    Main.text.dungeon(orbHere.getEntityName()),
-                    orbHere.Display.getColor()) + ']'
-                : ''));
+            Main.text.npcBottomDescription(downstairsHere, npcHere, orbHere));
+    } else if (downstairsHere) {
+        drawTextBlock(Main.text.downstairs(), '');
     } else if (orbHere) {
-        drawTextBlock(
-            '[' + Main.text.dungeon(orbHere.getEntityName()) + '] '
-            + Main.text.info(orbHere.getEntityName()),
-            '');
+        drawTextBlock(Main.text.orbTopDescription(orbHere), '');
     } else {
         Main.screens.drawMessage();
     }
@@ -368,7 +358,7 @@ Main.screens.drawPower = function () {
     // HP bar
     for (let i = 0; i < 6; i++) {
         Main.display.drawText(
-            Main.UI.power.getX() + 9,
+            Main.UI.power.getX() + Main.UI.power.getWidth() - 1,
             Main.UI.power.getY() + i * 1.1,
             (i + 1).toString(10));
     }

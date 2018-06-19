@@ -95,6 +95,14 @@ Main.entity.pc = function () {
     e.addComponent(new Main.Component.Display('@'));
     e.addComponent(new Main.Component.ActionDuration());
     e.addComponent(new Main.Component.Inventory(6));
+    e.addComponent(new Main.Component.Damage(1));
+    e.addComponent(new Main.Component.DropRate());
+    e.addComponent(new Main.Component.AttackRange());
+
+    e.AttackRange.setRange('fire', 1);
+    e.AttackRange.setRange('ice', 0);
+    e.AttackRange.setRange('slime', 2);
+    e.AttackRange.setRange('lump', 2);
 
     e.act = Main.system.pcAct;
 
@@ -113,6 +121,8 @@ Main.entity.dummy = function (x, y) {
     e.act = Main.system.dummyAct;
 
     Main.entities.get('npc').set(e.getID(), e);
+
+    return e.getID();
 };
 
 Main.entity.marker = function () {
@@ -165,4 +175,6 @@ Main.entity.orb = function (orbName) {
     e.addComponent(new Main.Component.Display(orbChar, 'green'));
 
     Main.entities.get('orb').set(e.getID(), e);
+
+    return e.getID();
 };

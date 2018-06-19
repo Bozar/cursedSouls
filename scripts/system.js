@@ -122,7 +122,7 @@ Main.system.pcAct = function () {
 
 Main.system.pcTakeDamage = function (damage) {
     let pcIsDead
-        = damage > Main.getEntity('pc').Inventory.getInventory().length;
+        = damage > Main.getEntity('pc').Inventory.getLength();
 
     Main.getEntity('pc').Inventory.removeItem(damage);
 
@@ -136,20 +136,26 @@ Main.system.pcPickOrUse = function () {
         Main.getEntity('pc').Position.getY())
         && Main.getEntity('dungeon').BossFight.getBossFightStatus()
         !== 'active') {
-        Main.system.useDownstairs();
+        Main.system.pcUseDownstairs();
     } else if (Main.system.orbHere(
         Main.getEntity('pc').Position.getX(),
         Main.getEntity('pc').Position.getY())
-        && Main.getEntity('pc').Inventory.getInventory().length
+        && Main.getEntity('pc').Inventory.getLength()
         < Main.getEntity('pc').Inventory.getCapacity()) {
-        Main.system.pickUpOrb();
+        Main.system.pcPickUpOrb();
+    } else if (Main.getEntity('pc').Inventory.getLength() > 0
+        && Main.getEntity('pc').Inventory.getLastOrb() !== 'armor') {
+        // Change mode: main --> aim.
+        Main.screens.setCurrentMode(Main.screens.main.getMode(2));
+
+        Main.system.examineMode();
     } else {
         // TODO: add more actions.
         console.log('press space');
     }
 };
 
-Main.system.pickUpOrb = function () {
+Main.system.pcPickUpOrb = function () {
     let orbHere = Main.system.orbHere(
         Main.getEntity('pc').Position.getX(),
         Main.getEntity('pc').Position.getY());
@@ -163,10 +169,10 @@ Main.system.pickUpOrb = function () {
     Main.getEntity('orb').delete(orbHere.getID());
 
     Main.system.unlockEngine(
-        Main.getEntity('pc').ActionDuration.getPickUpOrb());
+        Main.getEntity('pc').ActionDuration.getUseOrb());
 };
 
-Main.system.useDownstairs = function () {
+Main.system.pcUseDownstairs = function () {
     switch (Main.getEntity('dungeon').BossFight.getBossFightStatus()) {
         case 'inactive':
             Main.input.listenEvent('remove', 'main');
@@ -256,6 +262,9 @@ Main.system.move = function (direction, who) {
         if (actorType !== 'marker') {
             Main.system.unlockEngine(duration);
         }
+    }
+    else if (Main.system.npcHere(x, y)) {
+        Main.system.pcAttack(Main.system.npcHere(x, y), 'base');
     }
     // TODO: add more available actions.
     else {
@@ -350,20 +359,23 @@ Main.system.examineMode = function () {
 
     // The hub function to handle key inputs and call other functions.
     function examine(e) {
+        // Exit the examine mode.
         if (Main.input.getAction(e, 'fixed') === 'no') {
-            // Exit the examine mode.
-            Main.input.listenEvent('remove', examine);
-            Main.input.listenEvent('add', 'main');
-
-            setOrRemoveMarker(false);
-        } else if (Main.input.getAction(e, 'move')) {
-            // Move the marker.
+            exitExamineOrAimMode();
+        }
+        // Move the marker.
+        else if (Main.input.getAction(e, 'move')) {
             Main.system.move(Main.input.getAction(e, 'move'),
                 Main.getEntity('marker'));
-        } else if (Main.input.getAction(e, 'interact') === 'next'
+        }
+        // Lock the previous or next target.
+        else if (Main.input.getAction(e, 'interact') === 'next'
             || Main.input.getAction(e, 'interact') === 'previous') {
-            // Lock the previous or next target.
             lockTarget(Main.input.getAction(e, 'interact'));
+        }
+        // Use an orb.
+        else if (Main.input.getAction(e, 'interact') === 'pickOrUse') {
+            useOrbInTheInventory();
         }
 
         setExModeLine();
@@ -379,18 +391,27 @@ Main.system.examineMode = function () {
                 Main.getEntity('pc').Position.getY());
 
             // Change mode: main --> examine.
-            Main.screens.setCurrentMode(Main.screens.main.getMode(1));
+            if (Main.screens.getCurrentMode() === 'main') {
+                Main.screens.setCurrentMode(Main.screens.main.getMode(1));
+            }
         } else {
             Main.getEntity('marker').Position.setX(null);
             Main.getEntity('marker').Position.setY(null);
 
-            // Change mode: examine --> main.
+            // Change mode: examine or aim --> main.
             Main.screens.setCurrentMode(Main.screens.main.getMode(0));
         }
 
         setExModeLine();
         Main.display.clear();
         Main.screens.main.display();
+    }
+
+    function exitExamineOrAimMode() {
+        Main.input.listenEvent('remove', examine);
+        Main.input.listenEvent('add', 'main');
+
+        setOrRemoveMarker(false);
     }
 
     function lockTarget(who) {
@@ -488,8 +509,57 @@ Main.system.examineMode = function () {
         if (Main.screens.getCurrentMode() === 'examine') {
             Main.getEntity('message').Message.setModeline(
                 Main.text.modeLine('examine'));
+        } else if (Main.screens.getCurrentMode() === 'aim') {
+            Main.getEntity('message').Message.setModeline(
+                Main.text.modeLine('aim'));
         } else {
             Main.getEntity('message').Message.setModeline('');
+        }
+    }
+
+    function useOrbInTheInventory() {
+        let orb = Main.getEntity('pc').Inventory.getLastOrb();
+        let npcHere = Main.system.npcHere(
+            Main.getEntity('marker').Position.getX(),
+            Main.getEntity('marker').Position.getY());
+        let pcHere = Main.system.pcHere(
+            Main.getEntity('marker').Position.getX(),
+            Main.getEntity('marker').Position.getY());
+
+        let takeAction = false;
+
+        if (Main.screens.getCurrentMode() === 'aim'
+            && Main.system.insideOrbRange()) {
+            if ((orb === 'fire' || orb === 'lump')
+                && npcHere) {
+                takeAction = true;
+
+                switch (orb) {
+                    case 'fire':
+                        Main.system.pcAttack(npcHere, 'fire');
+                        break;
+                    case 'lump':
+                        Main.system.pcAttack(npcHere, 'lump');
+                        break;
+                }
+            } else if (orb === 'slime'
+                && Main.system.isFloor(
+                    Main.getEntity('marker').Position.getX(),
+                    Main.getEntity('marker').Position.getY())
+                && !npcHere
+                && !pcHere) {
+                takeAction = true;
+
+                Main.system.pcUseSlimeOrb();
+            } else if (orb === 'ice') {
+                takeAction = true;
+
+                Main.system.pcUseIceOrb();
+            }
+        }
+
+        if (takeAction) {
+            exitExamineOrAimMode();
         }
     }
 };
@@ -501,6 +571,14 @@ Main.system.getDistance = function (source, target) {
     return Math.max(x, y);
 };
 
+Main.system.insideOrbRange = function () {
+    let orb = Main.getEntity('pc').Inventory.getLastOrb();
+
+    return Main.system.getDistance(
+        Main.getEntity('pc'), Main.getEntity('marker'))
+        <= Main.getEntity('pc').AttackRange.getRange(orb);
+};
+
 Main.system.exitCutScene = function () {
     Main.input.listenEvent('remove', 'cutScene');
     Main.screens.cutScene.exit();
@@ -509,10 +587,99 @@ Main.system.exitCutScene = function () {
         Main.screens.main.enter(true);
 
         Main.system.unlockEngine(
-            Main.getEntity('pc').ActionDuration.getGoDownstairs());
+            Main.getEntity('pc').ActionDuration.getMove());
     } else {
         Main.screens.main.enter(false);
     }
 
     Main.input.listenEvent('add', 'main');
+};
+
+Main.system.pcAttack = function (target, attackType) {
+    let dropRate = 0;
+
+    target.HitPoint.takeDamage(Main.getEntity('pc').Damage.getDamage());
+
+    if (target.HitPoint.isDead()) {
+        if (attackType === 'base') {
+            if (Main.getEntity('pc').Inventory.getLastOrb() === 'armor') {
+                dropRate = Main.getEntity('pc').DropRate.getDropRate('ice');
+            } else {
+                dropRate = Main.getEntity('pc').DropRate.getDropRate('base');
+            }
+        } else {
+            switch (attackType) {
+                case 'fire':
+                    dropRate
+                        = Main.getEntity('pc').DropRate.getDropRate('fire');
+                    break;
+                case 'lump':
+                    dropRate
+                        = Main.getEntity('pc').DropRate.getDropRate('lump');
+                    break;
+            }
+        }
+
+        Main.getEntity('message').Message.pushMsg(
+            Main.text.killTarget(target));
+
+        // Main.system.npcDropOrb(target, 100);
+        Main.system.npcDropOrb(target, dropRate);
+
+        Main.getEntity('npc').delete(target.getID());
+    } else {
+        Main.getEntity('message').Message.pushMsg(
+            Main.text.hitTarget(target));
+    }
+
+    Main.system.unlockEngine(Main.getEntity('pc').ActionDuration.getAttack());
+};
+
+Main.system.pcUseSlimeOrb = function () {
+    Main.getEntity('pc').Position.setX(
+        Main.getEntity('marker').Position.getX());
+    Main.getEntity('pc').Position.setY(
+        Main.getEntity('marker').Position.getY());
+
+    Main.getEntity('message').Message.pushMsg(Main.text.action('teleport'));
+
+    Main.system.unlockEngine(
+        Main.getEntity('pc').ActionDuration.getUseOrb());
+};
+
+Main.system.pcUseIceOrb = function () {
+    Main.getEntity('pc').Inventory.removeItem(1);
+    Main.getEntity('pc').Inventory.addItem('armor');
+    Main.getEntity('pc').Inventory.addItem('armor');
+
+    Main.getEntity('message').Message.pushMsg(Main.text.action('armor'));
+
+    Main.system.unlockEngine(
+        Main.getEntity('pc').ActionDuration.getUseOrb());
+};
+
+Main.system.npcDropOrb = function (actor, dropRate) {
+    let orbID = null;
+    let orbHere = Main.system.orbHere(
+        actor.Position.getX(), actor.Position.getY());
+
+    if (// Orbs will not drop on the downstairs.
+        !Main.system.downstairsHere(
+            actor.Position.getX(), actor.Position.getY())
+        // Orbs have a chance to drop.
+        && ROT.RNG.getPercentage() <= dropRate) {
+        // Two orbs cannot appear in the same position.
+        if (orbHere) {
+            Main.getEntity('orb').delete(orbHere.getID());
+        }
+
+        // The NPC drops an orb.
+        orbID = Main.entity.orb(actor.Inventory.getInventory(0));
+
+        Main.getEntity('orb').get(orbID).Position.setX(actor.Position.getX());
+        Main.getEntity('orb').get(orbID).Position.setY(actor.Position.getY());
+
+        Main.getEntity('message').Message.pushMsg(
+            Main.text.targetDropOrb(actor, Main.getEntity('orb').get(orbID)));
+    }
 };

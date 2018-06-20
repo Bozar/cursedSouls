@@ -40,8 +40,8 @@ Main.text.initialize = function () {
     // action.
     text.set('action', new Map());
     text.get('action').set('continue', 'Press Space to continue.');
-    text.get('action').set('end', '=====The End=====');
     text.get('action').set('range', 'Out of range!');
+
     text.get('action').set('pick', 'You pick up the %% Orb.');
     text.get('action').set('teleport', 'You teleport yourself.');
     text.get('action').set('armor', 'You are protected with the Icy Armor.');
@@ -50,6 +50,9 @@ Main.text.initialize = function () {
     text.get('action').set('kill', 'You kill the %%.');
     text.get('action').set('drop', 'The %1% drops a %2% Orb.');
 
+    text.get('action').set('npcHit', 'The %% hits you.');
+
+    text.get('action').set('die', 'You die.');
     text.get('action').set('deathGeneral', 'Rest in peace, ashen one.');
     text.get('action').set('deathBoss1',
         'Ashen one, hearest thou my voice, still?');
@@ -227,4 +230,26 @@ Main.text.downstairs = function () {
     let dungeonLevel = 1;
 
     return Main.text.info('downstairs' + dungeonLevel);
+};
+
+Main.text.npcHit = function (attacker) {
+    let text = Main.text.action('npcHit');
+
+    text = text.replace('%%', Main.text.name(attacker.getEntityName()));
+
+    return text;
+};
+
+Main.text.pcIsDead = function () {
+    let text = '';
+
+    if (Main.getEntity('dungeon').BossFight.getBossFightStatus()
+        === 'active') {
+        text = Main.text.action('deathBoss' +
+            Main.getEntity('dungeon').BossFight.getDungeonLevel());
+    } else {
+        text = Main.text.action('deathGeneral');
+    }
+
+    return text;
 };

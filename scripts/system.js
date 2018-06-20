@@ -688,6 +688,8 @@ Main.system.canDoMeleeAttack = function (attacker, target) {
 };
 
 Main.system.dummyAct = function () {
+    let pcIsDead = false;
+
     Main.getEntity('timer').engine.lock();
 
     if (!Main.system.isInSight(this,
@@ -695,8 +697,16 @@ Main.system.dummyAct = function () {
         Main.getEntity('pc').Position.getY())) {
         Main.system.move('wait', this);
     } else if (Main.system.canDoMeleeAttack(this, Main.getEntity('pc'))) {
-        console.log('Dummy attack.');
-        Main.system.unlockEngine(1);
+        pcIsDead = Main.system.pcTakeDamage(this.Damage.getDamage());
+
+        Main.getEntity('message').Message.pushMsg(Main.text.npcHit(this));
+
+        if (pcIsDead) {
+            Main.getEntity('message').Message.pushMsg(Main.text.action('die'));
+            Main.getEntity('message').Message.pushMsg(Main.text.pcIsDead());
+        } else {
+            Main.system.unlockEngine(1);
+        }
     } else {
         console.log('I see you.');
         Main.system.unlockEngine(1);

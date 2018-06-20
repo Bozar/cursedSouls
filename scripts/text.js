@@ -48,7 +48,7 @@ Main.text.initialize = function () {
 
     text.get('action').set('hit', 'You hit the %%.');
     text.get('action').set('kill', 'You kill the %%.');
-    text.get('action').set('drop', 'The %1% drops a %2% Orb.');
+    text.get('action').set('drop', 'The %1% drops %2% %3% Orb.');
 
     text.get('action').set('npcHit', 'The %% hits you.');
 
@@ -220,7 +220,13 @@ Main.text.targetDropOrb = function (target, orb) {
     let text = Main.text.action('drop');
 
     text = text.replace('%1%', Main.text.name(target.getEntityName()));
-    text = text.replace('%2%', Main.text.dungeon(orb.getEntityName()));
+    text = text.replace('%3%', Main.text.dungeon(orb.getEntityName()));
+
+    if (orb.getEntityName() === 'ice') {
+        text = text.replace('%2%', 'an');
+    } else {
+        text = text.replace('%2%', 'a');
+    }
 
     return text;
 };

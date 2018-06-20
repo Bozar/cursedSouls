@@ -237,6 +237,24 @@ Main.Component.Damage = function (baseDamage) {
     };
 };
 
+Main.Component.AttackRange = function (baseRange) {
+    this._name = 'AttackRange';
+
+    this._range = new Map();
+
+    if (baseRange) {
+        this._range.set('base', baseRange);
+    }
+
+    this.getRange = function (rangeKey) {
+        return this._range.get(rangeKey || 'base');
+    };
+
+    this.setRange = function (rangeKey, rangeValue) {
+        this._range.set(rangeKey, rangeValue);
+    };
+};
+
 Main.Component.DropRate = function () {
     this._name = 'DropRate';
 
@@ -248,21 +266,5 @@ Main.Component.DropRate = function () {
 
     this.getDropRate = function (attackType) {
         return this._dropRate.get(attackType);
-    };
-};
-
-Main.Component.AttackRange = function (baseRange) {
-    this._name = 'AttackRange';
-
-    this._range = new Map();
-
-    if (baseRange) {
-        this._range.set('base', baseRange);
-    }
-
-    this.getRange = function (rangeKey) { return this._range.get(rangeKey); };
-
-    this.setRange = function (rangeKey, rangeValue) {
-        this._range.set(rangeKey, rangeValue);
     };
 };

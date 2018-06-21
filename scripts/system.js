@@ -528,16 +528,15 @@ Main.system.examineMode = function () {
 
         if (Main.screens.getCurrentMode() === 'aim'
             && Main.system.insideOrbRange()) {
-            if ((orb === 'fire' || orb === 'lump')
+            if ((orb === 'fire' || orb === 'lump' || orb === 'nuke')
                 && npcHere) {
                 takeAction = true;
 
                 switch (orb) {
                     case 'fire':
-                        Main.system.pcAttack(npcHere, 'fire');
-                        break;
                     case 'lump':
-                        Main.system.pcAttack(npcHere, 'lump');
+                    case 'nuke':
+                        Main.system.pcAttack(npcHere, orb);
                         break;
                 }
             } else if (orb === 'slime'
@@ -603,33 +602,31 @@ Main.system.exitCutScene = function () {
 
 Main.system.pcAttack = function (target, attackType) {
     let dropRate = 0;
+    let lastOrb = Main.getEntity('pc').Inventory.getLastOrb();
 
-    target.HitPoint.takeDamage(Main.getEntity('pc').Damage.getDamage());
+    target.HitPoint.takeDamage(
+        lastOrb === 'nuke'
+            ? Main.getEntity('pc').Damage.getDamage('nuke')
+            : Main.getEntity('pc').Damage.getDamage('base')
+    );
 
     if (target.HitPoint.isDead()) {
         if (attackType === 'base') {
-            if (Main.getEntity('pc').Inventory.getLastOrb() === 'armor') {
+            if (lastOrb === 'armor') {
                 dropRate = Main.getEntity('pc').DropRate.getDropRate('ice');
+            } else if (lastOrb === 'nuke') {
+                dropRate = Main.getEntity('pc').DropRate.getDropRate('nuke');
             } else {
                 dropRate = Main.getEntity('pc').DropRate.getDropRate('base');
             }
         } else {
-            switch (attackType) {
-                case 'fire':
-                    dropRate
-                        = Main.getEntity('pc').DropRate.getDropRate('fire');
-                    break;
-                case 'lump':
-                    dropRate
-                        = Main.getEntity('pc').DropRate.getDropRate('lump');
-                    break;
-            }
+            dropRate
+                = Main.getEntity('pc').DropRate.getDropRate(attackType);
         }
 
         Main.getEntity('message').Message.pushMsg(
             Main.text.killTarget(target));
 
-        // Main.system.npcDropOrb(target, 100);
         Main.system.npcDropOrb(target, dropRate);
 
         Main.getEntity('timer').scheduler.remove(target);

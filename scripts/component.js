@@ -259,10 +259,13 @@ Main.Component.DropRate = function () {
     this._name = 'DropRate';
 
     this._dropRate = new Map(
-        [['base', 20],
-        ['fire', 100],
-        ['ice', 60],
-        ['lump', 60]]);
+        [
+            ['base', 20],
+            ['fire', 100],
+            ['ice', 60],
+            ['lump', 60],
+            ['nuke', 100]
+        ]);
 
     this.getDropRate = function (attackType) {
         return this._dropRate.get(attackType);

@@ -166,6 +166,8 @@ Main.screens.main.keyInput = function (e) {
             Main.getEntity('pc').Inventory.addItem('lump');
         } else if (keyAction(e, 'fixed') === 'addArmor') {
             Main.getEntity('pc').Inventory.addItem('armor');
+        } else if (keyAction(e, 'fixed') === 'addNuke') {
+            Main.getEntity('pc').Inventory.addItem('nuke');
         } else if (keyAction(e, 'fixed') === 'removeOrb') {
             Main.getEntity('pc').Inventory.removeItem(1);
         }

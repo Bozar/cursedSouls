@@ -24,6 +24,7 @@ Main.text.initialize = function () {
     // LSP: Yay, it's me, babe.
     text.get('dungeon').set('lump', 'Lump');
     text.get('dungeon').set('armor', 'Icy Armor');
+    text.get('dungeon').set('nuke', 'Nuke');
 
     // UI elements outside the dungeon section
     text.set('ui', new Map());
@@ -246,13 +247,13 @@ Main.text.npcHit = function (attacker) {
     return text;
 };
 
-Main.text.pcIsDead = function () {
+Main.text.lastWords = function () {
     let text = '';
 
     if (Main.getEntity('dungeon').BossFight.getBossFightStatus()
         === 'active') {
-        text = Main.text.action('deathBoss' +
-            Main.getEntity('dungeon').BossFight.getDungeonLevel());
+        text = Main.text.action('deathBoss'
+            + Main.getEntity('dungeon').BossFight.getDungeonLevel());
     } else {
         text = Main.text.action('deathGeneral');
     }

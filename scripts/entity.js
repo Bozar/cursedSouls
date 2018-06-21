@@ -99,10 +99,13 @@ Main.entity.pc = function () {
     e.addComponent(new Main.Component.DropRate());
     e.addComponent(new Main.Component.AttackRange());
 
+    e.Damage.setDamage('nuke', 9);
+
     e.AttackRange.setRange('fire', 1);
     e.AttackRange.setRange('ice', 0);
-    e.AttackRange.setRange('slime', 3);
-    e.AttackRange.setRange('lump', 3);
+    e.AttackRange.setRange('slime', 2);
+    e.AttackRange.setRange('lump', 2);
+    e.AttackRange.setRange('nuke', 5);
 
     e.act = Main.system.pcAct;
 

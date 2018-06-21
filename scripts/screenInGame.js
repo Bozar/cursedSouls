@@ -107,7 +107,10 @@ Main.screens.main.display = function () {
     Main.screens.drawDungeon();
 
     for (const keyValue of Main.getEntity('orb')) {
-        Main.screens.drawActor(keyValue[1]);
+        Main.screens.drawActor(
+            keyValue[1],
+            Main.getEntity('dungeon').BossFight.getBossFightStatus() === 'win'
+        );
     }
 
     Main.screens.drawDownstairs();

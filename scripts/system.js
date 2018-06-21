@@ -51,10 +51,29 @@ Main.system.verifyPositionOrb = function (x, y) {
         || Main.system.orbHere(x, y);
 };
 
-Main.system.verifyPositionGrunt = function (x, y) {
+Main.system.verifyPositionGrunt = function (x, y, pcSight) {
     return !Main.system.isFloor(x, y)
-        || Main.system.getDistance([x, y], Main.getEntity('pc')) <= 3
+        || tooClose(x, y)
+        || tooMany(x, y)
         || Main.system.npcHere(x, y);
+
+    function tooClose(x, y) {
+        return pcSight.indexOf(x + ',' + y) > -1
+            && Main.system.getDistance([x, y], Main.getEntity('pc')) <= 3;
+    }
+
+    function tooMany(x, y) {
+        let number = 0;
+
+        Main.getEntity('npc').forEach((value) => {
+            if (pcSight.indexOf(x + ',' + y) > -1
+                && Main.system.getDistance(value, Main.getEntity('pc')) <= 5) {
+                number++;
+            }
+        });
+
+        return number > 4;
+    }
 };
 
 Main.system.verifyPositionDownstairs = function (x, y) {

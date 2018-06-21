@@ -75,7 +75,8 @@ Main.screens.main.initialize = function () {
 
         Main.system.placeActor(
             newGrunt,
-            Main.system.verifyPositionGrunt);
+            Main.system.verifyPositionGrunt,
+            pcCanSee);
 
         Main.getEntity('timer').scheduler.add(newGrunt, true);
     }

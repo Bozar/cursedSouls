@@ -92,7 +92,7 @@ And one more thing: HyperRogue is truly fascinating! Do not be intimidated by th
 
 Here is the pseudo code about the monster AI, which is inspired from DarrenGrey's [Reddit post](https://www.reddit.com/r/roguelikedev/comments/3b4wx2/faq_friday_15_ai/csiw5bu/). In `scripts/monsterAI.js`, search `Main.system.dummyAct` and `Main.system.npcDecideNextStep` for more information.
 
-```
+```js
 if (!pcIsInSight) {
     if (npcIsCloseToPC) {
         // Search the nearby PC.

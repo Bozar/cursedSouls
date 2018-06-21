@@ -24,7 +24,7 @@ Main.system.placeActor = function (actor, notQualified, forbidden) {
     // Some notQualified callback functions require an extra argument, forbidden,
     // which is a string array [x + ',' + y], so that they do not need to
     // calculate the forbidden zone every time when placing a new entity.
-    while (notQualified(x, y, forbidden) && retry < 99);
+    while (notQualified(x, y, forbidden) && retry < 999);
 
     if (Main.getDevelop() && retry > 10) {
         console.log('Retry, ' + actor.getEntityName() + ': ' + retry);
@@ -51,10 +51,30 @@ Main.system.verifyPositionOrb = function (x, y) {
         || Main.system.orbHere(x, y);
 };
 
+Main.system.npcIsTooDense = function (x, y) {
+    let surround = [];
+    let count = 0;
+
+    for (let i = -1; i < 2; i++) {
+        for (let j = -1; j < 2; j++) {
+            surround.push([x + i, y + j]);
+        }
+    }
+
+    for (let i = 0; i < surround.length; i++) {
+        if (Main.system.npcHere(...surround[i])) {
+            count++;
+        }
+    }
+
+    return count > 0;
+};
+
 Main.system.verifyPositionGrunt = function (x, y, pcSight) {
     return !Main.system.isFloor(x, y)
         || tooClose(x, y)
         || tooMany(x, y)
+        || Main.system.npcIsTooDense(x, y)
         || Main.system.npcHere(x, y);
 
     function tooClose(x, y) {

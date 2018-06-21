@@ -32,6 +32,7 @@ Main.Screen.prototype.exit = function () {
     Main.screens.setCurrentName(null);
     Main.screens.setCurrentMode(null);
 
+    Main.getEntity('message').Message.setModeline('');
     Main.display.clear();
 };
 

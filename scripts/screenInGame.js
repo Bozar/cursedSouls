@@ -64,13 +64,20 @@ Main.screens.main.initialize = function () {
     for (let keyValue of Main.getEntity('orb')) {
         Main.system.placeActor(
             keyValue[1],
-            Main.system.verifyPositionOrb,
-            pcCanSee);
+            Main.system.verifyPositionOrb);
     }
 
-    Main.getEntity('message').Message.setModeline('this is the modeline');
-    for (let i = 0; i < 10; i++) {
-        Main.getEntity('message').Message.pushMsg(`Message: ${i}`);
+    // TODO: Change the number and type of enemies.
+    let newGrunt = null;
+
+    for (var i = 0; i < 30; i++) {
+        newGrunt = Main.entity.dummy();
+
+        Main.system.placeActor(
+            newGrunt,
+            Main.system.verifyPositionGrunt);
+
+        Main.getEntity('timer').scheduler.add(newGrunt, true);
     }
 };
 

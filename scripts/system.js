@@ -44,15 +44,17 @@ Main.system.verifyPositionPC = function (x, y) {
         - Main.getEntity('pc').Position.getRange();
 };
 
-Main.system.verifyPositionOrb = function (x, y, forbidden) {
+Main.system.verifyPositionOrb = function (x, y) {
     return !Main.system.isFloor(x, y)
-        || pcCanSee()
+        || Main.system.getDistance([x, y], Main.getEntity('pc')) <= 2
         || Main.system.downstairsHere(x, y)
         || Main.system.orbHere(x, y);
+};
 
-    function pcCanSee() {
-        return forbidden.indexOf(x + ',' + y) > -1;
-    }
+Main.system.verifyPositionGrunt = function (x, y) {
+    return !Main.system.isFloor(x, y)
+        || Main.system.getDistance([x, y], Main.getEntity('pc')) <= 3
+        || Main.system.npcHere(x, y);
 };
 
 Main.system.verifyPositionDownstairs = function (x, y) {

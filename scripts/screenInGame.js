@@ -128,6 +128,7 @@ Main.screens.main.display = function () {
         Main.screens.drawMessage();
     }
 
+    Main.getEntity('message').Message.setModeline('');
     Main.screens.drawModeLine();
 };
 

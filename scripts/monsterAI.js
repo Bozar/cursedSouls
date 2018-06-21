@@ -5,10 +5,13 @@ Main.system.dummyAct = function () {
 
     Main.getEntity('timer').engine.lock();
 
-    if (!Main.system.isInSight(this,
-        Main.getEntity('pc').Position.getX(),
-        Main.getEntity('pc').Position.getY())) {
-        Main.system.unlockEngine(this.ActionDuration.getWait());
+    if (!Main.system.isInSight(this, Main.getEntity('pc'))) {
+        if (Main.system.getDistance(this, Main.getEntity('pc'))
+            <= this.Position.getRange()) {
+            Main.system.npcMoveClose(this);
+        } else {
+            Main.system.unlockEngine(this.ActionDuration.getWait());
+        }
     } else if (Main.system.getDistance(this, Main.getEntity('pc'))
         <= this.AttackRange.getRange('base')) {
         pcIsDead = Main.system.pcTakeDamage(this.Damage.getDamage());

@@ -118,8 +118,18 @@ Main.system.isMarker = function (checkThis) {
     return checkThis.getID() === Main.getEntity('marker').getID();
 };
 
-Main.system.isInSight = function (source, targetX, targetY) {
+Main.system.isInSight = function (source, target) {
     let sight = [];
+    let targetX = null;
+    let targetY = null;
+
+    if (Array.isArray(target)) {
+        targetX = target[0];
+        targetY = target[1];
+    } else {
+        targetX = target.Position.getX();
+        targetY = target.Position.getY();
+    }
 
     // Store positions in sight to the list.
     Main.getEntity('dungeon').fov.compute(
@@ -266,7 +276,7 @@ Main.system.move = function (direction, who) {
                 break;
             case 'marker':
                 isMoveable
-                    = Main.system.isInSight(Main.getEntity('pc'), x, y);
+                    = Main.system.isInSight(Main.getEntity('pc'), [x, y]);
                 break;
         }
     }
@@ -441,10 +451,7 @@ Main.system.examineMode = function () {
         Main.getEntity('npc').forEach((value) => {
             if (Main.system.getDistance(Main.getEntity('pc'), value)
                 <= Main.getEntity('pc').Position.getRange()
-                && Main.system.isInSight(
-                    Main.getEntity('pc'),
-                    value.Position.getX(),
-                    value.Position.getY())) {
+                && Main.system.isInSight(Main.getEntity('pc'), value)) {
                 if (value.Position.getX()
                     < Main.getEntity('pc').Position.getX()) {
                     left.push(value);
@@ -584,13 +591,30 @@ Main.system.getDistance = function (source, target) {
     let x = null;
     let y = null;
 
+    let sourceX = null;
+    let sourceY = null;
+
+    let targetX = null;
+    let targetY = null;
+
     if (Array.isArray(source)) {
-        x = Math.abs(source[0] - target.Position.getX());
-        y = Math.abs(source[1] - target.Position.getY());
+        sourceX = source[0];
+        sourceY = source[1];
     } else {
-        x = Math.abs(source.Position.getX() - target.Position.getX());
-        y = Math.abs(source.Position.getY() - target.Position.getY());
+        sourceX = source.Position.getX();
+        sourceY = source.Position.getY();
     }
+
+    if (Array.isArray(target)) {
+        targetX = target[0];
+        targetY = target[1];
+    } else {
+        targetX = target.Position.getX();
+        targetY = target.Position.getY();
+    }
+
+    x = Math.abs(sourceX - targetX);
+    y = Math.abs(sourceY - targetY);
 
     return Math.max(x, y);
 };

@@ -44,14 +44,35 @@ Main.system.verifyPositionPC = function (x, y) {
         - Main.getEntity('pc').Position.getRange();
 };
 
-Main.system.verifyPositionOrb = function (x, y, forbidden) {
+Main.system.verifyPositionOrb = function (x, y) {
     return !Main.system.isFloor(x, y)
-        || pcCanSee()
+        || Main.system.getDistance([x, y], Main.getEntity('pc')) <= 2
         || Main.system.downstairsHere(x, y)
         || Main.system.orbHere(x, y);
+};
 
-    function pcCanSee() {
-        return forbidden.indexOf(x + ',' + y) > -1;
+Main.system.verifyPositionGrunt = function (x, y, pcSight) {
+    return !Main.system.isFloor(x, y)
+        || tooClose(x, y)
+        || tooMany(x, y)
+        || Main.system.npcHere(x, y);
+
+    function tooClose(x, y) {
+        return pcSight.indexOf(x + ',' + y) > -1
+            && Main.system.getDistance([x, y], Main.getEntity('pc')) <= 3;
+    }
+
+    function tooMany(x, y) {
+        let number = 0;
+
+        Main.getEntity('npc').forEach((value) => {
+            if (pcSight.indexOf(x + ',' + y) > -1
+                && Main.system.getDistance(value, Main.getEntity('pc')) <= 5) {
+                number++;
+            }
+        });
+
+        return number > 4;
     }
 };
 
@@ -97,8 +118,18 @@ Main.system.isMarker = function (checkThis) {
     return checkThis.getID() === Main.getEntity('marker').getID();
 };
 
-Main.system.isInSight = function (source, targetX, targetY) {
+Main.system.isInSight = function (source, target) {
     let sight = [];
+    let targetX = null;
+    let targetY = null;
+
+    if (Array.isArray(target)) {
+        targetX = target[0];
+        targetY = target[1];
+    } else {
+        targetX = target.Position.getX();
+        targetY = target.Position.getY();
+    }
 
     // Store positions in sight to the list.
     Main.getEntity('dungeon').fov.compute(
@@ -228,27 +259,31 @@ Main.system.move = function (direction, who) {
     }
 
     // Verify the new position.
-    switch (actorType) {
-        case 'pc':
-            isMoveable
-                = Main.system.isFloor(x, y)
-                && !Main.system.npcHere(x, y);
-            break;
-        case 'npc':
-            isMoveable
-                = Main.system.isFloor(x, y)
-                && !Main.system.pcHere(x, y)
-                && !Main.system.npcHere(x, y);
-            break;
-        case 'marker':
-            isMoveable
-                = Main.system.isInSight(Main.getEntity('pc'), x, y);
-            break;
+    if (direction === 'wait') {
+        isMoveable = true;
+    } else {
+        switch (actorType) {
+            case 'pc':
+                isMoveable
+                    = Main.system.isFloor(x, y)
+                    && !Main.system.npcHere(x, y);
+                break;
+            case 'npc':
+                isMoveable
+                    = Main.system.isFloor(x, y)
+                    && !Main.system.pcHere(x, y)
+                    && !Main.system.npcHere(x, y);
+                break;
+            case 'marker':
+                isMoveable
+                    = Main.system.isInSight(Main.getEntity('pc'), [x, y]);
+                break;
+        }
     }
 
     // Taking actions:
     //      Change the position & unlock the engine;
-    //      Bump into the nearby target;
+    //      PC bumps into the nearby target;
     //      Report invalid action.
     if (isMoveable) {
         actor.Position.setX(x);
@@ -262,17 +297,9 @@ Main.system.move = function (direction, who) {
         if (actorType !== 'marker') {
             Main.system.unlockEngine(duration);
         }
-    }
-    else if (Main.system.npcHere(x, y)) {
+    } else if (actorType === 'pc'
+        && Main.system.npcHere(x, y)) {
         Main.system.pcAttack(Main.system.npcHere(x, y), 'base');
-    }
-    // TODO: add more available actions.
-    else {
-        Main.getEntity('message').Message.setModeline('invalid move');
-        // message.setModeline(Main.text.interact('forbidMove'))
-
-        Main.display.clear();
-        Main.screens.main.display();
     }
 
     // Helper functions
@@ -424,10 +451,7 @@ Main.system.examineMode = function () {
         Main.getEntity('npc').forEach((value) => {
             if (Main.system.getDistance(Main.getEntity('pc'), value)
                 <= Main.getEntity('pc').Position.getRange()
-                && Main.system.isInSight(
-                    Main.getEntity('pc'),
-                    value.Position.getX(),
-                    value.Position.getY())) {
+                && Main.system.isInSight(Main.getEntity('pc'), value)) {
                 if (value.Position.getX()
                     < Main.getEntity('pc').Position.getX()) {
                     left.push(value);
@@ -530,16 +554,15 @@ Main.system.examineMode = function () {
 
         if (Main.screens.getCurrentMode() === 'aim'
             && Main.system.insideOrbRange()) {
-            if ((orb === 'fire' || orb === 'lump')
+            if ((orb === 'fire' || orb === 'lump' || orb === 'nuke')
                 && npcHere) {
                 takeAction = true;
 
                 switch (orb) {
                     case 'fire':
-                        Main.system.pcAttack(npcHere, 'fire');
-                        break;
                     case 'lump':
-                        Main.system.pcAttack(npcHere, 'lump');
+                    case 'nuke':
+                        Main.system.pcAttack(npcHere, orb);
                         break;
                 }
             } else if (orb === 'slime'
@@ -565,8 +588,33 @@ Main.system.examineMode = function () {
 };
 
 Main.system.getDistance = function (source, target) {
-    let x = Math.abs(source.Position.getX() - target.Position.getX());
-    let y = Math.abs(source.Position.getY() - target.Position.getY());
+    let x = null;
+    let y = null;
+
+    let sourceX = null;
+    let sourceY = null;
+
+    let targetX = null;
+    let targetY = null;
+
+    if (Array.isArray(source)) {
+        sourceX = source[0];
+        sourceY = source[1];
+    } else {
+        sourceX = source.Position.getX();
+        sourceY = source.Position.getY();
+    }
+
+    if (Array.isArray(target)) {
+        targetX = target[0];
+        targetY = target[1];
+    } else {
+        targetX = target.Position.getX();
+        targetY = target.Position.getY();
+    }
+
+    x = Math.abs(sourceX - targetX);
+    y = Math.abs(sourceY - targetY);
 
     return Math.max(x, y);
 };
@@ -597,35 +645,34 @@ Main.system.exitCutScene = function () {
 
 Main.system.pcAttack = function (target, attackType) {
     let dropRate = 0;
+    let lastOrb = Main.getEntity('pc').Inventory.getLastOrb();
 
-    target.HitPoint.takeDamage(Main.getEntity('pc').Damage.getDamage());
+    target.HitPoint.takeDamage(
+        lastOrb === 'nuke'
+            ? Main.getEntity('pc').Damage.getDamage('nuke')
+            : Main.getEntity('pc').Damage.getDamage('base')
+    );
 
     if (target.HitPoint.isDead()) {
         if (attackType === 'base') {
-            if (Main.getEntity('pc').Inventory.getLastOrb() === 'armor') {
+            if (lastOrb === 'armor') {
                 dropRate = Main.getEntity('pc').DropRate.getDropRate('ice');
+            } else if (lastOrb === 'nuke') {
+                dropRate = Main.getEntity('pc').DropRate.getDropRate('nuke');
             } else {
                 dropRate = Main.getEntity('pc').DropRate.getDropRate('base');
             }
         } else {
-            switch (attackType) {
-                case 'fire':
-                    dropRate
-                        = Main.getEntity('pc').DropRate.getDropRate('fire');
-                    break;
-                case 'lump':
-                    dropRate
-                        = Main.getEntity('pc').DropRate.getDropRate('lump');
-                    break;
-            }
+            dropRate
+                = Main.getEntity('pc').DropRate.getDropRate(attackType);
         }
 
         Main.getEntity('message').Message.pushMsg(
             Main.text.killTarget(target));
 
-        // Main.system.npcDropOrb(target, 100);
         Main.system.npcDropOrb(target, dropRate);
 
+        Main.getEntity('timer').scheduler.remove(target);
         Main.getEntity('npc').delete(target.getID());
     } else {
         Main.getEntity('message').Message.pushMsg(

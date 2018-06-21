@@ -64,13 +64,21 @@ Main.screens.main.initialize = function () {
     for (let keyValue of Main.getEntity('orb')) {
         Main.system.placeActor(
             keyValue[1],
-            Main.system.verifyPositionOrb,
-            pcCanSee);
+            Main.system.verifyPositionOrb);
     }
 
-    Main.getEntity('message').Message.setModeline('this is the modeline');
-    for (let i = 0; i < 10; i++) {
-        Main.getEntity('message').Message.pushMsg(`Message: ${i}`);
+    // TODO: Change the number and type of enemies.
+    let newGrunt = null;
+
+    for (var i = 0; i < 30; i++) {
+        newGrunt = Main.entity.dummy();
+
+        Main.system.placeActor(
+            newGrunt,
+            Main.system.verifyPositionGrunt,
+            pcCanSee);
+
+        Main.getEntity('timer').scheduler.add(newGrunt, true);
     }
 };
 
@@ -99,7 +107,10 @@ Main.screens.main.display = function () {
     Main.screens.drawDungeon();
 
     for (const keyValue of Main.getEntity('orb')) {
-        Main.screens.drawActor(keyValue[1]);
+        Main.screens.drawActor(
+            keyValue[1],
+            Main.getEntity('dungeon').BossFight.getBossFightStatus() === 'win'
+        );
     }
 
     Main.screens.drawDownstairs();
@@ -144,9 +155,11 @@ Main.screens.main.keyInput = function (e) {
         } else if (keyAction(e, 'fixed') === 'turn') {
             console.log(Main.getEntity('timer').scheduler.getTime());
         } else if (keyAction(e, 'fixed') === 'dummy') {
-            Main.entity.dummy(
-                Main.getEntity('pc').Position.getX() - 1,
-                Main.getEntity('pc').Position.getY());
+            Main.getEntity('timer').scheduler.add(
+                Main.entity.dummy(
+                    Main.getEntity('pc').Position.getX() - 1,
+                    Main.getEntity('pc').Position.getY()),
+                true);
         } else if (keyAction(e, 'fixed') === 'addFire') {
             Main.getEntity('pc').Inventory.addItem('fire');
         } else if (keyAction(e, 'fixed') === 'addIce') {
@@ -157,6 +170,8 @@ Main.screens.main.keyInput = function (e) {
             Main.getEntity('pc').Inventory.addItem('lump');
         } else if (keyAction(e, 'fixed') === 'addArmor') {
             Main.getEntity('pc').Inventory.addItem('armor');
+        } else if (keyAction(e, 'fixed') === 'addNuke') {
+            Main.getEntity('pc').Inventory.addItem('nuke');
         } else if (keyAction(e, 'fixed') === 'removeOrb') {
             Main.getEntity('pc').Inventory.removeItem(1);
         }

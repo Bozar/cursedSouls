@@ -57,6 +57,8 @@ Orbs can be found on the ground or dropped by the enemy. Bosses always drop 1 lu
 * Fire: 100%.
 * Lump: 60%.
 
+You can bump into the nearby enemy to perform a base attack.
+
 You cannot press `Space` to use the Icy Armor, but if it is the last 'orb' in the inventory, the drop rate from your base attack is raised to 60%.
 
 Orbs do not stack on the dungeon floor. If two orbs appear in the same place, the newer orb will replace the older one. If the orb drops on the downstairs, it will disappear.
@@ -87,3 +89,34 @@ After playing [HyperRogue](https://store.steampowered.com/app/342610/HyperRogue/
 Starting from this idea, I spent 10 days to design the paper prototype for Cursed Souls.
 
 And one more thing: HyperRogue is truly fascinating! Do not be intimidated by the mathematics, you can find detailed guides in the Steam community. If you can read Chinese, here is an [introduction](https://trow.cc/board/showtopic=30027) written by me.
+
+Here is the pseudo code about the monster AI, which is inspired from DarrenGrey's [Reddit post](https://www.reddit.com/r/roguelikedev/comments/3b4wx2/faq_friday_15_ai/csiw5bu/). In `scripts/monsterAI.js`, search `Main.system.dummyAct` and `Main.system.npcDecideNextStep` for more information.
+
+```
+if (!pcIsInSight) {
+    if (npcIsCloseToPC) {
+        // Search the nearby PC.
+        moveClose;
+    } else {
+        wait;
+    }
+}
+// Check part of the conditions based on the attack type.
+else if (pcIsWithinAttackRange
+    && npcCanMoveForward        // Charge & attack.
+    && pcHasEmptySlot           // Curse.
+) {
+    attack;
+}
+// All movements have a fail-safe 'wait' option.
+// if (!moveAway) wait;
+else {
+    if (pcIsTooClose || npcIsAlone) {
+        moveAway;
+    } else if (pcIsWithinAttackRange) {
+        moveAndKeepDistance;
+    } else {
+        moveClose;
+    }
+}
+```

@@ -99,10 +99,13 @@ Main.entity.pc = function () {
     e.addComponent(new Main.Component.DropRate());
     e.addComponent(new Main.Component.AttackRange());
 
+    e.Damage.setDamage('nuke', 9);
+
     e.AttackRange.setRange('fire', 1);
     e.AttackRange.setRange('ice', 0);
     e.AttackRange.setRange('slime', 2);
     e.AttackRange.setRange('lump', 2);
+    e.AttackRange.setRange('nuke', 5);
 
     e.act = Main.system.pcAct;
 
@@ -117,12 +120,14 @@ Main.entity.dummy = function (x, y) {
     e.addComponent(new Main.Component.ActionDuration());
     e.addComponent(new Main.Component.Inventory(1, 'slime'));
     e.addComponent(new Main.Component.HitPoint(1));
+    e.addComponent(new Main.Component.Damage(1));
+    e.addComponent(new Main.Component.AttackRange(1));
 
     e.act = Main.system.dummyAct;
 
     Main.entities.get('npc').set(e.getID(), e);
 
-    return e.getID();
+    return e;
 };
 
 Main.entity.marker = function () {

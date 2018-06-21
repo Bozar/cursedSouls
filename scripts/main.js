@@ -16,7 +16,7 @@ Main.setDevelop = function () { this._develop = !this._develop; };
 // Set seed manually for testing. '#' can be omitted.
 // There are no hyphens ('-') inside numbered seed.
 // Example:
-// Main._devSeed = '#12345'
+//Main._devSeed = '#12345';
 Main.getDevSeed = function () { return this._devSeed; };
 
 Main._color = new Map();

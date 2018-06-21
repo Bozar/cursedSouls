@@ -51,10 +51,30 @@ Main.system.verifyPositionOrb = function (x, y) {
         || Main.system.orbHere(x, y);
 };
 
+Main.system.npcIsTooDense = function (x, y) {
+    let surround = [];
+    let count = 0;
+
+    for (let i = -1; i < 2; i++) {
+        for (let j = -1; j < 2; j++) {
+            surround.push([x + i, y + j]);
+        }
+    }
+
+    for (let i = 0; i < surround.length; i++) {
+        if (Main.system.npcHere(...surround[i])) {
+            count++;
+        }
+    }
+
+    return count > 0;
+};
+
 Main.system.verifyPositionGrunt = function (x, y, pcSight) {
     return !Main.system.isFloor(x, y)
         || tooClose(x, y)
         || tooMany(x, y)
+        || Main.system.npcIsTooDense(x, y)
         || Main.system.npcHere(x, y);
 
     function tooClose(x, y) {

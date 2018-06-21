@@ -51,20 +51,13 @@ Main.system.npcDecideNextStep = function (actor, nextStep) {
     // The actor can move to his current position, a.k.a. wait.
     let centerX = actor.Position.getX();
     let centerY = actor.Position.getY();
-    let surround = [
-        // Left column.
-        [centerX - 1, centerY - 1],
-        [centerX - 1, centerY],
-        [centerX - 1, centerY + 1],
-        // Middle column.
-        [centerX, centerY - 1],
-        [centerX, centerY],
-        [centerX, centerY + 1],
-        // Right column.
-        [centerX + 1, centerY - 1],
-        [centerX + 1, centerY],
-        [centerX + 1, centerY + 1]
-    ];
+    let surround = [];
+
+    for (let i = -1; i < 2; i++) {
+        for (let j = -1; j < 2; j++) {
+            surround.push([centerX + i, centerY + j]);
+        }
+    }
 
     let currentDistance = Main.system.getDistance(actor, Main.getEntity('pc'));
     let newDistanceMap = new Map();

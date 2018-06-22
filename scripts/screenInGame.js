@@ -6,35 +6,33 @@
 
 Main.screens.main = new Main.Screen('main', ['main', 'examine', 'aim']);
 
-// Create & place entities (if necessacry) in this order:
-// Seed, Dungeon, (PC, NPCs, Downstairs, Orbs), Marker.
-// The PC cannot stick to the wall.
-// NPCs cannot appear in the PC's sight.
-// The downstairs has to be at least 1/4 screen away from the PC.
-// Orbs cannot be generated on the downstairs.
+// * Create & place entities (if necessacry) in this order:
+//      * Seed, Timer, Dungeon, Marker, (PC, NPCs, Downstairs, Orbs), Marker.
+// * The PC cannot stick to the wall.
+// * No more than 5 NPCs can appear in the PC's sight.
+// * Orbs cannot be generated on the downstairs.
 Main.screens.main.initialize = function () {
     let pcCanSee = [];
 
+    // Seed.
     Main.entity.seed();
     Main.getEntity('seed').Seed.setSeed(Main.getDevSeed());
     ROT.RNG.setSeed(Main.getEntity('seed').Seed.getSeed());
 
-    Main.entity.dungeon();
+    // Timer.
+    Main.entity.timer();
+    Main.getEntity('timer').engine.start();
 
+    // Dungeon & marker.
+    Main.entity.dungeon();
+    Main.entity.marker();
+
+    // PC.
     Main.entity.pc();
     Main.getEntity('pc').Inventory.addItem('slime');
     Main.getEntity('pc').Inventory.addItem('fire');
     Main.getEntity('pc').Inventory.addItem('fire');
     Main.getEntity('pc').Inventory.addItem('lump');
-
-    Main.entity.downstairs();
-
-    Main.system.createOrbs();
-    Main.entity.marker();
-
-    Main.entity.timer();
-    Main.getEntity('timer').scheduler.add(Main.getEntity('pc'), true);
-    Main.getEntity('timer').engine.start();
 
     Main.system.placeActor(
         Main.getEntity('pc'),
@@ -46,16 +44,9 @@ Main.screens.main.initialize = function () {
         Main.getEntity('pc').Position.getRange(),
         (x, y) => { pcCanSee.push(x + ',' + y); });
 
-    Main.system.placeActor(
-        Main.getEntity('downstairs'),
-        Main.system.verifyPositionDownstairs);
+    Main.getEntity('timer').scheduler.add(Main.getEntity('pc'), true);
 
-    for (let keyValue of Main.getEntity('orb')) {
-        Main.system.placeActor(
-            keyValue[1],
-            Main.system.verifyPositionOrb);
-    }
-
+    // NPCs.
     // TODO: Change the number and type of enemies.
     let newGrunt = null;
 
@@ -68,6 +59,22 @@ Main.screens.main.initialize = function () {
             pcCanSee);
 
         Main.getEntity('timer').scheduler.add(newGrunt, true);
+    }
+
+    // Downstairs.
+    Main.entity.downstairs();
+
+    Main.system.placeActor(
+        Main.getEntity('downstairs'),
+        Main.system.verifyPositionDownstairs);
+
+    // Orbs.
+    Main.system.createOrbs();
+
+    for (let keyValue of Main.getEntity('orb')) {
+        Main.system.placeActor(
+            keyValue[1],
+            Main.system.verifyPositionOrb);
     }
 
     // Output the dungeon generation details.

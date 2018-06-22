@@ -200,9 +200,6 @@ Main.system.pcPickOrUse = function () {
         Main.screens.setCurrentMode(Main.screens.main.getMode(2));
 
         Main.system.examineMode();
-    } else {
-        // TODO: add more actions.
-        console.log('press space');
     }
 };
 

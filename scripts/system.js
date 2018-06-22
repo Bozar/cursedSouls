@@ -130,6 +130,40 @@ Main.system.createOrbs = function () {
     }
 };
 
+Main.system.createEnemies = function () {
+    // TODO: change the enemies base on the dungeon level.
+
+    amount();
+
+    // Helper functions.
+    function amount() {
+        // 25 to 30 enemies on one level.
+        let total = 25 + Math.floor(6 * ROT.RNG.getUniform());
+
+        // Lump: 20%.
+        let lump = Math.ceil(total * 0.2);
+        // Fire & Ice: 50%.
+        let fireAndIce = Math.ceil((total - lump) * 0.5);
+        // Slime: 30%.
+        let slime = total - lump - fireAndIce;
+
+        let lump1 = Math.floor(lump * percent());
+        let lump2 = lump - lump1;
+        let fire = Math.floor(fireAndIce * percent());
+        let ice = fireAndIce - fire;
+
+        Main._log.enemyCount = total;
+        Main._log.enemyComposition = [lump1, lump2, fire, ice, slime];
+
+        return Main._log.enemyComposition;
+    }
+
+    function percent() {
+        // 40% to 60%.
+        return Math.floor(4 + 3 * ROT.RNG.getUniform()) / 10;
+    }
+};
+
 Main.system.isPC = function (actor) {
     return actor.getID() === Main.getEntity('pc').getID();
 };
@@ -749,6 +783,8 @@ Main.system.npcDropOrb = function (actor, dropRate) {
 };
 
 Main.system.printGenerationLog = function () {
+    let labels = ['Lump1: ', 'Lump2: ', 'Fire: ', 'Ice: ', 'Slime: '];
+
     if (!Main._log.seedPrinted) {
         console.log('Seed: '
             + Main.getEntity('seed').Seed.getSeed());
@@ -759,8 +795,14 @@ Main.system.printGenerationLog = function () {
     if (Main.getDevelop() && !Main._log.msgPrinted) {
         console.log('Cycle: ' + Main._log.cycle);
         console.log('Floor: ' + Main._log.floor + '%');
+        console.log('Enemy: ' + Main._log.enemyCount);
+
+        for (let i = 0; i < 5; i++) {
+            console.log(labels[i] + Main._log.enemyComposition[i]);
+        }
 
         if (Main._log.retry.length > 0) {
+            console.log('==========');
             console.log('Retry:');
             Main._log.retry.forEach((value) => {
                 console.log(value);

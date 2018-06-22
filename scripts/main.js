@@ -39,6 +39,8 @@ Main._log.msgPrinted = false;
 Main._log.floor = null;
 Main._log.cycle = null;
 Main._log.retry = [];
+Main._log.enemyCount = null;
+Main._log.enemyComposition = [];
 
 // ==============
 // Initialization

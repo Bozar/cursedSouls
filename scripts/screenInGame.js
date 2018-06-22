@@ -46,6 +46,7 @@ Main.screens.main.initialize = function () {
 
     Main.getEntity('timer').scheduler.add(Main.getEntity('pc'), true);
 
+    Main.system.createEnemies();
     // NPCs.
     // TODO: Change the number and type of enemies.
     let newGrunt = null;

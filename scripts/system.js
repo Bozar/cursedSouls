@@ -24,7 +24,7 @@ Main.system.placeActor = function (actor, notQualified, forbidden) {
     // Some notQualified callback functions require an extra argument, forbidden,
     // which is a string array [x + ',' + y], so that they do not need to
     // calculate the forbidden zone every time when placing a new entity.
-    while (notQualified(x, y, forbidden) && retry < 99);
+    while (notQualified(x, y, forbidden) && retry < 999);
 
     if (retry > 10) {
         Main._log.retry.push(actor.getEntityName() + ': ' + retry);

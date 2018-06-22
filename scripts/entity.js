@@ -52,8 +52,8 @@ Main.entity.dungeon = function () {
     } while (floorArea() < e.Dungeon.getFloorArea()[0]
         || floorArea() > e.Dungeon.getFloorArea()[1]);
 
-    e.Dungeon.setPercent(floorArea());
-    e.Dungeon.setCycle(cycle);
+    Main._log.floor = floorArea();
+    Main._log.cycle = cycle;
 
     e.light = function (x, y) {
         return e.Dungeon.getTerrain().get(x + ',' + y) === 0;

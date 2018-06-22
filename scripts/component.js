@@ -62,8 +62,6 @@ Main.Component.Dungeon = function () {
 
     // The percentage of the floor area
     this._floorArea = [55, 65];
-    this._percent = 0;
-    this._cycle = 0;
 
     this.getWidth = function () { return this._width; };
     this.getHeight = function () { return this._height; };
@@ -74,13 +72,9 @@ Main.Component.Dungeon = function () {
     this.getMemory = function () { return this._memory; };
 
     this.getFloorArea = function () { return this._floorArea; };
-    this.getPercent = function () { return this._percent; };
-    this.getCycle = function () { return this._cycle; };
 
     this.setFov = function () { this._hasFov = !this._hasFov; };
     this.setMemory = function (memory) { this._memory = memory; };
-    this.setPercent = function (percent) { this._percent = percent; };
-    this.setCycle = function (cycle) { this._cycle = cycle; };
 };
 
 // Record the game progress.

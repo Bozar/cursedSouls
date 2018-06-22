@@ -21,17 +21,6 @@ Main.screens.main.initialize = function () {
 
     Main.entity.dungeon();
 
-    // Output the dungeon generation details.
-    if (Main.getDevelop()) {
-        console.log('Seed: '
-            + Main.getEntity('seed').Seed.getSeed());
-        console.log('Floor: '
-            + Main.getEntity('dungeon').Dungeon.getPercent()
-            + '%');
-        console.log('Cycle: '
-            + Main.getEntity('dungeon').Dungeon.getCycle());
-    }
-
     Main.entity.pc();
     Main.getEntity('pc').Inventory.addItem('slime');
     Main.getEntity('pc').Inventory.addItem('fire');
@@ -80,6 +69,9 @@ Main.screens.main.initialize = function () {
 
         Main.getEntity('timer').scheduler.add(newGrunt, true);
     }
+
+    // Output the dungeon generation details.
+    Main.system.printGenerationLog();
 };
 
 // Draw entities in this order:
@@ -138,6 +130,7 @@ Main.screens.main.keyInput = function (e) {
     if (e.shiftKey) {
         if (keyAction(e, 'fixed') === 'develop') {
             Main.setDevelop();
+            Main.system.printGenerationLog();
 
             Main.display.clear();
             Main.screens.main.display();

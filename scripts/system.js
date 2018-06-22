@@ -26,8 +26,8 @@ Main.system.placeActor = function (actor, notQualified, forbidden) {
     // calculate the forbidden zone every time when placing a new entity.
     while (notQualified(x, y, forbidden) && retry < 99);
 
-    if (Main.getDevelop() && retry > 10) {
-        console.log('Retry, ' + actor.getEntityName() + ': ' + retry);
+    if (retry > 10) {
+        Main._log.retry.push(actor.getEntityName() + ': ' + retry);
     }
 
     actor.Position.setX(x);
@@ -748,5 +748,28 @@ Main.system.npcDropOrb = function (actor, dropRate) {
 
         Main.getEntity('message').Message.pushMsg(
             Main.text.targetDropOrb(actor, Main.getEntity('orb').get(orbID)));
+    }
+};
+
+Main.system.printGenerationLog = function () {
+    if (!Main._log.seedPrinted) {
+        console.log('Seed: '
+            + Main.getEntity('seed').Seed.getSeed());
+
+        Main._log.seedPrinted = true;
+    }
+
+    if (Main.getDevelop() && !Main._log.msgPrinted) {
+        console.log('Cycle: ' + Main._log.cycle);
+        console.log('Floor: ' + Main._log.floor + '%');
+
+        if (Main._log.retry.length > 0) {
+            console.log('Retry:');
+            Main._log.retry.forEach((value) => {
+                console.log(value);
+            });
+        }
+
+        Main._log.msgPrinted = true;
     }
 };

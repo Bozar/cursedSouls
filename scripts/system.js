@@ -131,9 +131,27 @@ Main.system.createOrbs = function () {
 };
 
 Main.system.createEnemies = function () {
+    let enemyAmount = amount();
     // TODO: change the enemies base on the dungeon level.
+    let enemyType = type(1);
+    let elite = [];
+    let grunt = [];
 
-    amount();
+    // Lump1 & Lump2.
+    for (let i = 0; i < 2; i++) {
+        for (let j = 0; j < enemyAmount[i]; j++) {
+            elite.push(Main.entity[enemyType[i]]());
+        }
+    }
+
+    // Fire, Ice & Slime.
+    for (let i = 2; i < enemyAmount.length; i++) {
+        for (let j = 0; j < enemyAmount[i]; j++) {
+            grunt.push(Main.entity[enemyType[i]]());
+        }
+    }
+
+    return [elite, grunt];
 
     // Helper functions.
     function amount() {
@@ -161,6 +179,26 @@ Main.system.createEnemies = function () {
     function percent() {
         // 40% to 60%.
         return Math.floor(4 + 3 * ROT.RNG.getUniform()) / 10;
+    }
+
+    function type(dungeonLevel) {
+        let lump1 = '';
+        let lump2 = '';
+        let fire = '';
+        let ice = '';
+        let slime = '';
+
+        switch (dungeonLevel) {
+            case 1:
+                lump1 = 'dummy';
+                lump2 = 'dummy';
+                fire = 'dummy';
+                ice = 'dummy';
+                slime = 'dummy';
+                break;
+        }
+
+        return [lump1, lump2, fire, ice, slime];
     }
 };
 

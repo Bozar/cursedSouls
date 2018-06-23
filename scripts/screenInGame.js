@@ -13,6 +13,7 @@ Main.screens.main = new Main.Screen('main', ['main', 'examine', 'aim']);
 // * Orbs cannot be generated on the downstairs.
 Main.screens.main.initialize = function () {
     let pcCanSee = [];
+    let eliteAndGrunt = [];
 
     // Seed.
     Main.entity.seed();
@@ -46,20 +47,28 @@ Main.screens.main.initialize = function () {
 
     Main.getEntity('timer').scheduler.add(Main.getEntity('pc'), true);
 
-    Main.system.createEnemies();
     // NPCs.
-    // TODO: Change the number and type of enemies.
-    let newGrunt = null;
+    eliteAndGrunt = Main.system.createEnemies();
 
-    for (var i = 0; i < 30; i++) {
-        newGrunt = Main.entity.dummy();
-
+    // Place elites.
+    for (let i = 0; i < eliteAndGrunt[0].length; i++) {
         Main.system.placeActor(
-            newGrunt,
+            eliteAndGrunt[0][i],
+            // TODO: change the verificatio function.
             Main.system.verifyPositionGrunt,
             pcCanSee);
 
-        Main.getEntity('timer').scheduler.add(newGrunt, true);
+        Main.getEntity('timer').scheduler.add(eliteAndGrunt[0][i], true);
+    }
+
+    // Place grunts.
+    for (let i = 0; i < eliteAndGrunt[1].length; i++) {
+        Main.system.placeActor(
+            eliteAndGrunt[1][i],
+            Main.system.verifyPositionGrunt,
+            pcCanSee);
+
+        Main.getEntity('timer').scheduler.add(eliteAndGrunt[1][i], true);
     }
 
     // Downstairs.

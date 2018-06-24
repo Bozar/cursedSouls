@@ -110,6 +110,7 @@ Main.screens.main.display = function () {
     Main.screens.drawBottomRight(Main.getEntity('seed').Seed.getPrintSeed());
 
     Main.screens.drawLevelName();
+    Main.screens.drawPCHitPoint();
     Main.screens.drawPower();
     Main.screens.drawItemUnderYourFoot();
 

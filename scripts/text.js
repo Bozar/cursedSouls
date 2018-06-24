@@ -29,6 +29,7 @@ Main.text.initialize = function () {
     // UI elements outside the dungeon section
     text.set('ui', new Map());
     text.get('ui').set('enhance', '*');
+    text.get('ui').set('hp', 'HP: %%');
     text.get('ui').set('ground', '@');
     text.get('ui').set('help', 'Help:');
     text.get('ui').set('wizard', 'Wiz|');
@@ -257,6 +258,19 @@ Main.text.lastWords = function () {
     } else {
         text = Main.text.action('deathGeneral');
     }
+
+    return text;
+};
+
+Main.text.uiHitPoint = function () {
+    let hp = Main.getEntity('pc').Inventory.getLength();
+    let text = Main.text.ui('hp');
+
+    if (hp < 4) {
+        hp = Main.screens.colorfulText(hp, 'orange');
+    }
+
+    text = text.replace('%%', hp);
 
     return text;
 };

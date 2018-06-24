@@ -344,6 +344,13 @@ Main.screens.drawLevelName = function () {
         `${Main.text.dungeon('downstairsIcon')} ${levelName}`);
 };
 
+Main.screens.drawPCHitPoint = function () {
+    Main.display.drawText(
+        Main.UI.hitpoint.getX() + 2,
+        Main.UI.hitpoint.getY(),
+        Main.text.uiHitPoint());
+};
+
 Main.screens.drawPower = function () {
     let powers = Main.getEntity('pc').Inventory.getInventory();
     let enhance = false;

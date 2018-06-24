@@ -90,14 +90,18 @@ Main.UI.level = new Main.UI(Main.UI.status.getWidth(), 1);
 Main.UI.level._x = Main.UI.status.getX();
 Main.UI.level._y = Main.UI.status.getY() + 2;
 
+Main.UI.hitpoint = new Main.UI(Main.UI.status.getWidth(), 1);
+Main.UI.hitpoint._x = Main.UI.status.getX();
+Main.UI.hitpoint._y = Main.UI.level.getY() + 1.5;
+
 Main.UI.power = new Main.UI(Main.UI.status.getWidth(), 6);
 Main.UI.power._x = Main.UI.status.getX();
-Main.UI.power._y = Main.UI.level.getY() + 2;
+Main.UI.power._y = Main.UI.hitpoint.getY() + 1.5;
 
 Main.UI.ground = new Main.UI(Main.UI.status.getWidth(), 1);
 Main.UI.ground._x = Main.UI.status.getX();
 Main.UI.ground._y = Main.UI.power.getY()
-    + Main.UI.power.getHeight() + 2;
+    + Main.UI.power.getHeight() + 1.5;
 
 Main.UI.help = new Main.UI(Main.UI.status.getWidth(), 1);
 Main.UI.help._x = Main.UI.status.getX();

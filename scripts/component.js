@@ -106,22 +106,34 @@ Main.Component.BossFight = function () {
     };
 };
 
-Main.Component.Display = function (char, color, altColor) {
+Main.Component.Display = function (char, color, onlyOneColor) {
     this._name = 'Display';
 
     this._character = char;
-    // [The default color,
-    // the color when standing on an orb,
-    // the color when standing on the downstairs]
-    this._color = [
-        Main.getColor(color || 'white'),
-        Main.getColor(altColor || 'green'),
-        Main.getColor(altColor || 'orange')];
+
+    this._color = new Map();
+    this._color.set('default', color || 'white');
+
+    if (onlyOneColor) {
+        this._color.set('orb', this._color.get('default'));
+        this._color.set('downstairs', this._color.get('default'));
+    } else {
+        this._color.set('orb', 'green');
+        this._color.set('downstairs', 'orange');
+    }
 
     this.getCharacter = function () { return this._character; };
-    this.getColor = function () { return this._color[0]; };
-    this.getOrbColor = function () { return this._color[1]; };
-    this.getDownstairsColor = function () { return this._color[2]; };
+    this.getColor = function (color) {
+        return this._color.get(color || 'default');
+    };
+    this.getOrbColor = function () { return this._color.get('orb'); };
+    this.getDownstairsColor = function () {
+        return this._color.get('downstairs');
+    };
+
+    this.setColor = function (key, value) {
+        this._color.set(key, value);
+    };
 };
 
 Main.Component.Position = function (range, x, y) {

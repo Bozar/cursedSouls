@@ -296,14 +296,12 @@ Main.screens.drawActor = function (actor, noFov) {
     }
 
     if (drawThis) {
-        if (!Main.system.isMarker(actor)) {
-            if (Main.system.downstairsHere(
-                actor.Position.getX(), actor.Position.getY())) {
-                color = actor.Display.getDownstairsColor();
-            } else if (Main.system.orbHere(
-                actor.Position.getX(), actor.Position.getY())) {
-                color = actor.Display.getOrbColor();
-            }
+        if (Main.system.downstairsHere(
+            actor.Position.getX(), actor.Position.getY())) {
+            color = actor.Display.getDownstairsColor();
+        } else if (Main.system.orbHere(
+            actor.Position.getX(), actor.Position.getY())) {
+            color = actor.Display.getOrbColor();
         } else {
             color = actor.Display.getColor();
         }
@@ -320,7 +318,8 @@ Main.screens.drawActor = function (actor, noFov) {
             // Character
             actor.Display.getCharacter(),
             // Color
-            color);
+            Main.getColor(color)
+        );
     }
 };
 

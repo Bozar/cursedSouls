@@ -99,6 +99,7 @@ Main.entity.pc = function () {
     e.addComponent(new Main.Component.DropRate());
     e.addComponent(new Main.Component.AttackRange());
 
+    e.Display.setColor('die', 'grey');
     e.Damage.setDamage('nuke', 9);
 
     e.AttackRange.setRange('fire', 1);
@@ -134,7 +135,7 @@ Main.entity.marker = function () {
     let e = new Main.Factory('marker');
 
     e.addComponent(new Main.Component.Position());
-    e.addComponent(new Main.Component.Display('X', 'orange', 'orange'));
+    e.addComponent(new Main.Component.Display('X', 'orange', true));
 
     Main.entities.set('marker', e);
 };
@@ -143,7 +144,7 @@ Main.entity.downstairs = function () {
     let e = new Main.Factory('downstairs');
 
     e.addComponent(new Main.Component.Position(5));
-    e.addComponent(new Main.Component.Display('>', 'orange', 'orange'));
+    e.addComponent(new Main.Component.Display('>', 'orange', true));
 
     Main.entities.set('downstairs', e);
 };
@@ -177,7 +178,7 @@ Main.entity.orb = function (orbName) {
     }
 
     e.addComponent(new Main.Component.Position(0));
-    e.addComponent(new Main.Component.Display(orbChar, 'green'));
+    e.addComponent(new Main.Component.Display(orbChar, 'green', true));
 
     Main.entities.get('orb').set(e.getID(), e);
 

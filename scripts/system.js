@@ -194,7 +194,7 @@ Main.system.createEnemies = function () {
                 lump2 = 'dummy';
                 fire = 'dummy';
                 ice = 'dummy';
-                slime = 'dummy';
+                slime = 'rat';
                 break;
         }
 

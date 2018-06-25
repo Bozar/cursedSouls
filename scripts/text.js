@@ -66,12 +66,16 @@ Main.text.initialize = function () {
     // NPC's names
     text.set('name', new Map());
     text.get('name').set('dummy', 'Dummy');
+    text.get('name').set('rat', 'Rat');
 
     // Describe the NPC, item or building under the marker.
     text.set('info', new Map());
     text.get('info').set('dummy', 'This is a dummy.'
         + ' It has 1 hit point.'
         + ' It drops 1 Slime Orb when killed.');
+    text.get('info').set('rat',
+        'These filthy little bastards eat whatever they can find.'
+        + ' But they are not a real threat unless you get yourself cornered.');
 
     text.get('info').set('fire', 'Melee. 100% drop rate.');
     text.get('info').set('ice', 'Range 2, freeze for 2 turns. 60% drop rate.');

@@ -21,6 +21,7 @@ Main.system.dummyAct = function () {
         if (pcIsDead) {
             Main.getEntity('message').Message.pushMsg(Main.text.action('die'));
             Main.getEntity('message').Message.pushMsg(Main.text.lastWords());
+            Main.getEntity('message').Message.pushMsg(Main.text.action('end'));
         } else {
             Main.system.unlockEngine(this.ActionDuration.getAttack());
         }

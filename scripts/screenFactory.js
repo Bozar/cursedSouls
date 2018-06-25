@@ -302,6 +302,8 @@ Main.screens.drawActor = function (actor, noFov) {
         } else if (Main.system.orbHere(
             actor.Position.getX(), actor.Position.getY())) {
             color = actor.Display.getOrbColor();
+        } else if (Main.system.isPC(actor) && actor.Inventory.getIsDead()) {
+            color = actor.Display.getColor('die');
         } else {
             color = actor.Display.getColor();
         }

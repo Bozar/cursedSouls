@@ -28,12 +28,15 @@ Main.text.initialize = function () {
 
     // UI elements outside the dungeon section
     text.set('ui', new Map());
+    text.get('ui').set('wizard', 'Wiz|');
+    text.get('ui').set('help', 'Help:');
+    text.get('ui').set('studio', 'Red Tabby Studio');
+
     text.get('ui').set('enhance', '*');
     text.get('ui').set('hp', 'HP: %%');
+    text.get('ui').set('dead', 'Dead');
     text.get('ui').set('ground', '@');
-    text.get('ui').set('help', 'Help:');
-    text.get('ui').set('wizard', 'Wiz|');
-    text.get('ui').set('studio', 'Red Tabby Studio');
+
     text.get('ui').set('examine', 'Ex');
     text.get('ui').set('aim', 'Aim');
     text.get('ui').set('range', 'Range: %%');
@@ -55,6 +58,7 @@ Main.text.initialize = function () {
     text.get('action').set('npcHit', 'The %% hits you.');
 
     text.get('action').set('die', 'You die.');
+    text.get('action').set('end', '===The End===');
     text.get('action').set('deathGeneral', 'Rest in peace, ashen one.');
     text.get('action').set('deathBoss1',
         'Ashen one, hearest thou my voice, still?');
@@ -265,12 +269,17 @@ Main.text.lastWords = function () {
 Main.text.uiHitPoint = function () {
     let hp = Main.getEntity('pc').Inventory.getLength();
     let text = Main.text.ui('hp');
+    let dead = Main.screens.colorfulText(Main.text.ui('dead'), 'grey');
 
     if (hp < 4) {
         hp = Main.screens.colorfulText(hp, 'orange');
     }
 
-    text = text.replace('%%', hp);
+    if (Main.getEntity('pc').Inventory.getIsDead()) {
+        text = text.replace('%%', dead);
+    } else {
+        text = text.replace('%%', hp);
+    }
 
     return text;
 };

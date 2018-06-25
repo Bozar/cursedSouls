@@ -248,6 +248,7 @@ Main.system.pcTakeDamage = function (damage) {
         = damage > Main.getEntity('pc').Inventory.getLength();
 
     Main.getEntity('pc').Inventory.removeItem(damage);
+    Main.getEntity('pc').Inventory.setIsDead(pcIsDead);
 
     return pcIsDead;
 };

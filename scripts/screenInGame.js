@@ -113,6 +113,7 @@ Main.screens.main.display = function () {
     Main.screens.drawPCHitPoint();
     Main.screens.drawPower();
     Main.screens.drawItemUnderYourFoot();
+    Main.screens.drawEnemyList();
 
     Main.screens.drawDungeon();
 

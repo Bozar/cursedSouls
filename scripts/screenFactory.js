@@ -403,6 +403,20 @@ Main.screens.drawItemUnderYourFoot = function () {
             : Main.text.ui('ground'));
 };
 
+Main.screens.drawEnemyList = function () {
+    let enemyList = Main.system.countEnemiesInSight();
+    let i = 0;
+
+    for (let [key, value] of enemyList) {
+        Main.display.drawText(
+            Main.UI.enemy.getX() + 2,
+            Main.UI.enemy.getY() + i,
+            Main.screens.colorfulText(key + ': ' + value, 'orange')
+        );
+        i++;
+    }
+};
+
 Main.screens.drawHelp = function () {
     let helpKey = Main.input.keybind.get('fixed').get('help')[0];
 

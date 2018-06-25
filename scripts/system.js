@@ -851,3 +851,27 @@ Main.system.printGenerationLog = function () {
         Main._log.msgPrinted = true;
     }
 };
+
+Main.system.countEnemiesInSight = function () {
+    let count = new Map();
+    let npcHere = null;
+
+    Main.getEntity('dungeon').fov.compute(
+        Main.getEntity('pc').Position.getX(),
+        Main.getEntity('pc').Position.getY(),
+        Main.getEntity('pc').Position.getRange(),
+        (x, y) => {
+            npcHere = Main.system.npcHere(x, y);
+
+            if (npcHere) {
+                if (count.get(npcHere.Display.getCharacter())) {
+                    count.set(npcHere.Display.getCharacter(),
+                        count.get(npcHere.Display.getCharacter()) + 1);
+                } else {
+                    count.set(npcHere.Display.getCharacter(), 1);
+                }
+            }
+        });
+
+    return count;
+};

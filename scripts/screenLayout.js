@@ -103,6 +103,11 @@ Main.UI.ground._x = Main.UI.status.getX();
 Main.UI.ground._y = Main.UI.power.getY()
     + Main.UI.power.getHeight() + 1.5;
 
+// 5 types of normal enemies and no more than 3 bosses.
+Main.UI.enemy = new Main.UI(Main.UI.status.getWidth(), 8);
+Main.UI.enemy._x = Main.UI.status.getX();
+Main.UI.enemy._y = Main.UI.ground.getY() + 1.5;
+
 Main.UI.help = new Main.UI(Main.UI.status.getWidth(), 1);
 Main.UI.help._x = Main.UI.status.getX();
 Main.UI.help._y = Main.UI.status.getY()

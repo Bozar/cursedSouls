@@ -11,6 +11,7 @@ Main.system.placeActor = function (actor, notQualified, forbidden) {
     let x = null;
     let y = null;
     let retry = 0;
+    let maxRetry = 999;
 
     do {
         x = Math.floor(
@@ -24,14 +25,21 @@ Main.system.placeActor = function (actor, notQualified, forbidden) {
     // Some notQualified callback functions require an extra argument, forbidden,
     // which is a string array [x + ',' + y], so that they do not need to
     // calculate the forbidden zone every time when placing a new entity.
-    while (notQualified(x, y, forbidden) && retry < 999);
+    while (notQualified(x, y, forbidden) && retry < maxRetry);
 
     if (retry > 10) {
         Main._log.retry.push(actor.getEntityName() + ': ' + retry);
     }
 
+    if (retry >= maxRetry) {
+        // Do not place the actor in an invalid place.
+        return false;
+    }
+
     actor.Position.setX(x);
     actor.Position.setY(y);
+
+    return true;
 };
 
 Main.system.verifyPositionPC = function (x, y) {
@@ -92,7 +100,7 @@ Main.system.verifyPositionGrunt = function (x, y, pcSight) {
             }
         });
 
-        return number > 4;
+        return number > 3;
     }
 };
 

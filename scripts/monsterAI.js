@@ -10,7 +10,7 @@ Main.system.dummyAct = function () {
             <= this.Position.getRange()) {
             Main.system.npcMoveClose(this);
         } else {
-            Main.system.unlockEngine(this.ActionDuration.getWait());
+            Main.system.unlockEngine(this.ActionDuration.getDuration());
         }
     } else if (Main.system.getDistance(this, Main.getEntity('pc'))
         <= this.AttackRange.getRange('base')) {
@@ -23,7 +23,7 @@ Main.system.dummyAct = function () {
             Main.getEntity('message').Message.pushMsg(Main.text.lastWords());
             Main.getEntity('message').Message.pushMsg(Main.text.action('end'));
         } else {
-            Main.system.unlockEngine(this.ActionDuration.getAttack());
+            Main.system.unlockEngine(this.ActionDuration.getDuration());
         }
     } else {
         if (Main.system.getDistance(this, Main.getEntity('pc'))
@@ -128,5 +128,5 @@ Main.system.npcDecideNextStep = function (actor, nextStep) {
     // 6-6: Change the actor's position and unlock the engine.
     actor.Position.setX(newPosition[0]);
     actor.Position.setY(newPosition[1]);
-    Main.system.unlockEngine(actor.ActionDuration.getMove());
+    Main.system.unlockEngine(actor.ActionDuration.getDuration());
 };

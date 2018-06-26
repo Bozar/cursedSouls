@@ -290,7 +290,7 @@ Main.system.pcPickUpOrb = function () {
     Main.getEntity('orb').delete(orbHere.getID());
 
     Main.system.unlockEngine(
-        Main.getEntity('pc').ActionDuration.getUseOrb());
+        Main.getEntity('pc').ActionDuration.getDuration());
 };
 
 Main.system.pcUseDownstairs = function () {
@@ -397,8 +397,8 @@ Main.system.move = function (direction, who) {
         return Main.system.isMarker(actor)
             ? null
             : isWait
-                ? actor.ActionDuration.getWait()
-                : actor.ActionDuration.getMove();
+                ? actor.ActionDuration.getDuration()
+                : actor.ActionDuration.getDuration();
     }
 
     function getActorType() {
@@ -725,7 +725,7 @@ Main.system.exitCutScene = function () {
         Main.screens.main.enter(true);
 
         Main.system.unlockEngine(
-            Main.getEntity('pc').ActionDuration.getMove());
+            Main.getEntity('pc').ActionDuration.getDuration());
     } else {
         Main.screens.main.enter(false);
     }
@@ -769,7 +769,7 @@ Main.system.pcAttack = function (target, attackType) {
             Main.text.hitTarget(target));
     }
 
-    Main.system.unlockEngine(Main.getEntity('pc').ActionDuration.getAttack());
+    Main.system.unlockEngine(Main.getEntity('pc').ActionDuration.getDuration());
 };
 
 Main.system.pcUseSlimeOrb = function () {
@@ -781,7 +781,7 @@ Main.system.pcUseSlimeOrb = function () {
     Main.getEntity('message').Message.pushMsg(Main.text.action('teleport'));
 
     Main.system.unlockEngine(
-        Main.getEntity('pc').ActionDuration.getUseOrb());
+        Main.getEntity('pc').ActionDuration.getDuration());
 };
 
 Main.system.pcUseIceOrb = function () {
@@ -792,7 +792,7 @@ Main.system.pcUseIceOrb = function () {
     Main.getEntity('message').Message.pushMsg(Main.text.action('armor'));
 
     Main.system.unlockEngine(
-        Main.getEntity('pc').ActionDuration.getUseOrb());
+        Main.getEntity('pc').ActionDuration.getDuration());
 };
 
 Main.system.npcDropOrb = function (actor, dropRate) {

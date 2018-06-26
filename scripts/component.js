@@ -157,17 +157,16 @@ Main.Component.ActionDuration = function () {
 
     this._duration = new Map();
 
-    // No need to seperate these actions since they all take 1 turn. This is just
-    // an example.
-    this._duration.set('move', 1);
-    this._duration.set('useOrb', 1);
-    this._duration.set('attack', 1);
-    this._duration.set('wait', 1);
+    // Most actions take 1 turn.
+    this._duration.set('base', 1);
 
-    this.getMove = function () { return this._duration.get('move'); };
-    this.getUseOrb = function () { return this._duration.get('useOrb'); };
-    this.getAttack = function () { return this._duration.get('attack'); };
-    this.getWait = function () { return this._duration.get('wait'); };
+    this.getDuration = function (action) {
+        return this._duration.get(action || 'base');
+    };
+
+    this.setDuration = function (key, value) {
+        this._duration.set(key, value);
+    };
 };
 
 Main.Component.Inventory = function (capacity, firstItem) {

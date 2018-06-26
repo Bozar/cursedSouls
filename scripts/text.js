@@ -67,6 +67,7 @@ Main.text.initialize = function () {
     text.set('name', new Map());
     text.get('name').set('dummy', 'Dummy');
     text.get('name').set('rat', 'Rat');
+    text.get('name').set('dog', 'Zombie Dog');
 
     // Describe the NPC, item or building under the marker.
     text.set('info', new Map());
@@ -76,6 +77,10 @@ Main.text.initialize = function () {
     text.get('info').set('rat',
         'These filthy little bastards eat whatever they can find.'
         + ' But they are not a real threat unless you get yourself cornered.');
+    text.get('info').set('dog',
+        'Zombie dogs are zombie\'s best friends.'
+        + 'They are good at shadowing far away preys'
+        + ' and they know nothing about pain.');
 
     text.get('info').set('fire', 'Melee. 100% drop rate.');
     text.get('info').set('ice', 'Range 2, freeze for 2 turns. 60% drop rate.');

@@ -200,7 +200,7 @@ Main.system.createEnemies = function () {
             case 1:
                 lump1 = 'dummy';
                 lump2 = 'dummy';
-                fire = 'dummy';
+                fire = 'dog';
                 ice = 'dummy';
                 slime = 'rat';
                 break;

@@ -131,14 +131,32 @@ Main.entity.dummy = function (x, y) {
     return e;
 };
 
-Main.entity.rat = function (x, y) {
+Main.entity.rat = function () {
     let e = new Main.Factory('rat');
 
-    e.addComponent(new Main.Component.Position(5, x, y));
+    e.addComponent(new Main.Component.Position(5));
     e.addComponent(new Main.Component.Display('r'));
     e.addComponent(new Main.Component.ActionDuration());
     e.addComponent(new Main.Component.Inventory(1, 'slime'));
     e.addComponent(new Main.Component.HitPoint(1));
+    e.addComponent(new Main.Component.Damage(1));
+    e.addComponent(new Main.Component.AttackRange(1));
+
+    e.act = Main.system.dummyAct;
+
+    Main.entities.get('npc').set(e.getID(), e);
+
+    return e;
+};
+
+Main.entity.dog = function () {
+    let e = new Main.Factory('dog');
+
+    e.addComponent(new Main.Component.Position(7));
+    e.addComponent(new Main.Component.Display('d'));
+    e.addComponent(new Main.Component.ActionDuration());
+    e.addComponent(new Main.Component.Inventory(1, 'fire'));
+    e.addComponent(new Main.Component.HitPoint(2));
     e.addComponent(new Main.Component.Damage(1));
     e.addComponent(new Main.Component.AttackRange(1));
 

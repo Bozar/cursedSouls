@@ -139,9 +139,11 @@ Main.system.npcDecideNextStep = function (actor, nextStep, keepDistance) {
                 }
             });
 
-            // The NPC might be cornered by the PC.
+            // If the NPC is cornered by the PC, it moves randomly.
             if (checkFirst.length === 0 && checkNext.length === 0) {
-                checkNext.push(centerX + ',' + centerY);
+                surround.forEach((position) => {
+                    checkNext.push(position[0] + ',' + position[1]);
+                });
             }
             break;
     }

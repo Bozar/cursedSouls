@@ -37,7 +37,7 @@ Main.screens.main.initialize = function () {
 
     Main.system.placeActor(
         Main.getEntity('pc'),
-        Main.system.verifyPositionPC);
+        Main.system.verifyPCPosition);
 
     Main.getEntity('dungeon').fov.compute(
         Main.getEntity('pc').Position.getX(),
@@ -55,8 +55,9 @@ Main.screens.main.initialize = function () {
         Main.system.placeActor(
             eliteAndGrunt[0][i],
             // TODO: change the verificatio function.
-            Main.system.verifyPositionGrunt,
-            pcCanSee);
+            Main.system.verifyEnemyPosition,
+            pcCanSee,
+            true);
 
         Main.getEntity('timer').scheduler.add(eliteAndGrunt[0][i], true);
     }
@@ -65,8 +66,9 @@ Main.screens.main.initialize = function () {
     for (let i = 0; i < eliteAndGrunt[1].length; i++) {
         Main.system.placeActor(
             eliteAndGrunt[1][i],
-            Main.system.verifyPositionGrunt,
-            pcCanSee);
+            Main.system.verifyEnemyPosition,
+            pcCanSee,
+            false);
 
         Main.getEntity('timer').scheduler.add(eliteAndGrunt[1][i], true);
     }
@@ -76,7 +78,7 @@ Main.screens.main.initialize = function () {
 
     Main.system.placeActor(
         Main.getEntity('downstairs'),
-        Main.system.verifyPositionDownstairs);
+        Main.system.verifyDownstairsPosition);
 
     // Orbs.
     Main.system.createOrbs();
@@ -84,7 +86,7 @@ Main.screens.main.initialize = function () {
     for (let keyValue of Main.getEntity('orb')) {
         Main.system.placeActor(
             keyValue[1],
-            Main.system.verifyPositionOrb);
+            Main.system.verifyOrbPosition);
     }
 
     // Output the dungeon generation details.

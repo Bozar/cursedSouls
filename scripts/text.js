@@ -56,6 +56,7 @@ Main.text.initialize = function () {
     text.get('action').set('drop', 'The %1% drops %2% %3% Orb.');
 
     text.get('action').set('npcHit', 'The %% hits you.');
+    text.get('action').set('npcSummon', 'The %% summons its companion.');
 
     text.get('action').set('die', 'You die.');
     text.get('action').set('end', '===The End===');
@@ -69,12 +70,14 @@ Main.text.initialize = function () {
     text.get('name').set('rat', 'Rat');
     text.get('name').set('dog', 'Zombie Dog');
     text.get('name').set('raven', 'Raven');
+    text.get('name').set('zombie', 'Zombie');
 
     // Describe the NPC, item or building under the marker.
     text.set('info', new Map());
     text.get('info').set('dummy', 'This is a dummy.'
         + ' It has 1 hit point.'
         + ' It drops 1 Slime Orb when killed.');
+
     text.get('info').set('rat',
         'These filthy little bastards eat whatever they can find.'
         + ' But they are not a real threat unless you get yourself cornered.');
@@ -86,6 +89,11 @@ Main.text.initialize = function () {
         'Ravens are cunning and mischievous.'
         + ' They fly quickly.'
         + ' They like hiding among the allies and pecking the victim.');
+    text.get('info').set('zombie',
+        'Zombies are zombie dog\'s best friends.'
+        + ' Their skin is extraordinarily tough.'
+        + ' You can easily outrun a zombie,'
+        + ' but be ware of their loyal companions.');
 
     text.get('info').set('fire', 'Melee. 100% drop rate.');
     text.get('info').set('ice', 'Range 2, freeze for 2 turns. 60% drop rate.');
@@ -262,6 +270,14 @@ Main.text.npcHit = function (attacker) {
     let text = Main.text.action('npcHit');
 
     text = text.replace('%%', Main.text.name(attacker.getEntityName()));
+
+    return text;
+};
+
+Main.text.npcSummon = function (actor) {
+    let text = Main.text.action('npcSummon');
+
+    text = text.replace('%%', Main.text.name(actor.getEntityName()));
 
     return text;
 };

@@ -55,6 +55,30 @@ Main.system.ravenAct = function () {
     }
 };
 
+Main.system.zombieAct = function () {
+    let pcIsDead = false;
+
+    Main.getEntity('timer').engine.lock();
+
+    if (!Main.system.isInSight(this, Main.getEntity('pc'))) {
+        // Wait 1 turn.
+        Main.system.unlockEngine(this.ActionDuration.getDuration());
+    } else if (Main.system.pcIsInsideAttackRange(this)) {
+        pcIsDead = Main.system.pcTakeDamage(this.Damage.getDamage());
+
+        // Attack the PC.
+        Main.system.npcHitOrKill(this, 'base', pcIsDead);
+    } else {
+        if (!Main.system.pcIsInsideAttackRange(this)) {
+            // Approach the PC in sight.
+            Main.system.npcMoveClose(this);
+        } else {
+            // Surround the PC.
+            Main.system.npcKeepDistance(this, this.AttackRange.getRange());
+        }
+    }
+};
+
 Main.system.npcMoveClose = function (actor) {
     Main.system.npcDecideNextStep(actor, 'moveClose');
 };
@@ -174,10 +198,21 @@ Main.system.npcDecideNextStep = function (actor, nextStep, keepDistance) {
     actor.Position.setX(newPosition[0]);
     actor.Position.setY(newPosition[1]);
 
-    if (actor.ActionDuration.getDuration('fastMove')) {
-        Main.system.unlockEngine(actor.ActionDuration.getDuration('fastMove'));
-    } else {
+    if (newPosition[0] === centerX && newPosition[1] === centerY) {
+        // Wait.
         Main.system.unlockEngine(actor.ActionDuration.getDuration('base'));
+    } else {
+        // Move.
+        if (actor.ActionDuration.getDuration('slowMove')) {
+            Main.system.unlockEngine(
+                actor.ActionDuration.getDuration('slowMove'));
+        } else if (actor.ActionDuration.getDuration('fastMove')) {
+            Main.system.unlockEngine(
+                actor.ActionDuration.getDuration('fastMove'));
+        } else {
+            Main.system.unlockEngine(
+                actor.ActionDuration.getDuration('base'));
+        }
     }
 };
 
@@ -212,4 +247,24 @@ Main.system.npcHasAlliesInSight = function (actor, minimum) {
         });
 
     return count >= minimum;
+};
+
+Main.system.npcActBeforeDeath = function (actor) {
+    switch (actor.getEntityName()) {
+        case 'zombie':
+            summon('dog');
+
+            Main.getEntity('message').Message.pushMsg(
+                Main.text.npcSummon(actor));
+            break;
+    }
+
+    // Helper functions.
+    function summon(who) {
+        let newActor
+            = Main.entity[who](actor.Position.getX(), actor.Position.getY());
+
+        // Delay 2 turns.
+        Main.getEntity('timer').scheduler.add(newActor, true, 2);
+    }
 };

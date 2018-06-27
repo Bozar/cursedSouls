@@ -131,10 +131,10 @@ Main.entity.dummy = function (x, y) {
     return e;
 };
 
-Main.entity.rat = function () {
+Main.entity.rat = function (x, y) {
     let e = new Main.Factory('rat');
 
-    e.addComponent(new Main.Component.Position(5));
+    e.addComponent(new Main.Component.Position(5, x, y));
     e.addComponent(new Main.Component.Display('r'));
     e.addComponent(new Main.Component.ActionDuration());
     e.addComponent(new Main.Component.Inventory(1, 'slime'));
@@ -149,10 +149,10 @@ Main.entity.rat = function () {
     return e;
 };
 
-Main.entity.dog = function () {
+Main.entity.dog = function (x, y) {
     let e = new Main.Factory('dog');
 
-    e.addComponent(new Main.Component.Position(7));
+    e.addComponent(new Main.Component.Position(7, x, y));
     e.addComponent(new Main.Component.Display('d'));
     e.addComponent(new Main.Component.ActionDuration());
     e.addComponent(new Main.Component.Inventory(1, 'fire'));
@@ -167,10 +167,10 @@ Main.entity.dog = function () {
     return e;
 };
 
-Main.entity.raven = function () {
+Main.entity.raven = function (x, y) {
     let e = new Main.Factory('raven');
 
-    e.addComponent(new Main.Component.Position(5));
+    e.addComponent(new Main.Component.Position(5, x, y));
     e.addComponent(new Main.Component.Display('v'));
     e.addComponent(new Main.Component.ActionDuration());
     e.addComponent(new Main.Component.Inventory(1, 'ice'));
@@ -181,6 +181,26 @@ Main.entity.raven = function () {
     e.ActionDuration.setDuration('fastMove', 0.5);
 
     e.act = Main.system.ravenAct;
+
+    Main.entities.get('npc').set(e.getID(), e);
+
+    return e;
+};
+
+Main.entity.zombie = function (x, y) {
+    let e = new Main.Factory('zombie');
+
+    e.addComponent(new Main.Component.Position(5, x, y));
+    e.addComponent(new Main.Component.Display('z'));
+    e.addComponent(new Main.Component.ActionDuration());
+    e.addComponent(new Main.Component.Inventory(1, 'lump'));
+    e.addComponent(new Main.Component.HitPoint(3));
+    e.addComponent(new Main.Component.Damage(1));
+    e.addComponent(new Main.Component.AttackRange(1));
+
+    e.ActionDuration.setDuration('slowMove', 1.5);
+
+    e.act = Main.system.zombieAct;
 
     Main.entities.get('npc').set(e.getID(), e);
 

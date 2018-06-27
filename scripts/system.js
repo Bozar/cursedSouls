@@ -42,7 +42,7 @@ Main.system.placeActor = function (actor, notQualified, forbidden) {
     return true;
 };
 
-Main.system.verifyPositionPC = function (x, y) {
+Main.system.verifyPCPosition = function (x, y) {
     return !Main.system.isFloor(x, y)
         || x < Main.getEntity('pc').Position.getRange()
         || x > Main.getEntity('dungeon').Dungeon.getWidth()
@@ -52,7 +52,7 @@ Main.system.verifyPositionPC = function (x, y) {
         - Main.getEntity('pc').Position.getRange();
 };
 
-Main.system.verifyPositionOrb = function (x, y) {
+Main.system.verifyOrbPosition = function (x, y) {
     return !Main.system.isFloor(x, y)
         || Main.system.getDistance([x, y], Main.getEntity('pc')) <= 2
         || Main.system.downstairsHere(x, y)
@@ -78,7 +78,7 @@ Main.system.npcIsTooDense = function (x, y) {
     return count > 0;
 };
 
-Main.system.verifyPositionGrunt = function (x, y, pcSight) {
+Main.system.verifyEnemyPosition = function (x, y, pcSight, isElite) {
     return !Main.system.isFloor(x, y)
         || tooClose(x, y)
         || tooMany(x, y)
@@ -86,8 +86,21 @@ Main.system.verifyPositionGrunt = function (x, y, pcSight) {
         || Main.system.npcHere(x, y);
 
     function tooClose(x, y) {
-        return pcSight.indexOf(x + ',' + y) > -1
-            && Main.system.getDistance([x, y], Main.getEntity('pc')) <= 3;
+        let isInsight = pcSight.indexOf(x + ',' + y) > -1;
+        let isTooClose = null;
+        let distance = null;
+
+        // PC's sight range: 5.
+        if (isElite) {
+            distance = 8;
+        } else {
+            distance = 3;
+        }
+
+        isTooClose
+            = Main.system.getDistance([x, y], Main.getEntity('pc')) <= distance;
+
+        return isInsight && isTooClose;
     }
 
     function tooMany(x, y) {
@@ -104,7 +117,7 @@ Main.system.verifyPositionGrunt = function (x, y, pcSight) {
     }
 };
 
-Main.system.verifyPositionDownstairs = function (x, y) {
+Main.system.verifyDownstairsPosition = function (x, y) {
     return !Main.system.isFloor(x, y)
         || Main.system.pcHere(x, y)
         || floorInSight() < 36;
@@ -199,7 +212,7 @@ Main.system.createEnemies = function () {
         switch (dungeonLevel) {
             case 1:
                 lump1 = 'dummy';
-                lump2 = 'dummy';
+                lump2 = 'zombie';
                 fire = 'dog';
                 ice = 'raven';
                 slime = 'rat';
@@ -769,6 +782,8 @@ Main.system.pcAttack = function (target, attackType) {
             Main.text.killTarget(target));
 
         Main.system.npcDropOrb(target, dropRate);
+
+        Main.system.npcActBeforeDeath(target);
 
         Main.getEntity('timer').scheduler.remove(target);
         Main.getEntity('npc').delete(target.getID());

@@ -7,7 +7,7 @@ Main.system.isFloor = function (x, y) {
         === 0;
 };
 
-Main.system.placeActor = function (actor, notQualified, forbidden) {
+Main.system.placeActor = function (actor, notQualified, forbidden, isElite) {
     let x = null;
     let y = null;
     let retry = 0;
@@ -22,10 +22,12 @@ Main.system.placeActor = function (actor, notQualified, forbidden) {
             * ROT.RNG.getUniform());
         retry++;
     }
-    // Some notQualified callback functions require an extra argument, forbidden,
-    // which is a string array [x + ',' + y], so that they do not need to
+    // Some notQualified callback functions require extra arguments:
+    // * `forbidden` is a string array [x + ',' + y], so that they do not need to
     // calculate the forbidden zone every time when placing a new entity.
-    while (notQualified(x, y, forbidden) && retry < maxRetry);
+    // * `isElite` is a boolean value that is used to calculate the distance
+    // between the PC and the NPC.
+    while (notQualified(x, y, forbidden, isElite) && retry < maxRetry);
 
     if (retry > 10) {
         Main._log.retry.push(actor.getEntityName() + ': ' + retry);

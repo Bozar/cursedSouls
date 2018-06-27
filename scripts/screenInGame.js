@@ -54,7 +54,6 @@ Main.screens.main.initialize = function () {
     for (let i = 0; i < eliteAndGrunt[0].length; i++) {
         Main.system.placeActor(
             eliteAndGrunt[0][i],
-            // TODO: change the verificatio function.
             Main.system.verifyEnemyPosition,
             pcCanSee,
             true);

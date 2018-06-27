@@ -83,7 +83,7 @@ Main.text.initialize = function () {
         + ' But they are not a real threat unless you get yourself cornered.');
     text.get('info').set('dog',
         'Zombie dogs are zombie\'s best friends.'
-        + 'They are good at shadowing far away preys'
+        + ' They are good at shadowing far away preys'
         + ' and they know nothing about pain.');
     text.get('info').set('raven',
         'Ravens are cunning and mischievous.'

@@ -110,15 +110,7 @@ Main.system.npcDecideNextStep = function (actor, nextStep, keepDistance) {
     let checkFirst = [];
     let checkNext = [];
 
-    if (keepDistance > 0) {
-        currentDistance
-            = Math.max(
-                keepDistance,
-                Main.system.getDistance(actor, Main.getEntity('pc'))
-            );
-    } else {
-        currentDistance = Main.system.getDistance(actor, Main.getEntity('pc'));
-    }
+    currentDistance = Main.system.getDistance(actor, Main.getEntity('pc'));
 
     // 2-6: Remove invalid blocks.
     surround = surround.filter((position) => {
@@ -155,13 +147,19 @@ Main.system.npcDecideNextStep = function (actor, nextStep, keepDistance) {
             });
             break;
         case 'keepDistance':
-            newDistanceMap.forEach((value, key) => {
-                if (value === currentDistance) {
-                    checkFirst.push(key);
-                } else if (value > currentDistance) {
-                    checkNext.push(key);
-                }
-            });
+            if (currentDistance >= keepDistance) {
+                newDistanceMap.forEach((value, key) => {
+                    if (value === currentDistance) {
+                        checkFirst.push(key);
+                    }
+                });
+            } else {
+                newDistanceMap.forEach((value, key) => {
+                    if (value > currentDistance) {
+                        checkFirst.push(key);
+                    }
+                });
+            }
 
             // If the NPC is cornered by the PC, it moves randomly.
             if (checkFirst.length === 0 && checkNext.length === 0) {

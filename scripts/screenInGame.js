@@ -31,7 +31,8 @@ Main.screens.main.initialize = function () {
     // PC.
     Main.entity.pc();
     Main.getEntity('pc').Inventory.addItem('slime');
-    Main.getEntity('pc').Inventory.addItem('fire');
+    Main.getEntity('pc').Inventory.addItem('armor');
+    Main.getEntity('pc').Inventory.addItem('armor');
     Main.getEntity('pc').Inventory.addItem('fire');
     Main.getEntity('pc').Inventory.addItem('lump');
 

@@ -6,14 +6,7 @@ Main.system.dummyAct = function () {
     Main.getEntity('timer').engine.lock();
 
     if (!Main.system.isInSight(this, Main.getEntity('pc'))) {
-        if (Main.system.getDistance(this, Main.getEntity('pc'))
-            <= this.Position.getRange()) {
-            // Search the unseen PC.
-            Main.system.npcMoveClose(this);
-        } else {
-            // Wait 1 turn.
-            Main.system.unlockEngine(this.ActionDuration.getDuration());
-        }
+        Main.system.npcSearchOrWait(this);
     } else if (Main.system.pcIsInsideAttackRange(this)) {
         pcIsDead = Main.system.pcTakeDamage(this.Damage.getDamage());
 
@@ -36,8 +29,7 @@ Main.system.ravenAct = function () {
     Main.getEntity('timer').engine.lock();
 
     if (!Main.system.isInSight(this, Main.getEntity('pc'))) {
-        // Wait 1 turn.
-        Main.system.unlockEngine(this.ActionDuration.getDuration());
+        Main.system.npcSearchOrWait(this);
     } else if (Main.system.pcIsInsideAttackRange(this)) {
         pcIsDead = Main.system.pcTakeDamage(this.Damage.getDamage());
 
@@ -61,8 +53,7 @@ Main.system.zombieAct = function () {
     Main.getEntity('timer').engine.lock();
 
     if (!Main.system.isInSight(this, Main.getEntity('pc'))) {
-        // Wait 1 turn.
-        Main.system.unlockEngine(this.ActionDuration.getDuration());
+        Main.system.npcSearchOrWait(this);
     } else if (Main.system.pcIsInsideAttackRange(this)) {
         pcIsDead = Main.system.pcTakeDamage(this.Damage.getDamage());
 
@@ -81,6 +72,10 @@ Main.system.zombieAct = function () {
 
 Main.system.npcMoveClose = function (actor) {
     Main.system.npcDecideNextStep(actor, 'moveClose');
+};
+
+Main.system.npcMoveRandomly = function (actor) {
+    Main.system.npcDecideNextStep(actor, 'moveRandomly');
 };
 
 Main.system.npcMoveAway = function (actor) {
@@ -128,6 +123,11 @@ Main.system.npcDecideNextStep = function (actor, nextStep, keepDistance) {
 
     // 4-6: Select potential blocks with priority.
     switch (nextStep) {
+        case 'moveRandomly':
+            newDistanceMap.forEach((value, key) => {
+                checkFirst.push(key);
+            });
+            break;
         case 'moveClose':
             newDistanceMap.forEach((value, key) => {
                 if (value < currentDistance) {
@@ -223,6 +223,17 @@ Main.system.npcHitOrKill = function (actor, duration, pcIsDead) {
         Main.getEntity('message').Message.pushMsg(Main.text.action('end'));
     } else {
         Main.system.unlockEngine(actor.ActionDuration.getDuration(duration));
+    }
+};
+
+Main.system.npcSearchOrWait = function (actor) {
+    if (Main.system.getDistance(actor, Main.getEntity('pc'))
+        <= actor.Position.getRange()) {
+        // Search the unseen PC.
+        Main.system.npcMoveRandomly(actor);
+    } else {
+        // Wait 1 turn.
+        Main.system.unlockEngine(actor.ActionDuration.getDuration());
     }
 };
 

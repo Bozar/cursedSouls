@@ -18,7 +18,7 @@ Main.system.dummyAct = function () {
         if (this.CombatRole.getCautious()) {
             approach
                 = !Main.system.pcIsInsideAttackRange(this)
-                && Main.system.npcHasAlliesInSight(this, 3);
+                && Main.system.npcHasAlliesInSight(this);
         } else {
             approach
                 = !Main.system.pcIsInsideAttackRange(this);
@@ -207,8 +207,9 @@ Main.system.pcIsInsideAttackRange = function (actor) {
         <= actor.AttackRange.getRange('base');
 };
 
-Main.system.npcHasAlliesInSight = function (actor, minimum) {
+Main.system.npcHasAlliesInSight = function (actor) {
     let count = 0;
+    let minimum = 2;
 
     Main.getEntity('dungeon').fov.compute(
         actor.Position.getX(),

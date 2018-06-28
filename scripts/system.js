@@ -213,7 +213,7 @@ Main.system.createEnemies = function () {
 
         switch (dungeonLevel) {
             case 1:
-                lump1 = 'dummy';
+                lump1 = 'archer';
                 lump2 = 'zombie';
                 fire = 'dog';
                 ice = 'raven';

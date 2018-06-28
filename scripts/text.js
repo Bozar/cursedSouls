@@ -67,10 +67,12 @@ Main.text.initialize = function () {
     // NPC's names
     text.set('name', new Map());
     text.get('name').set('dummy', 'Dummy');
+
     text.get('name').set('rat', 'Rat');
     text.get('name').set('dog', 'Zombie Dog');
     text.get('name').set('raven', 'Raven');
     text.get('name').set('zombie', 'Zombie');
+    text.get('name').set('archer', 'Skeleton Archer');
 
     // Describe the NPC, item or building under the marker.
     text.set('info', new Map());
@@ -94,6 +96,10 @@ Main.text.initialize = function () {
         + ' Their skin is extraordinarily tough.'
         + ' You can easily outrun a zombie,'
         + ' but be ware of their loyal companions.');
+    text.get('info').set('archer',
+        'The restless guard and merciless killer,'
+        + ' who is summoned from his long death,'
+        + ' eliminates any intruders with one shot.');
 
     text.get('info').set('fire', 'Melee. 100% drop rate.');
     text.get('info').set('ice', 'Range 2, freeze for 2 turns. 60% drop rate.');

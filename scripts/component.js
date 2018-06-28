@@ -280,3 +280,12 @@ Main.Component.DropRate = function () {
         return this._dropRate.get(attackType);
     };
 };
+
+// The switch to change the NPC's AI.
+Main.Component.CombatRole = function (isCautious) {
+    this._name = 'CombatRole';
+
+    this._cautious = isCautious;
+
+    this.getCautious = function () { return this._cautious; };
+};

@@ -123,6 +123,7 @@ Main.entity.dummy = function (x, y) {
     e.addComponent(new Main.Component.HitPoint(1));
     e.addComponent(new Main.Component.Damage(1));
     e.addComponent(new Main.Component.AttackRange(1));
+    e.addComponent(new Main.Component.CombatRole(false));
 
     e.act = Main.system.dummyAct;
 
@@ -141,6 +142,7 @@ Main.entity.rat = function (x, y) {
     e.addComponent(new Main.Component.HitPoint(1));
     e.addComponent(new Main.Component.Damage(1));
     e.addComponent(new Main.Component.AttackRange(1));
+    e.addComponent(new Main.Component.CombatRole(false));
 
     e.act = Main.system.dummyAct;
 
@@ -159,6 +161,7 @@ Main.entity.dog = function (x, y) {
     e.addComponent(new Main.Component.HitPoint(2));
     e.addComponent(new Main.Component.Damage(1));
     e.addComponent(new Main.Component.AttackRange(1));
+    e.addComponent(new Main.Component.CombatRole(false));
 
     e.act = Main.system.dummyAct;
 
@@ -177,10 +180,11 @@ Main.entity.raven = function (x, y) {
     e.addComponent(new Main.Component.HitPoint(1));
     e.addComponent(new Main.Component.Damage(1));
     e.addComponent(new Main.Component.AttackRange(1));
+    e.addComponent(new Main.Component.CombatRole(true));
 
     e.ActionDuration.setDuration('fastMove', 0.5);
 
-    e.act = Main.system.ravenAct;
+    e.act = Main.system.dummyAct;
 
     Main.entities.get('npc').set(e.getID(), e);
 
@@ -197,10 +201,11 @@ Main.entity.zombie = function (x, y) {
     e.addComponent(new Main.Component.HitPoint(3));
     e.addComponent(new Main.Component.Damage(1));
     e.addComponent(new Main.Component.AttackRange(1));
+    e.addComponent(new Main.Component.CombatRole(false));
 
     e.ActionDuration.setDuration('slowMove', 1.5);
 
-    e.act = Main.system.zombieAct;
+    e.act = Main.system.dummyAct;
 
     Main.entities.get('npc').set(e.getID(), e);
 

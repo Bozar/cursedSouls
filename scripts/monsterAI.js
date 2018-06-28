@@ -2,10 +2,12 @@
 
 Main.system.dummyAct = function () {
     let pcIsDead = false;
+    let approach = null;
 
     Main.getEntity('timer').engine.lock();
 
     if (!Main.system.isInSight(this, Main.getEntity('pc'))) {
+        // Search the nearby PC or wait 1 turn.
         Main.system.npcSearchOrWait(this);
     } else if (Main.system.pcIsInsideAttackRange(this)) {
         pcIsDead = Main.system.pcTakeDamage(this.Damage.getDamage());
@@ -13,59 +15,22 @@ Main.system.dummyAct = function () {
         // Attack the PC.
         Main.system.npcHitOrKill(this, 'base', pcIsDead);
     } else {
-        if (!Main.system.pcIsInsideAttackRange(this)) {
-            // Approach the PC in sight.
-            Main.system.npcMoveClose(this);
+        if (this.CombatRole.getCautious()) {
+            approach
+                = !Main.system.pcIsInsideAttackRange(this)
+                && Main.system.npcHasAlliesInSight(this, 3);
         } else {
-            // Surround the PC.
-            Main.system.npcKeepDistance(this, this.AttackRange.getRange());
+            approach
+                = !Main.system.pcIsInsideAttackRange(this);
         }
-    }
-};
 
-Main.system.ravenAct = function () {
-    let pcIsDead = false;
-
-    Main.getEntity('timer').engine.lock();
-
-    if (!Main.system.isInSight(this, Main.getEntity('pc'))) {
-        Main.system.npcSearchOrWait(this);
-    } else if (Main.system.pcIsInsideAttackRange(this)) {
-        pcIsDead = Main.system.pcTakeDamage(this.Damage.getDamage());
-
-        // Attack the PC.
-        Main.system.npcHitOrKill(this, 'base', pcIsDead);
-    } else {
-        if (!Main.system.pcIsInsideAttackRange(this)
-            && Main.system.npcHasAlliesInSight(this, 3)) {
+        if (approach) {
             // Approach the PC in sight.
             Main.system.npcMoveClose(this);
         } else {
             // Surround the PC.
-            Main.system.npcKeepDistance(this, 3);
-        }
-    }
-};
-
-Main.system.zombieAct = function () {
-    let pcIsDead = false;
-
-    Main.getEntity('timer').engine.lock();
-
-    if (!Main.system.isInSight(this, Main.getEntity('pc'))) {
-        Main.system.npcSearchOrWait(this);
-    } else if (Main.system.pcIsInsideAttackRange(this)) {
-        pcIsDead = Main.system.pcTakeDamage(this.Damage.getDamage());
-
-        // Attack the PC.
-        Main.system.npcHitOrKill(this, 'base', pcIsDead);
-    } else {
-        if (!Main.system.pcIsInsideAttackRange(this)) {
-            // Approach the PC in sight.
-            Main.system.npcMoveClose(this);
-        } else {
-            // Surround the PC.
-            Main.system.npcKeepDistance(this, this.AttackRange.getRange());
+            Main.system.npcKeepDistance(
+                this, Math.max(3, this.AttackRange.getRange()));
         }
     }
 };

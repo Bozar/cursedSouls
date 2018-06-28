@@ -161,4 +161,13 @@ else {
     }
 }
 ```
+
+### Wizard Mode Key-bindings
+
+* Switch the Wizard Mode: `~`.
+* Add an orb: `1` to `6`.
+* Remove an orb: `-`.
+* Print the current turn in the browser console: `\`.
+* Switch the fog of war: `]`.
+
 vim: set lbr:

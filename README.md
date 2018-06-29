@@ -99,6 +99,12 @@ There is no randomness in the hit chance or damage. No enemies, including the bo
 
 The PC's actions take exactly 1 turn. But this rule dose not apply to some enemies.
 
+In addition to deal damage, some enemies have special abilities. There are 3 types of such abilities and they are introduced on the first three dungeon levels.
+
+* Summon allies (Level 1): Add one or more enemies to the dungeon under certain circumstances.
+* ??? (Level 2): ???.
+* ??? (Level 3): ???.
+
 [Work In Progress]
 
 During the boss fight, the PC can siphon far away orbs at low HP.

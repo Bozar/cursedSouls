@@ -58,11 +58,11 @@ Your Hit-Point equals to the number of orbs in the stack. You can survive at 0 H
 
 You can bump into enemies in a straight line or use power orbs to do special attacks.
 
-* Bump: melee, damage 1.
-* Fire: range 1, damage 1.
-* Ice: grant you at most 2 layers of Icy Armor.
-* Slime: range 2, teleport yourself.
-* Lump: range 2, damage 1.
+* Bump: Melee, damage 1.
+* Fire: Range 1, damage 1.
+* Ice: Protect yourself with at most 2 layers of the Icy Armor.
+* Slime: Range 2. Teleport yourself.
+* Lump: Range 2, damage 1.
 
 Follow these steps to use an orb.
 
@@ -79,7 +79,7 @@ Follow these steps to use an orb.
 Enemies have a chance to drop 1 orb when killed. Bosses always drop 1 Lump Orb. As for the grunts, the drop rate depends on how they are killed:
 
 * Bump: 20%.
-* Bump with Icy Armor: 60%.
+* Bump with the Icy Armor: 60%.
 * Fire: 100%.
 * Lump: 60%.
 

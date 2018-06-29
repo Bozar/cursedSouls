@@ -101,10 +101,12 @@ Main.text.initialize = function () {
         + ' who is summoned from his long death,'
         + ' eliminates any intruders with one shot.');
 
-    text.get('info').set('fire', 'Melee. 100% drop rate.');
-    text.get('info').set('ice', 'Range 2, freeze for 2 turns. 60% drop rate.');
-    text.get('info').set('slime', 'Range 2, teleport yourself.');
-    text.get('info').set('lump', 'Range 2. 60% drop rate.');
+    text.get('info').set('fire', 'Range 1, damage 1. 100% drop rate.');
+    text.get('info').set('ice',
+        'Protect yourself with at most 2 layers of the Icy Armor.'
+        + ' 60% drop rate.');
+    text.get('info').set('slime', 'Range 2. Teleport yourself.');
+    text.get('info').set('lump', 'Range 2, damage 1. 60% drop rate.');
 
     text.get('info').set('downstairs1',
         'In the center of the dusty round pool, there stands a grotesque figure.'

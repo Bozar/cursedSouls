@@ -52,8 +52,8 @@ Main.entity.dungeon = function () {
     } while (floorArea() < e.Dungeon.getFloorArea()[0]
         || floorArea() > e.Dungeon.getFloorArea()[1]);
 
-    e.Dungeon.setPercent(floorArea());
-    e.Dungeon.setCycle(cycle);
+    Main._log.floor = floorArea();
+    Main._log.cycle = cycle;
 
     e.light = function (x, y) {
         return e.Dungeon.getTerrain().get(x + ',' + y) === 0;
@@ -99,6 +99,7 @@ Main.entity.pc = function () {
     e.addComponent(new Main.Component.DropRate());
     e.addComponent(new Main.Component.AttackRange());
 
+    e.Display.setColor('die', 'grey');
     e.Damage.setDamage('nuke', 9);
 
     e.AttackRange.setRange('fire', 1);
@@ -122,6 +123,106 @@ Main.entity.dummy = function (x, y) {
     e.addComponent(new Main.Component.HitPoint(1));
     e.addComponent(new Main.Component.Damage(1));
     e.addComponent(new Main.Component.AttackRange(1));
+    e.addComponent(new Main.Component.CombatRole(false));
+
+    e.act = Main.system.dummyAct;
+
+    Main.entities.get('npc').set(e.getID(), e);
+
+    return e;
+};
+
+Main.entity.rat = function (x, y) {
+    let e = new Main.Factory('rat');
+
+    e.addComponent(new Main.Component.Position(5, x, y));
+    e.addComponent(new Main.Component.Display('r'));
+    e.addComponent(new Main.Component.ActionDuration());
+    e.addComponent(new Main.Component.Inventory(1, 'slime'));
+    e.addComponent(new Main.Component.HitPoint(1));
+    e.addComponent(new Main.Component.Damage(1));
+    e.addComponent(new Main.Component.AttackRange(1));
+    e.addComponent(new Main.Component.CombatRole(false));
+
+    e.act = Main.system.dummyAct;
+
+    Main.entities.get('npc').set(e.getID(), e);
+
+    return e;
+};
+
+Main.entity.dog = function (x, y) {
+    let e = new Main.Factory('dog');
+
+    e.addComponent(new Main.Component.Position(7, x, y));
+    e.addComponent(new Main.Component.Display('d'));
+    e.addComponent(new Main.Component.ActionDuration());
+    e.addComponent(new Main.Component.Inventory(1, 'fire'));
+    e.addComponent(new Main.Component.HitPoint(2));
+    e.addComponent(new Main.Component.Damage(1));
+    e.addComponent(new Main.Component.AttackRange(1));
+    e.addComponent(new Main.Component.CombatRole(false));
+
+    e.act = Main.system.dummyAct;
+
+    Main.entities.get('npc').set(e.getID(), e);
+
+    return e;
+};
+
+Main.entity.raven = function (x, y) {
+    let e = new Main.Factory('raven');
+
+    e.addComponent(new Main.Component.Position(5, x, y));
+    e.addComponent(new Main.Component.Display('v'));
+    e.addComponent(new Main.Component.ActionDuration());
+    e.addComponent(new Main.Component.Inventory(1, 'ice'));
+    e.addComponent(new Main.Component.HitPoint(1));
+    e.addComponent(new Main.Component.Damage(1));
+    e.addComponent(new Main.Component.AttackRange(1));
+    e.addComponent(new Main.Component.CombatRole(true));
+
+    e.ActionDuration.setDuration('fastMove', 0.5);
+
+    e.act = Main.system.dummyAct;
+
+    Main.entities.get('npc').set(e.getID(), e);
+
+    return e;
+};
+
+Main.entity.zombie = function (x, y) {
+    let e = new Main.Factory('zombie');
+
+    e.addComponent(new Main.Component.Position(5, x, y));
+    e.addComponent(new Main.Component.Display('z'));
+    e.addComponent(new Main.Component.ActionDuration());
+    e.addComponent(new Main.Component.Inventory(1, 'lump'));
+    e.addComponent(new Main.Component.HitPoint(3));
+    e.addComponent(new Main.Component.Damage(1));
+    e.addComponent(new Main.Component.AttackRange(1));
+    e.addComponent(new Main.Component.CombatRole(false));
+
+    e.ActionDuration.setDuration('slowMove', 1.5);
+
+    e.act = Main.system.dummyAct;
+
+    Main.entities.get('npc').set(e.getID(), e);
+
+    return e;
+};
+
+Main.entity.archer = function (x, y) {
+    let e = new Main.Factory('archer');
+
+    e.addComponent(new Main.Component.Position(7, x, y));
+    e.addComponent(new Main.Component.Display('a'));
+    e.addComponent(new Main.Component.ActionDuration());
+    e.addComponent(new Main.Component.Inventory(1, 'lump'));
+    e.addComponent(new Main.Component.HitPoint(1));
+    e.addComponent(new Main.Component.Damage(2));
+    e.addComponent(new Main.Component.AttackRange(2));
+    e.addComponent(new Main.Component.CombatRole(true));
 
     e.act = Main.system.dummyAct;
 
@@ -134,7 +235,7 @@ Main.entity.marker = function () {
     let e = new Main.Factory('marker');
 
     e.addComponent(new Main.Component.Position());
-    e.addComponent(new Main.Component.Display('X', 'orange', 'orange'));
+    e.addComponent(new Main.Component.Display('X', 'orange', true));
 
     Main.entities.set('marker', e);
 };
@@ -143,7 +244,7 @@ Main.entity.downstairs = function () {
     let e = new Main.Factory('downstairs');
 
     e.addComponent(new Main.Component.Position(5));
-    e.addComponent(new Main.Component.Display('>', 'orange', 'orange'));
+    e.addComponent(new Main.Component.Display('>', 'orange', true));
 
     Main.entities.set('downstairs', e);
 };
@@ -177,7 +278,7 @@ Main.entity.orb = function (orbName) {
     }
 
     e.addComponent(new Main.Component.Position(0));
-    e.addComponent(new Main.Component.Display(orbChar, 'green'));
+    e.addComponent(new Main.Component.Display(orbChar, 'green', true));
 
     Main.entities.get('orb').set(e.getID(), e);
 

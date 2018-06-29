@@ -6,50 +6,39 @@
 
 Main.screens.main = new Main.Screen('main', ['main', 'examine', 'aim']);
 
-// Create & place entities (if necessacry) in this order:
-// Seed, Dungeon, (PC, NPCs, Downstairs, Orbs), Marker.
-// The PC cannot stick to the wall.
-// NPCs cannot appear in the PC's sight.
-// The downstairs has to be at least 1/4 screen away from the PC.
-// Orbs cannot be generated on the downstairs.
+// * Create & place entities (if necessacry) in this order:
+//      * Seed, Timer, Dungeon, Marker, (PC, NPCs, Downstairs, Orbs), Marker.
+// * The PC cannot stick to the wall.
+// * No more than 5 NPCs can appear in the PC's sight.
+// * Orbs cannot be generated on the downstairs.
 Main.screens.main.initialize = function () {
     let pcCanSee = [];
+    let eliteAndGrunt = [];
 
+    // Seed.
     Main.entity.seed();
     Main.getEntity('seed').Seed.setSeed(Main.getDevSeed());
     ROT.RNG.setSeed(Main.getEntity('seed').Seed.getSeed());
 
+    // Timer.
+    Main.entity.timer();
+    Main.getEntity('timer').engine.start();
+
+    // Dungeon & marker.
     Main.entity.dungeon();
+    Main.entity.marker();
 
-    // Output the dungeon generation details.
-    if (Main.getDevelop()) {
-        console.log('Seed: '
-            + Main.getEntity('seed').Seed.getSeed());
-        console.log('Floor: '
-            + Main.getEntity('dungeon').Dungeon.getPercent()
-            + '%');
-        console.log('Cycle: '
-            + Main.getEntity('dungeon').Dungeon.getCycle());
-    }
-
+    // PC.
     Main.entity.pc();
     Main.getEntity('pc').Inventory.addItem('slime');
-    Main.getEntity('pc').Inventory.addItem('fire');
+    Main.getEntity('pc').Inventory.addItem('armor');
+    Main.getEntity('pc').Inventory.addItem('armor');
     Main.getEntity('pc').Inventory.addItem('fire');
     Main.getEntity('pc').Inventory.addItem('lump');
 
-    Main.entity.downstairs();
-
-    Main.system.createOrbs();
-    Main.entity.marker();
-
-    Main.entity.timer();
-    Main.getEntity('timer').scheduler.add(Main.getEntity('pc'), true);
-    Main.getEntity('timer').engine.start();
-
     Main.system.placeActor(
         Main.getEntity('pc'),
-        Main.system.verifyPositionPC);
+        Main.system.verifyPCPosition);
 
     Main.getEntity('dungeon').fov.compute(
         Main.getEntity('pc').Position.getX(),
@@ -57,29 +46,51 @@ Main.screens.main.initialize = function () {
         Main.getEntity('pc').Position.getRange(),
         (x, y) => { pcCanSee.push(x + ',' + y); });
 
+    Main.getEntity('timer').scheduler.add(Main.getEntity('pc'), true);
+
+    // NPCs.
+    eliteAndGrunt = Main.system.createEnemies();
+
+    // Place elites.
+    for (let i = 0; i < eliteAndGrunt[0].length; i++) {
+        Main.system.placeActor(
+            eliteAndGrunt[0][i],
+            Main.system.verifyEnemyPosition,
+            pcCanSee,
+            true);
+
+        Main.getEntity('timer').scheduler.add(eliteAndGrunt[0][i], true);
+    }
+
+    // Place grunts.
+    for (let i = 0; i < eliteAndGrunt[1].length; i++) {
+        Main.system.placeActor(
+            eliteAndGrunt[1][i],
+            Main.system.verifyEnemyPosition,
+            pcCanSee,
+            false);
+
+        Main.getEntity('timer').scheduler.add(eliteAndGrunt[1][i], true);
+    }
+
+    // Downstairs.
+    Main.entity.downstairs();
+
     Main.system.placeActor(
         Main.getEntity('downstairs'),
-        Main.system.verifyPositionDownstairs);
+        Main.system.verifyDownstairsPosition);
+
+    // Orbs.
+    Main.system.createOrbs();
 
     for (let keyValue of Main.getEntity('orb')) {
         Main.system.placeActor(
             keyValue[1],
-            Main.system.verifyPositionOrb);
+            Main.system.verifyOrbPosition);
     }
 
-    // TODO: Change the number and type of enemies.
-    let newGrunt = null;
-
-    for (var i = 0; i < 30; i++) {
-        newGrunt = Main.entity.dummy();
-
-        Main.system.placeActor(
-            newGrunt,
-            Main.system.verifyPositionGrunt,
-            pcCanSee);
-
-        Main.getEntity('timer').scheduler.add(newGrunt, true);
-    }
+    // Output the dungeon generation details.
+    Main.system.printGenerationLog();
 };
 
 // Draw entities in this order:
@@ -101,8 +112,10 @@ Main.screens.main.display = function () {
     Main.screens.drawBottomRight(Main.getEntity('seed').Seed.getPrintSeed());
 
     Main.screens.drawLevelName();
+    Main.screens.drawPCHitPoint();
     Main.screens.drawPower();
     Main.screens.drawItemUnderYourFoot();
+    Main.screens.drawEnemyList();
 
     Main.screens.drawDungeon();
 
@@ -137,6 +150,7 @@ Main.screens.main.keyInput = function (e) {
     if (e.shiftKey) {
         if (keyAction(e, 'fixed') === 'develop') {
             Main.setDevelop();
+            Main.system.printGenerationLog();
 
             Main.display.clear();
             Main.screens.main.display();

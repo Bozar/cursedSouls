@@ -7,10 +7,11 @@ Main.system.isFloor = function (x, y) {
         === 0;
 };
 
-Main.system.placeActor = function (actor, notQualified, forbidden) {
+Main.system.placeActor = function (actor, notQualified, forbidden, isElite) {
     let x = null;
     let y = null;
     let retry = 0;
+    let maxRetry = 999;
 
     do {
         x = Math.floor(
@@ -21,20 +22,29 @@ Main.system.placeActor = function (actor, notQualified, forbidden) {
             * ROT.RNG.getUniform());
         retry++;
     }
-    // Some notQualified callback functions require an extra argument, forbidden,
-    // which is a string array [x + ',' + y], so that they do not need to
+    // Some notQualified callback functions require extra arguments:
+    // * `forbidden` is a string array [x + ',' + y], so that they do not need to
     // calculate the forbidden zone every time when placing a new entity.
-    while (notQualified(x, y, forbidden) && retry < 999);
+    // * `isElite` is a boolean value that is used to calculate the distance
+    // between the PC and the NPC.
+    while (notQualified(x, y, forbidden, isElite) && retry < maxRetry);
 
-    if (Main.getDevelop() && retry > 10) {
-        console.log('Retry, ' + actor.getEntityName() + ': ' + retry);
+    if (retry > 10) {
+        Main._log.retry.push(actor.getEntityName() + ': ' + retry);
+    }
+
+    if (retry >= maxRetry) {
+        // Do not place the actor in an invalid place.
+        return false;
     }
 
     actor.Position.setX(x);
     actor.Position.setY(y);
+
+    return true;
 };
 
-Main.system.verifyPositionPC = function (x, y) {
+Main.system.verifyPCPosition = function (x, y) {
     return !Main.system.isFloor(x, y)
         || x < Main.getEntity('pc').Position.getRange()
         || x > Main.getEntity('dungeon').Dungeon.getWidth()
@@ -44,7 +54,7 @@ Main.system.verifyPositionPC = function (x, y) {
         - Main.getEntity('pc').Position.getRange();
 };
 
-Main.system.verifyPositionOrb = function (x, y) {
+Main.system.verifyOrbPosition = function (x, y) {
     return !Main.system.isFloor(x, y)
         || Main.system.getDistance([x, y], Main.getEntity('pc')) <= 2
         || Main.system.downstairsHere(x, y)
@@ -70,7 +80,7 @@ Main.system.npcIsTooDense = function (x, y) {
     return count > 0;
 };
 
-Main.system.verifyPositionGrunt = function (x, y, pcSight) {
+Main.system.verifyEnemyPosition = function (x, y, pcSight, isElite) {
     return !Main.system.isFloor(x, y)
         || tooClose(x, y)
         || tooMany(x, y)
@@ -78,8 +88,21 @@ Main.system.verifyPositionGrunt = function (x, y, pcSight) {
         || Main.system.npcHere(x, y);
 
     function tooClose(x, y) {
-        return pcSight.indexOf(x + ',' + y) > -1
-            && Main.system.getDistance([x, y], Main.getEntity('pc')) <= 3;
+        let isInsight = pcSight.indexOf(x + ',' + y) > -1;
+        let isTooClose = null;
+        let distance = null;
+
+        // PC's sight range: 5.
+        if (isElite) {
+            distance = 8;
+        } else {
+            distance = 3;
+        }
+
+        isTooClose
+            = Main.system.getDistance([x, y], Main.getEntity('pc')) <= distance;
+
+        return isInsight && isTooClose;
     }
 
     function tooMany(x, y) {
@@ -92,11 +115,11 @@ Main.system.verifyPositionGrunt = function (x, y, pcSight) {
             }
         });
 
-        return number > 4;
+        return number > 3;
     }
 };
 
-Main.system.verifyPositionDownstairs = function (x, y) {
+Main.system.verifyDownstairsPosition = function (x, y) {
     return !Main.system.isFloor(x, y)
         || Main.system.pcHere(x, y)
         || floorInSight() < 36;
@@ -127,6 +150,78 @@ Main.system.createOrbs = function () {
         Main.entity.orb('ice');
         Main.entity.orb('slime');
         Main.entity.orb('lump');
+    }
+};
+
+Main.system.createEnemies = function () {
+    let enemyAmount = amount();
+    // TODO: change the enemies base on the dungeon level.
+    let enemyType = type(1);
+    let elite = [];
+    let grunt = [];
+
+    // Lump1 & Lump2.
+    for (let i = 0; i < 2; i++) {
+        for (let j = 0; j < enemyAmount[i]; j++) {
+            elite.push(Main.entity[enemyType[i]]());
+        }
+    }
+
+    // Fire, Ice & Slime.
+    for (let i = 2; i < enemyAmount.length; i++) {
+        for (let j = 0; j < enemyAmount[i]; j++) {
+            grunt.push(Main.entity[enemyType[i]]());
+        }
+    }
+
+    return [elite, grunt];
+
+    // Helper functions.
+    function amount() {
+        // 25 to 30 enemies on one level.
+        let total = 25 + Math.floor(6 * ROT.RNG.getUniform());
+
+        // Lump: 20%.
+        let lump = Math.ceil(total * 0.2);
+        // Fire & Ice: 50%.
+        let fireAndIce = Math.ceil((total - lump) * 0.5);
+        // Slime: 30%.
+        let slime = total - lump - fireAndIce;
+
+        let lump1 = Math.floor(lump * percent());
+        let lump2 = lump - lump1;
+        let fire = Math.floor(fireAndIce * percent());
+        let ice = fireAndIce - fire;
+
+        Main._log.enemyCount = total;
+        Main._log.enemyComposition = [lump1, lump2, fire, ice, slime];
+
+        return Main._log.enemyComposition;
+    }
+
+    function percent() {
+        // 40% to 60%.
+        return Math.floor(4 + 3 * ROT.RNG.getUniform()) / 10;
+    }
+
+    function type(dungeonLevel) {
+        let lump1 = '';
+        let lump2 = '';
+        let fire = '';
+        let ice = '';
+        let slime = '';
+
+        switch (dungeonLevel) {
+            case 1:
+                lump1 = 'archer';
+                lump2 = 'zombie';
+                fire = 'dog';
+                ice = 'raven';
+                slime = 'rat';
+                break;
+        }
+
+        return [lump1, lump2, fire, ice, slime];
     }
 };
 
@@ -176,6 +271,7 @@ Main.system.pcTakeDamage = function (damage) {
         = damage > Main.getEntity('pc').Inventory.getLength();
 
     Main.getEntity('pc').Inventory.removeItem(damage);
+    Main.getEntity('pc').Inventory.setIsDead(pcIsDead);
 
     return pcIsDead;
 };
@@ -200,9 +296,6 @@ Main.system.pcPickOrUse = function () {
         Main.screens.setCurrentMode(Main.screens.main.getMode(2));
 
         Main.system.examineMode();
-    } else {
-        // TODO: add more actions.
-        console.log('press space');
     }
 };
 
@@ -220,7 +313,7 @@ Main.system.pcPickUpOrb = function () {
     Main.getEntity('orb').delete(orbHere.getID());
 
     Main.system.unlockEngine(
-        Main.getEntity('pc').ActionDuration.getUseOrb());
+        Main.getEntity('pc').ActionDuration.getDuration());
 };
 
 Main.system.pcUseDownstairs = function () {
@@ -327,8 +420,8 @@ Main.system.move = function (direction, who) {
         return Main.system.isMarker(actor)
             ? null
             : isWait
-                ? actor.ActionDuration.getWait()
-                : actor.ActionDuration.getMove();
+                ? actor.ActionDuration.getDuration()
+                : actor.ActionDuration.getDuration();
     }
 
     function getActorType() {
@@ -655,7 +748,7 @@ Main.system.exitCutScene = function () {
         Main.screens.main.enter(true);
 
         Main.system.unlockEngine(
-            Main.getEntity('pc').ActionDuration.getMove());
+            Main.getEntity('pc').ActionDuration.getDuration());
     } else {
         Main.screens.main.enter(false);
     }
@@ -692,6 +785,8 @@ Main.system.pcAttack = function (target, attackType) {
 
         Main.system.npcDropOrb(target, dropRate);
 
+        Main.system.npcActBeforeDeath(target);
+
         Main.getEntity('timer').scheduler.remove(target);
         Main.getEntity('npc').delete(target.getID());
     } else {
@@ -699,7 +794,7 @@ Main.system.pcAttack = function (target, attackType) {
             Main.text.hitTarget(target));
     }
 
-    Main.system.unlockEngine(Main.getEntity('pc').ActionDuration.getAttack());
+    Main.system.unlockEngine(Main.getEntity('pc').ActionDuration.getDuration());
 };
 
 Main.system.pcUseSlimeOrb = function () {
@@ -711,7 +806,7 @@ Main.system.pcUseSlimeOrb = function () {
     Main.getEntity('message').Message.pushMsg(Main.text.action('teleport'));
 
     Main.system.unlockEngine(
-        Main.getEntity('pc').ActionDuration.getUseOrb());
+        Main.getEntity('pc').ActionDuration.getDuration());
 };
 
 Main.system.pcUseIceOrb = function () {
@@ -722,7 +817,7 @@ Main.system.pcUseIceOrb = function () {
     Main.getEntity('message').Message.pushMsg(Main.text.action('armor'));
 
     Main.system.unlockEngine(
-        Main.getEntity('pc').ActionDuration.getUseOrb());
+        Main.getEntity('pc').ActionDuration.getDuration());
 };
 
 Main.system.npcDropOrb = function (actor, dropRate) {
@@ -749,4 +844,59 @@ Main.system.npcDropOrb = function (actor, dropRate) {
         Main.getEntity('message').Message.pushMsg(
             Main.text.targetDropOrb(actor, Main.getEntity('orb').get(orbID)));
     }
+};
+
+Main.system.printGenerationLog = function () {
+    let labels = ['Lump1: ', 'Lump2: ', 'Fire: ', 'Ice: ', 'Slime: '];
+
+    if (!Main._log.seedPrinted) {
+        console.log('Seed: '
+            + Main.getEntity('seed').Seed.getSeed());
+
+        Main._log.seedPrinted = true;
+    }
+
+    if (Main.getDevelop() && !Main._log.msgPrinted) {
+        console.log('Cycle: ' + Main._log.cycle);
+        console.log('Floor: ' + Main._log.floor + '%');
+        console.log('Enemy: ' + Main._log.enemyCount);
+
+        for (let i = 0; i < 5; i++) {
+            console.log(labels[i] + Main._log.enemyComposition[i]);
+        }
+
+        if (Main._log.retry.length > 0) {
+            console.log('==========');
+            console.log('Retry:');
+            Main._log.retry.forEach((value) => {
+                console.log(value);
+            });
+        }
+
+        Main._log.msgPrinted = true;
+    }
+};
+
+Main.system.countEnemiesInSight = function () {
+    let count = new Map();
+    let npcHere = null;
+
+    Main.getEntity('dungeon').fov.compute(
+        Main.getEntity('pc').Position.getX(),
+        Main.getEntity('pc').Position.getY(),
+        Main.getEntity('pc').Position.getRange(),
+        (x, y) => {
+            npcHere = Main.system.npcHere(x, y);
+
+            if (npcHere) {
+                if (count.get(npcHere.Display.getCharacter())) {
+                    count.set(npcHere.Display.getCharacter(),
+                        count.get(npcHere.Display.getCharacter()) + 1);
+                } else {
+                    count.set(npcHere.Display.getCharacter(), 1);
+                }
+            }
+        });
+
+    return count;
 };

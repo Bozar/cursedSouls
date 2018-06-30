@@ -1,5 +1,7 @@
 ﻿# Cursed Souls: Giovanni's Orchestra
 
+![image](https://github.com/Bozar/cursedSouls/img/demo.gif)
+
 ## Goal
 
 > You find yourself lying on the ground, like a nameless body in the morgue, who is unknown to death, nor known to life. Weeping and whispers echo in your mind. One of the voices is calling to you: come here, ashen one.

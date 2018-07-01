@@ -18,7 +18,7 @@ Main.system.dummyAct = function () {
             // A cautious enemy does not approach the PC easily.
             approach
                 = !Main.system.pcIsInsideAttackRange(this)
-                && Main.system.npcHasAlliesInSight(this);
+                && Main.system.npcHasAlliesInCloseRange(this);
         } else {
             approach
                 = !Main.system.pcIsInsideAttackRange(this);
@@ -30,7 +30,7 @@ Main.system.dummyAct = function () {
         } else {
             // 4-4: Surround the PC.
             Main.system.npcKeepDistance(
-                // '3' is the attack range of the enhanced Lump Orb.
+                // '3' is just beyond the attack range of the Lump Orb.
                 this, Math.max(3, this.AttackRange.getRange())
             );
         }
@@ -200,18 +200,33 @@ Main.system.npcSearchOrWait = function (actor) {
 };
 
 Main.system.pcIsInsideAttackRange = function (actor) {
-    return Main.system.getDistance(actor, Main.getEntity('pc'))
-        <= actor.AttackRange.getRange('base');
+    // Some enemies can hit the PC in a straight line with an extend range.
+    if (Main.system.pcIsInStraightLine(actor)) {
+        return Main.system.getDistance(actor, Main.getEntity('pc'))
+            <= actor.AttackRange.getRange('extend');
+    } else {
+        return Main.system.getDistance(actor, Main.getEntity('pc'))
+            <= actor.AttackRange.getRange('base');
+    }
 };
 
-Main.system.npcHasAlliesInSight = function (actor) {
+Main.system.pcIsInStraightLine = function (actor) {
+    let hasExtendRange = actor.CombatRole.getExtendRange();
+    let isInStraightLine
+        = (actor.Position.getX() === Main.getEntity('pc').Position.getX())
+        || (actor.Position.getY() === Main.getEntity('pc').Position.getY());
+
+    return hasExtendRange && isInStraightLine;
+};
+
+Main.system.npcHasAlliesInCloseRange = function (actor) {
     let count = 0;
     let minimum = 2;
 
     Main.getEntity('dungeon').fov.compute(
         actor.Position.getX(),
         actor.Position.getY(),
-        actor.Position.getRange(),
+        3,
         (x, y) => {
             if (Main.system.npcHere(x, y)) {
                 count++;

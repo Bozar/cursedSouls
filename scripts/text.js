@@ -99,7 +99,7 @@ Main.text.initialize = function () {
     text.get('info').set('archer',
         'The restless guard and merciless killer,'
         + ' who is summoned from his long death,'
-        + ' eliminates any intruders with one shot.');
+        + ' eliminates far away intruders in a straight line with one shot.');
 
     text.get('info').set('fire', 'Range 1, damage 1. 100% drop rate.');
     text.get('info').set('ice',

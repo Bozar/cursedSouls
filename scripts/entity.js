@@ -123,7 +123,7 @@ Main.entity.dummy = function (x, y) {
     e.addComponent(new Main.Component.HitPoint(1));
     e.addComponent(new Main.Component.Damage(1));
     e.addComponent(new Main.Component.AttackRange(1));
-    e.addComponent(new Main.Component.CombatRole(false));
+    e.addComponent(new Main.Component.CombatRole());
 
     e.act = Main.system.dummyAct;
 
@@ -142,7 +142,7 @@ Main.entity.rat = function (x, y) {
     e.addComponent(new Main.Component.HitPoint(1));
     e.addComponent(new Main.Component.Damage(1));
     e.addComponent(new Main.Component.AttackRange(1));
-    e.addComponent(new Main.Component.CombatRole(false));
+    e.addComponent(new Main.Component.CombatRole());
 
     e.act = Main.system.dummyAct;
 
@@ -161,7 +161,7 @@ Main.entity.dog = function (x, y) {
     e.addComponent(new Main.Component.HitPoint(2));
     e.addComponent(new Main.Component.Damage(1));
     e.addComponent(new Main.Component.AttackRange(1));
-    e.addComponent(new Main.Component.CombatRole(false));
+    e.addComponent(new Main.Component.CombatRole());
 
     e.act = Main.system.dummyAct;
 
@@ -180,9 +180,10 @@ Main.entity.raven = function (x, y) {
     e.addComponent(new Main.Component.HitPoint(1));
     e.addComponent(new Main.Component.Damage(1));
     e.addComponent(new Main.Component.AttackRange(1));
-    e.addComponent(new Main.Component.CombatRole(true));
+    e.addComponent(new Main.Component.CombatRole());
 
     e.ActionDuration.setDuration('fastMove', 0.5);
+    e.CombatRole.setRole('cautious');
 
     e.act = Main.system.dummyAct;
 
@@ -201,7 +202,7 @@ Main.entity.zombie = function (x, y) {
     e.addComponent(new Main.Component.HitPoint(3));
     e.addComponent(new Main.Component.Damage(1));
     e.addComponent(new Main.Component.AttackRange(1));
-    e.addComponent(new Main.Component.CombatRole(false));
+    e.addComponent(new Main.Component.CombatRole());
 
     e.ActionDuration.setDuration('slowMove', 1.5);
 
@@ -215,14 +216,18 @@ Main.entity.zombie = function (x, y) {
 Main.entity.archer = function (x, y) {
     let e = new Main.Factory('archer');
 
-    e.addComponent(new Main.Component.Position(7, x, y));
+    e.addComponent(new Main.Component.Position(5, x, y));
     e.addComponent(new Main.Component.Display('a'));
     e.addComponent(new Main.Component.ActionDuration());
     e.addComponent(new Main.Component.Inventory(1, 'lump'));
     e.addComponent(new Main.Component.HitPoint(1));
     e.addComponent(new Main.Component.Damage(2));
     e.addComponent(new Main.Component.AttackRange(2));
-    e.addComponent(new Main.Component.CombatRole(true));
+    e.addComponent(new Main.Component.CombatRole());
+
+    e.AttackRange.setRange('extend', 4);
+    e.CombatRole.setRole('cautious');
+    e.CombatRole.setRole('range');
 
     e.act = Main.system.dummyAct;
 

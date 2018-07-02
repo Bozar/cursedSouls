@@ -58,6 +58,11 @@ Main.text.initialize = function () {
     text.get('action').set('npcHit', 'The %% hits you.');
     text.get('action').set('npcSummon', 'The %% summons its companion.');
 
+    text.get('action').set('gargoyleThrust',
+        'The Tower Gargoyle thrusts you with the halberd.');
+    text.get('action').set('gargoyleBreathe',
+        'The %% breathes scorching fire.');
+
     text.get('action').set('die', 'You die.');
     text.get('action').set('end', '===The End===');
     text.get('action').set('deathGeneral', 'Rest in peace, ashen one.');
@@ -323,6 +328,14 @@ Main.text.uiHitPoint = function () {
     } else {
         text = text.replace('%%', hp);
     }
+
+    return text;
+};
+
+Main.text.gargoyleBreathe = function (actor) {
+    let text = Main.text.action('gargoyleBreathe');
+
+    text = text.replace('%%', Main.text.name(actor.getEntityName()));
 
     return text;
 };

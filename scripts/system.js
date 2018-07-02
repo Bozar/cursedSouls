@@ -354,7 +354,7 @@ Main.system.pcUseDownstairs = function () {
                 Number.parseInt(position.split(',')[1], 10)
             );
 
-            Main.getEntity('timer').scheduler.add(newActor, true, 1);
+            Main.getEntity('timer').scheduler.add(newActor, true, 2);
 
             Main.screens.cutScene.enter();
             Main.input.listenEvent('add', 'cutScene');

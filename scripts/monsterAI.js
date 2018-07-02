@@ -37,6 +37,45 @@ Main.system.dummyAct = function () {
     }
 };
 
+Main.system.gargoyleAct = function () {
+    let pcIsDead = false;
+
+    Main.getEntity('timer').engine.lock();
+
+    if (!Main.system.isInSight(this, Main.getEntity('pc'))) {
+        // 1-4: Search the nearby PC or wait 1 turn.
+        Main.system.npcSearchOrWait(this);
+    } else if (
+        Main.system.getDistance(this, Main.getEntity('pc'))
+        <= this.AttackRange.getRange('extend')
+        && Main.system.getDistance(this, Main.getEntity('pc'))
+        > this.AttackRange.getRange('base')
+    ) {
+        // 2-4: Thrust the PC with the halberd.
+        pcIsDead = Main.system.pcTakeDamage(this.Damage.getDamage('base'));
+
+        Main.getEntity('message').Message.pushMsg(
+            Main.text.action('gargoyleThrust'));
+        Main.system.npcHitOrKill(this, 'base', pcIsDead, true);
+    } else if (
+        Main.system.getDistance(this, Main.getEntity('pc'))
+        === this.AttackRange.getRange('base')
+    ) {
+        // 3-4: Breathe fire.
+        if (Main.system.pcIsInStraightLine(this)) {
+            pcIsDead = Main.system.pcTakeDamage(this.Damage.getDamage('high'));
+        } else {
+            pcIsDead = Main.system.pcTakeDamage(this.Damage.getDamage('base'));
+        }
+        Main.getEntity('message').Message.pushMsg(
+            Main.text.gargoyleBreathe(this));
+        Main.system.npcHitOrKill(this, 'base', pcIsDead, true);
+    } else {
+        // 4-4: Approach the PC in sight.
+        Main.system.npcMoveClose(this);
+    }
+};
+
 Main.system.npcMoveClose = function (actor) {
     Main.system.npcDecideNextStep(actor, 'moveClose');
 };
@@ -176,8 +215,11 @@ Main.system.npcDecideNextStep = function (actor, nextStep, keepDistance) {
     }
 };
 
-Main.system.npcHitOrKill = function (actor, duration, pcIsDead) {
-    Main.getEntity('message').Message.pushMsg(Main.text.npcHit(actor));
+Main.system.npcHitOrKill = function (actor, duration, pcIsDead, isBoss) {
+    if (!isBoss) {
+        // Bosses have special hit messages.
+        Main.getEntity('message').Message.pushMsg(Main.text.npcHit(actor));
+    }
 
     if (pcIsDead) {
         Main.getEntity('message').Message.pushMsg(Main.text.action('die'));
@@ -201,7 +243,9 @@ Main.system.npcSearchOrWait = function (actor) {
 
 Main.system.pcIsInsideAttackRange = function (actor) {
     // Some enemies can hit the PC in a straight line with an extend range.
-    if (Main.system.pcIsInStraightLine(actor)) {
+    if (actor.CombatRole.getExtendRange()
+        && Main.system.pcIsInStraightLine(actor)
+    ) {
         return Main.system.getDistance(actor, Main.getEntity('pc'))
             <= actor.AttackRange.getRange('extend');
     }
@@ -211,12 +255,11 @@ Main.system.pcIsInsideAttackRange = function (actor) {
 };
 
 Main.system.pcIsInStraightLine = function (actor) {
-    let hasExtendRange = actor.CombatRole.getExtendRange();
     let isInStraightLine
         = actor.Position.getX() === Main.getEntity('pc').Position.getX()
         || actor.Position.getY() === Main.getEntity('pc').Position.getY();
 
-    return hasExtendRange && isInStraightLine;
+    return isInStraightLine;
 };
 
 Main.system.npcHasAlliesInCloseRange = function (actor) {

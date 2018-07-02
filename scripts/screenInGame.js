@@ -118,7 +118,8 @@ Main.screens.main.display = function () {
     for (const keyValue of Main.getEntity('orb')) {
         Main.screens.drawActor(
             keyValue[1],
-            Main.getEntity('dungeon').BossFight.getBossFightStatus() === 'win'
+            Main.getEntity('dungeon').BossFight.getBossFightStatus()
+            !== 'inactive'
         );
     }
 

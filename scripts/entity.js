@@ -236,6 +236,29 @@ Main.entity.archer = function (x, y) {
     return e;
 };
 
+// TODO: rewrite the boss AI.
+Main.entity.gargoyle = function (x, y) {
+    let e = new Main.Factory('gargoyle');
+
+    e.addComponent(new Main.Component.Position(5, x, y));
+    e.addComponent(new Main.Component.Display('G'));
+    e.addComponent(new Main.Component.ActionDuration());
+    e.addComponent(new Main.Component.Inventory(1, 'lump'));
+    e.addComponent(new Main.Component.HitPoint(1));
+    e.addComponent(new Main.Component.Damage(2));
+    e.addComponent(new Main.Component.AttackRange(2));
+    e.addComponent(new Main.Component.CombatRole());
+
+    e.AttackRange.setRange('extend', 4);
+    e.CombatRole.setRole('range');
+
+    e.act = Main.system.dummyAct;
+
+    Main.entities.get('npc').set(e.getID(), e);
+
+    return e;
+};
+
 Main.entity.marker = function () {
     let e = new Main.Factory('marker');
 

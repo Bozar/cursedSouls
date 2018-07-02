@@ -122,23 +122,48 @@ Main.system.verifyEnemyPosition = function (x, y, pcSight, isElite) {
 Main.system.verifyDownstairsPosition = function (x, y) {
     return !Main.system.isFloor(x, y)
         || Main.system.pcHere(x, y)
-        || floorInSight() < 36;
+        || floorInSight(x, y) < 36;
 
-    // Helper function.
-    function floorInSight() {
+    // Helper functions.
+    function floorInSight(x, y) {
         let floor = 0;
 
         Main.getEntity('dungeon').fov.compute(
             x, y,
             Main.getEntity('downstairs').Position.getRange(),
-            (x, y) => {
-                if (Main.system.isFloor(x, y)) {
+            (positionX, positionY) => {
+                if (Main.system.isFloor(positionX, positionY)) {
                     floor++;
                 }
             });
 
         return floor;
     }
+};
+
+Main.system.placeBoss = function () {
+    // Summon the boss around the downstairs, not the PC's position. Because the
+    // PC might move to another positon when a new boss is summoned.
+    let pcSight = Main.system.getActorSight(Main.getEntity('downstairs'));
+    let x = null;
+    let y = null;
+
+    pcSight = pcSight.filter((position) => {
+        x = Number.parseInt(position.split(',')[0], 10);
+        y = Number.parseInt(position.split(',')[1], 10);
+
+        return Main.system.isFloor(x, y)
+            && !Main.system.npcHere(x, y)
+            && Main.system.getDistance(Main.getEntity('pc'), [x, y]) > 2;
+    });
+
+    // This function is called when the PC stand on the downstairs and press
+    // 'Space'. If the PC's sight range is 2, he can see at most 5 * 5 = 25
+    // grids. However, there must be at least 36 grids around the downstairs, see
+    // 'Main.system.verifyDownstairsPosition'. Therefore, pcSight cannot be
+    // empty.
+
+    return pcSight[Math.floor(pcSight.length * ROT.RNG.getUniform())];
 };
 
 Main.system.createOrbs = function () {
@@ -234,7 +259,7 @@ Main.system.isMarker = function (checkThis) {
 };
 
 Main.system.isInSight = function (source, target) {
-    let sight = [];
+    let sight = Main.system.getActorSight(source);
     let targetX = null;
     let targetY = null;
 
@@ -245,13 +270,6 @@ Main.system.isInSight = function (source, target) {
         targetX = target.Position.getX();
         targetY = target.Position.getY();
     }
-
-    // Store positions in sight to the list.
-    Main.getEntity('dungeon').fov.compute(
-        source.Position.getX(),
-        source.Position.getY(),
-        source.Position.getRange(),
-        (x, y) => { sight.push(x + ',' + y); });
 
     return sight.indexOf(targetX + ',' + targetY) > -1;
 };
@@ -317,6 +335,9 @@ Main.system.pcPickUpOrb = function () {
 };
 
 Main.system.pcUseDownstairs = function () {
+    let position = [];
+    let newActor = null;
+
     switch (Main.getEntity('dungeon').BossFight.getBossFightStatus()) {
         case 'inactive':
             Main.input.listenEvent('remove', 'main');
@@ -326,6 +347,14 @@ Main.system.pcUseDownstairs = function () {
 
             // TODO: delete this line and call the boss-summoning function.
             console.log('start the boss fight');
+
+            position = Main.system.placeBoss();
+            newActor = Main.entity.gargoyle(
+                Number.parseInt(position.split(',')[0], 10),
+                Number.parseInt(position.split(',')[1], 10)
+            );
+
+            Main.getEntity('timer').scheduler.add(newActor, true, 1);
 
             Main.screens.cutScene.enter();
             Main.input.listenEvent('add', 'cutScene');
@@ -899,4 +928,17 @@ Main.system.countEnemiesInSight = function () {
         });
 
     return count;
+};
+
+Main.system.getActorSight = function (actor, range) {
+    let actorCanSee = [];
+
+    Main.getEntity('dungeon').fov.compute(
+        actor.Position.getX(),
+        actor.Position.getY(),
+        range || actor.Position.getRange(),
+        (x, y) => { actorCanSee.push(x + ',' + y); }
+    );
+
+    return actorCanSee;
 };

@@ -40,11 +40,7 @@ Main.screens.main.initialize = function () {
         Main.getEntity('pc'),
         Main.system.verifyPCPosition);
 
-    Main.getEntity('dungeon').fov.compute(
-        Main.getEntity('pc').Position.getX(),
-        Main.getEntity('pc').Position.getY(),
-        Main.getEntity('pc').Position.getRange(),
-        (x, y) => { pcCanSee.push(x + ',' + y); });
+    pcCanSee = Main.system.getActorSight(Main.getEntity('pc'));
 
     Main.getEntity('timer').scheduler.add(Main.getEntity('pc'), true);
 

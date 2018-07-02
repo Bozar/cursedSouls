@@ -74,6 +74,8 @@ Main.text.initialize = function () {
     text.get('name').set('zombie', 'Zombie');
     text.get('name').set('archer', 'Skeleton Archer');
 
+    text.get('name').set('gargoyle', 'Tower Gargoyle');
+
     // Describe the NPC, item or building under the marker.
     text.set('info', new Map());
     text.get('info').set('dummy', 'This is a dummy.'
@@ -100,6 +102,9 @@ Main.text.initialize = function () {
         'The restless guard and merciless killer,'
         + ' who is summoned from his long death,'
         + ' eliminates far away intruders in a straight line with one shot.');
+
+    // TODO: change the description.
+    text.get('info').set('gargoyle', 'Placeholder.');
 
     text.get('info').set('fire', 'Range 1, damage 1. 100% drop rate.');
     text.get('info').set('ice',

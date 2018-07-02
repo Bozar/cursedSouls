@@ -204,17 +204,17 @@ Main.system.pcIsInsideAttackRange = function (actor) {
     if (Main.system.pcIsInStraightLine(actor)) {
         return Main.system.getDistance(actor, Main.getEntity('pc'))
             <= actor.AttackRange.getRange('extend');
-    } else {
-        return Main.system.getDistance(actor, Main.getEntity('pc'))
-            <= actor.AttackRange.getRange('base');
     }
+
+    return Main.system.getDistance(actor, Main.getEntity('pc'))
+        <= actor.AttackRange.getRange('base');
 };
 
 Main.system.pcIsInStraightLine = function (actor) {
     let hasExtendRange = actor.CombatRole.getExtendRange();
     let isInStraightLine
-        = (actor.Position.getX() === Main.getEntity('pc').Position.getX())
-        || (actor.Position.getY() === Main.getEntity('pc').Position.getY());
+        = actor.Position.getX() === Main.getEntity('pc').Position.getX()
+        || actor.Position.getY() === Main.getEntity('pc').Position.getY();
 
     return hasExtendRange && isInStraightLine;
 };

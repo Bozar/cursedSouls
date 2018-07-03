@@ -225,7 +225,7 @@ Main.entity.archer = function (x, y) {
     e.addComponent(new Main.Component.AttackRange(2));
     e.addComponent(new Main.Component.CombatRole());
 
-    e.AttackRange.setRange('extend', 4);
+    e.AttackRange.setRange('extend', 3);
     e.CombatRole.setRole('cautious');
     e.CombatRole.setRole('range');
 
@@ -248,7 +248,7 @@ Main.entity.gargoyle = function (x, y) {
     e.addComponent(new Main.Component.AttackRange(1));
     e.addComponent(new Main.Component.CombatRole());
 
-    e.ActionDuration.setDuration('slowMove', 1.5);
+    e.ActionDuration.setDuration('slowMove', 1.2);
     e.Damage.setDamage('high', 2);
     e.AttackRange.setRange('extend', 2);
 

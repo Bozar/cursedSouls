@@ -282,23 +282,26 @@ Main.Component.DropRate = function () {
 };
 
 // The switch to change the NPC's AI.
-Main.Component.CombatRole = function () {
+Main.Component.CombatRole = function (isCautious, hasExtendRange) {
     this._name = 'CombatRole';
 
-    this._cautious = false;
-    this._extendRange = false;
+    this._combatRoles = new Map();
 
-    this.getCautious = function () { return this._cautious; };
-    this.getExtendRange = function () { return this._extendRange; };
+    this._combatRoles.set('cautious', isCautious || false);
+    this._combatRoles.set('extendRange', hasExtendRange || false);
 
-    this.setRole = function (type) {
-        switch (type) {
-            case 'cautious':
-                this._cautious = true;
-                break;
-            case 'range':
-                this._extendRange = true;
-                break;
-        }
+    this.getCautious = function () {
+        return this._combatRoles.get('cautious');
+    };
+    this.getExtendRange = function () {
+        return this._combatRoles.get('extendRange');
+    };
+
+    this.getRole = function (role) {
+        return this._combatRoles.get(role);
+    };
+
+    this.setRole = function (role) {
+        this._combatRoles.set('_' + role, true);
     };
 };

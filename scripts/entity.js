@@ -123,7 +123,7 @@ Main.entity.dummy = function (x, y) {
     e.addComponent(new Main.Component.HitPoint(1));
     e.addComponent(new Main.Component.Damage(1));
     e.addComponent(new Main.Component.AttackRange(1));
-    e.addComponent(new Main.Component.CombatRole());
+    e.addComponent(new Main.Component.CombatRole(false, false));
 
     e.act = Main.system.dummyAct;
 
@@ -142,7 +142,7 @@ Main.entity.rat = function (x, y) {
     e.addComponent(new Main.Component.HitPoint(1));
     e.addComponent(new Main.Component.Damage(1));
     e.addComponent(new Main.Component.AttackRange(1));
-    e.addComponent(new Main.Component.CombatRole());
+    e.addComponent(new Main.Component.CombatRole(false, false));
 
     e.act = Main.system.dummyAct;
 
@@ -161,7 +161,7 @@ Main.entity.dog = function (x, y) {
     e.addComponent(new Main.Component.HitPoint(2));
     e.addComponent(new Main.Component.Damage(1));
     e.addComponent(new Main.Component.AttackRange(1));
-    e.addComponent(new Main.Component.CombatRole());
+    e.addComponent(new Main.Component.CombatRole(false, false));
 
     e.act = Main.system.dummyAct;
 
@@ -180,10 +180,9 @@ Main.entity.raven = function (x, y) {
     e.addComponent(new Main.Component.HitPoint(1));
     e.addComponent(new Main.Component.Damage(1));
     e.addComponent(new Main.Component.AttackRange(1));
-    e.addComponent(new Main.Component.CombatRole());
+    e.addComponent(new Main.Component.CombatRole(true, false));
 
     e.ActionDuration.setDuration('fastMove', 0.5);
-    e.CombatRole.setRole('cautious');
 
     e.act = Main.system.dummyAct;
 
@@ -202,7 +201,7 @@ Main.entity.zombie = function (x, y) {
     e.addComponent(new Main.Component.HitPoint(3));
     e.addComponent(new Main.Component.Damage(1));
     e.addComponent(new Main.Component.AttackRange(1));
-    e.addComponent(new Main.Component.CombatRole());
+    e.addComponent(new Main.Component.CombatRole(false, false));
 
     e.ActionDuration.setDuration('slowMove', 1.5);
 
@@ -223,10 +222,9 @@ Main.entity.archer = function (x, y) {
     e.addComponent(new Main.Component.HitPoint(1));
     e.addComponent(new Main.Component.Damage(2));
     e.addComponent(new Main.Component.AttackRange(2));
-    e.addComponent(new Main.Component.CombatRole());
+    e.addComponent(new Main.Component.CombatRole(true, true));
 
     e.AttackRange.setRange('extend', 3);
-    e.CombatRole.setRole('cautious');
     e.CombatRole.setRole('range');
 
     e.act = Main.system.dummyAct;
@@ -246,7 +244,7 @@ Main.entity.gargoyle = function (x, y) {
     e.addComponent(new Main.Component.HitPoint(5));
     e.addComponent(new Main.Component.Damage(1));
     e.addComponent(new Main.Component.AttackRange(1));
-    e.addComponent(new Main.Component.CombatRole());
+    e.addComponent(new Main.Component.CombatRole(false, true));
 
     e.ActionDuration.setDuration('slowMove', 1.2);
     e.Damage.setDamage('high', 2);

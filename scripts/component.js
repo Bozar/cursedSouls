@@ -285,6 +285,7 @@ Main.Component.DropRate = function () {
 Main.Component.CombatRole = function (isCautious, hasExtendRange) {
     this._name = 'CombatRole';
 
+    // Available roles: cautious, extendRange, isBoss.
     this._combatRoles = new Map();
 
     this._combatRoles.set('cautious', isCautious || false);
@@ -302,6 +303,6 @@ Main.Component.CombatRole = function (isCautious, hasExtendRange) {
     };
 
     this.setRole = function (role) {
-        this._combatRoles.set('_' + role, true);
+        this._combatRoles.set(role, true);
     };
 };

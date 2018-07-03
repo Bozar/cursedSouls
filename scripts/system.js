@@ -788,41 +788,82 @@ Main.system.exitCutScene = function () {
 Main.system.pcAttack = function (target, attackType) {
     let dropRate = 0;
     let lastOrb = Main.getEntity('pc').Inventory.getLastOrb();
+    let bossIsDead = true;
 
+    // Step 1-3: The enemy loses HP.
     target.HitPoint.takeDamage(
         lastOrb === 'nuke'
             ? Main.getEntity('pc').Damage.getDamage('nuke')
             : Main.getEntity('pc').Damage.getDamage('base')
     );
 
+    // Step 2A-3: The enemy is dead.
     if (target.HitPoint.isDead()) {
-        if (attackType === 'base') {
-            if (lastOrb === 'armor') {
-                dropRate = Main.getEntity('pc').DropRate.getDropRate('ice');
-            } else if (lastOrb === 'nuke') {
-                dropRate = Main.getEntity('pc').DropRate.getDropRate('nuke');
-            } else {
-                dropRate = Main.getEntity('pc').DropRate.getDropRate('base');
+        // 1a-5: Drop rate: the boss.
+        if (target.CombatRole.getRole('isBoss')) {
+            dropRate = Main.getEntity('pc').DropRate.getDropRate('fire');
+        }
+        // 1b-5: Drop rate: base attack vs. the grunts.
+        else if (attackType === 'base') {
+            switch (lastOrb) {
+                case 'armor':
+                    dropRate = Main.getEntity('pc').DropRate.getDropRate('ice');
+                    break;
+                case 'nuke':
+                    dropRate = Main.getEntity('pc').DropRate.getDropRate('nuke');
+                    break;
+                default:
+                    dropRate = Main.getEntity('pc').DropRate.getDropRate('base');
+                    break;
             }
-        } else {
+        }
+        // 1c-5: Drop rate: orb attack vs. the grunts.
+        else {
             dropRate
                 = Main.getEntity('pc').DropRate.getDropRate(attackType);
         }
 
+        // 2-5: Print the combat log.
         Main.getEntity('message').Message.pushMsg(
             Main.text.killTarget(target));
 
+        // 3-5: Drop the orb. Perform the last action.
         Main.system.npcDropOrb(target, dropRate);
-
         Main.system.npcActBeforeDeath(target);
 
+        // 4-5: Remove the dead enemy.
         Main.getEntity('timer').scheduler.remove(target);
         Main.getEntity('npc').delete(target.getID());
-    } else {
+
+        // 5-5: Progress the game if the level boss is dead.
+        if (target.CombatRole.getRole('isBoss')) {
+            switch (target.getEntityName()) {
+                case 'gargoyle':
+                case 'juvenileGargoyle':
+                    Main.getEntity('npc').forEach((actor) => {
+                        if (actor.getEntityName() === 'gargoyle'
+                            || actor.getEntityName() === 'juvenileGargoyle'
+                        ) {
+                            bossIsDead = false;
+                        }
+                    });
+                    break;
+            }
+        } else {
+            bossIsDead = false;
+        }
+
+        if (bossIsDead) {
+            Main.getEntity('dungeon').BossFight.goToNextBossFightStage();
+        }
+    }
+    // Step 2B-3: The enemy is still alive.
+    else {
         Main.getEntity('message').Message.pushMsg(
             Main.text.hitTarget(target));
     }
 
+    // Step 3-3: Unlock the engine.
     Main.system.unlockEngine(Main.getEntity('pc').ActionDuration.getDuration());
 };
 

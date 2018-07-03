@@ -249,6 +249,7 @@ Main.entity.gargoyle = function (x, y) {
     e.ActionDuration.setDuration('slowMove', 1.2);
     e.Damage.setDamage('high', 2);
     e.AttackRange.setRange('extend', 2);
+    e.CombatRole.setRole('isBoss');
 
     e.act = Main.system.gargoyleAct;
 

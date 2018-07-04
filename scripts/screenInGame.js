@@ -165,7 +165,10 @@ Main.screens.main.keyInput = function (e) {
             Main.getEntity('dungeon').Dungeon.setFov();
         } else if (keyAction(e, 'fixed') === 'turn') {
             console.log(Main.getEntity('timer').scheduler.getTime());
-        } else if (keyAction(e, 'fixed') === 'dummy') {
+        } else if (keyAction(e, 'fixed') === 'teleport') {
+            Main.system.killAndTeleport();
+        }
+        else if (keyAction(e, 'fixed') === 'dummy') {
             Main.getEntity('timer').scheduler.add(
                 Main.entity.dummy(
                     Main.getEntity('pc').Position.getX() - 1,

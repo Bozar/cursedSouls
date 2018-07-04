@@ -177,5 +177,7 @@ else {
 * Remove an orb: `-`.
 * Print the current turn in the browser console: `\`.
 * Switch the fog of war: `]`.
+* Kill all enemies and teleport to the downstairs: `0`.
+* Print the seed: `=`.
 
 vim: set lbr:

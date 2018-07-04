@@ -1005,3 +1005,17 @@ Main.system.achievementBreakTail = function (actor, attackType) {
         }
     }
 };
+
+Main.system.killAndTeleport = function () {
+    Main.getEntity('npc').forEach((actor) => {
+        Main.getEntity('timer').scheduler.remove(actor);
+        Main.getEntity('npc').delete(actor.getID());
+    });
+
+    Main.getEntity('pc').Position.setX(
+        Main.getEntity('downstairs').Position.getX()
+    );
+    Main.getEntity('pc').Position.setY(
+        Main.getEntity('downstairs').Position.getY()
+    );
+};

@@ -53,8 +53,10 @@ Main.text.initialize = function () {
 
     text.get('action').set('hit', 'You hit the %%.');
     text.get('action').set('kill', 'You kill the %%.');
-    text.get('action').set('drop', 'The %1% drops %2% %3% Orb.');
 
+    text.get('action').set('breakTail', 'You break the Tower Gargoyle\'s tail!');
+
+    text.get('action').set('drop', 'The %1% drops %2% %3% Orb.');
     text.get('action').set('npcHit', 'The %% hits you.');
     text.get('action').set('npcSummon', 'The %% summons its companion.');
 

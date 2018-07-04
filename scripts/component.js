@@ -155,6 +155,7 @@ Main.Component.Position = function (range, x, y) {
 Main.Component.ActionDuration = function () {
     this._name = 'ActionDuration';
 
+    // Available actions: slowMove, slowAttack, fastMove, fastAttack.
     this._duration = new Map();
 
     // Most actions take 1 turn.
@@ -288,8 +289,8 @@ Main.Component.CombatRole = function (isCautious, hasExtendRange) {
     // Available roles: cautious, extendRange, isBoss.
     this._combatRoles = new Map();
 
-    this._combatRoles.set('cautious', isCautious || false);
-    this._combatRoles.set('extendRange', hasExtendRange || false);
+    this._combatRoles.set('cautious', isCautious);
+    this._combatRoles.set('extendRange', hasExtendRange);
 
     this.getCautious = function () {
         return this._combatRoles.get('cautious');
@@ -302,7 +303,7 @@ Main.Component.CombatRole = function (isCautious, hasExtendRange) {
         return this._combatRoles.get(role);
     };
 
-    this.setRole = function (role) {
-        this._combatRoles.set(role, true);
+    this.setRole = function (role, boolValue) {
+        this._combatRoles.set(role, boolValue);
     };
 };

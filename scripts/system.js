@@ -788,16 +788,15 @@ Main.system.exitCutScene = function () {
 Main.system.pcAttack = function (target, attackType) {
     let dropRate = 0;
     let lastOrb = Main.getEntity('pc').Inventory.getLastOrb();
-    let bossIsDead = true;
 
-    // Step 1-3: The enemy loses HP.
+    // Step 1-4: The enemy loses HP.
     target.HitPoint.takeDamage(
         lastOrb === 'nuke'
             ? Main.getEntity('pc').Damage.getDamage('nuke')
             : Main.getEntity('pc').Damage.getDamage('base')
     );
 
-    // Step 2A-3: The enemy is dead.
+    // Step 2A-4: The enemy is dead.
     if (target.HitPoint.isDead()) {
         // 1a-5: Drop rate: the boss.
         if (target.CombatRole.getRole('isBoss')) {
@@ -836,34 +835,20 @@ Main.system.pcAttack = function (target, attackType) {
         Main.getEntity('npc').delete(target.getID());
 
         // 5-5: Progress the game if the level boss is dead.
-        if (target.CombatRole.getRole('isBoss')) {
-            switch (target.getEntityName()) {
-                case 'gargoyle':
-                case 'juvenileGargoyle':
-                    Main.getEntity('npc').forEach((actor) => {
-                        if (actor.getEntityName() === 'gargoyle'
-                            || actor.getEntityName() === 'juvenileGargoyle'
-                        ) {
-                            bossIsDead = false;
-                        }
-                    });
-                    break;
-            }
-        } else {
-            bossIsDead = false;
-        }
-
-        if (bossIsDead) {
+        if (Main.system.bossIsDead(target)) {
             Main.getEntity('dungeon').BossFight.goToNextBossFightStage();
         }
     }
-    // Step 2B-3: The enemy is still alive.
+    // Step 2B-4: The enemy is still alive.
     else {
         Main.getEntity('message').Message.pushMsg(
             Main.text.hitTarget(target));
     }
 
-    // Step 3-3: Unlock the engine.
+    // Step 3-4: Check the boss related achievements.
+    Main.system.achievementBreakTail(target, attackType);
+
+    // Step 4-4: Unlock the engine.
     Main.system.unlockEngine(Main.getEntity('pc').ActionDuration.getDuration());
 };
 
@@ -982,4 +967,41 @@ Main.system.getActorSight = function (actor, range) {
     );
 
     return actorCanSee;
+};
+
+Main.system.bossIsDead = function (target) {
+    let bossIsDead = true;
+
+    if (target.CombatRole.getRole('isBoss')) {
+        switch (target.getEntityName()) {
+            case 'gargoyle':
+            case 'juvenileGargoyle':
+                Main.getEntity('npc').forEach((actor) => {
+                    if (actor.getEntityName() === 'gargoyle'
+                        || actor.getEntityName() === 'juvenileGargoyle'
+                    ) {
+                        bossIsDead = false;
+                    }
+                });
+                break;
+        }
+    } else {
+        bossIsDead = false;
+    }
+
+    return bossIsDead;
+};
+
+Main.system.achievementBreakTail = function (actor, attackType) {
+    if (actor.getEntityName() === 'gargoyle'
+        && attackType === 'fire') {
+        if (actor.CombatRole.getRole('hasTail')) {
+            actor.CombatRole.setRole('hasTail', false);
+
+            Main.getEntity('message').Message.pushMsg(
+                Main.text.action('breakTail')
+            );
+            // TODO: unlock the related achievement.
+        }
+    }
 };

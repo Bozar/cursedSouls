@@ -141,20 +141,22 @@ Main.system.verifyDownstairsPosition = function (x, y) {
     }
 };
 
-Main.system.placeBoss = function () {
-    // Summon the boss around the downstairs, not the PC's position. Because the
-    // PC might move to another positon when a new boss is summoned.
-    let pcSight = Main.system.getActorSight(Main.getEntity('downstairs'));
+Main.system.placeBoss = function (observer, target, distance) {
+    // Observer: Calculate the sight base on the observer's position.
+    // Target & Distance: Surround the target with a minimum distance.
+    let inSight = Main.system.getActorSight(observer, 5);
     let x = null;
     let y = null;
+    let newPosition = null;
 
-    pcSight = pcSight.filter((position) => {
+    inSight = inSight.filter((position) => {
         x = Number.parseInt(position.split(',')[0], 10);
         y = Number.parseInt(position.split(',')[1], 10);
 
         return Main.system.isFloor(x, y)
             && !Main.system.npcHere(x, y)
-            && Main.system.getDistance(Main.getEntity('pc'), [x, y]) > 2;
+            && !Main.system.pcHere(x, y)
+            && Main.system.getDistance(target, [x, y]) > distance;
     });
 
     // This function is called when the PC stand on the downstairs and press
@@ -163,7 +165,13 @@ Main.system.placeBoss = function () {
     // 'Main.system.verifyDownstairsPosition'. Therefore, pcSight cannot be
     // empty.
 
-    return pcSight[Math.floor(pcSight.length * ROT.RNG.getUniform())];
+    newPosition = inSight[Math.floor(inSight.length * ROT.RNG.getUniform())];
+    newPosition = [
+        Number.parseInt(newPosition.split(',')[0], 10),
+        Number.parseInt(newPosition.split(',')[1], 10)
+    ];
+
+    return newPosition;
 };
 
 Main.system.createOrbs = function () {
@@ -348,11 +356,12 @@ Main.system.pcUseDownstairs = function () {
             // TODO: delete this line and call the boss-summoning function.
             console.log('start the boss fight');
 
-            position = Main.system.placeBoss();
-            newActor = Main.entity.gargoyle(
-                Number.parseInt(position.split(',')[0], 10),
-                Number.parseInt(position.split(',')[1], 10)
+            position = Main.system.placeBoss(
+                Main.getEntity('downstairs'),
+                Main.getEntity('pc'),
+                2
             );
+            newActor = Main.entity.gargoyle(position[0], position[1]);
 
             Main.getEntity('timer').scheduler.add(newActor, true, 2);
 

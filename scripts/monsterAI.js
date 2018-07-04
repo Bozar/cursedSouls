@@ -49,35 +49,51 @@ Main.system.dummyAct = function () {
 
 Main.system.gargoyleAct = function () {
     let pcIsDead = false;
+    let newActor = null;
+    let newPosition = null;
 
     Main.getEntity('timer').engine.lock();
 
+    // 1-3: Search the nearby PC or wait 1 turn.
     if (!Main.system.isInSight(this, Main.getEntity('pc'))) {
-        // 1-3: Search the nearby PC or wait 1 turn.
-        Main.system.npcSearchOrWait(this);
-    } else if (
-        Main.system.getDistance(this, Main.getEntity('pc'))
+        Main.system.npcSearchOrWait(this, getMoveDuration(this));
+    }
+    // 2A-3: Summon the ally.
+    else if (this.getEntityName() === 'gargoyle'
+        && !this.CombatRole.getRole('hasSummoned')
+        && this.HitPoint.getHitPoint() < 3
+    ) {
+        newPosition = Main.system.placeBoss(this, this, 0);
+        newActor = Main.entity.juvenileGargoyle(newPosition[0], newPosition[1]);
+        Main.getEntity('timer').scheduler.add(newActor, true, 1);
+
+        Main.getEntity('message').Message.pushMsg(Main.text.npcSummon(this));
+
+        this.CombatRole.setRole('hasSummoned', true);
+        Main.system.unlockEngine(this.ActionDuration.getDuration(
+            getAttackDuration(this)
+        ));
+    }
+    // 2B-3: Thrust the PC with the halberd.
+    else if (
+        this.CombatRole.getRole('extendRange')
+        && Main.system.getDistance(this, Main.getEntity('pc'))
         <= this.AttackRange.getRange('extend')
         && Main.system.getDistance(this, Main.getEntity('pc'))
         > this.AttackRange.getRange('base')
     ) {
-        // 2A-3: Thrust the PC with the halberd.
         pcIsDead = Main.system.pcTakeDamage(this.Damage.getDamage('base'));
 
         Main.getEntity('message').Message.pushMsg(
             Main.text.action('gargoyleThrust'));
 
-        Main.system.npcHitOrKill(
-            this,
-            this.CombatRole.getRole('hasTail') ? 'base' : 'slowAttack',
-            pcIsDead,
-            true
-        );
-    } else if (
+        Main.system.npcHitOrKill(this, getAttackDuration(this), pcIsDead, true);
+    }
+    // 2C-3: Breathe fire.
+    else if (
         Main.system.getDistance(this, Main.getEntity('pc'))
         === this.AttackRange.getRange('base')
     ) {
-        // 2B-3: Breathe fire.
         if (Main.system.pcIsInStraightLine(this)) {
             pcIsDead = Main.system.pcTakeDamage(this.Damage.getDamage('high'));
         } else {
@@ -86,15 +102,24 @@ Main.system.gargoyleAct = function () {
         Main.getEntity('message').Message.pushMsg(
             Main.text.gargoyleBreathe(this));
 
-        Main.system.npcHitOrKill(
-            this,
-            this.CombatRole.getRole('hasTail') ? 'base' : 'slowAttack',
-            pcIsDead,
-            true
-        );
-    } else {
-        // 3-3: Approach the PC in sight.
-        Main.system.npcMoveClose(this);
+        Main.system.npcHitOrKill(this, getAttackDuration(this), pcIsDead, true);
+    }
+    // 3-3: Approach the PC in sight.
+    else {
+        Main.system.npcMoveClose(this, getMoveDuration(this));
+    }
+
+    // Helper functions.
+    function getMoveDuration(actor) {
+        return actor.getEntityName() === 'gargoyle'
+            ? actor.ActionDuration.getDuration('slowMove')
+            : actor.ActionDuration.getDuration('base');
+    }
+
+    function getAttackDuration(actor) {
+        return actor.CombatRole.getRole('hasTail')
+            ? actor.ActionDuration.getDuration('base')
+            : actor.ActionDuration.getDuration('slowAttack');
     }
 };
 

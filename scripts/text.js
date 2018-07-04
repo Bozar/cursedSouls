@@ -82,6 +82,7 @@ Main.text.initialize = function () {
     text.get('name').set('archer', 'Skeleton Archer');
 
     text.get('name').set('gargoyle', 'Tower Gargoyle');
+    text.get('name').set('juvenileGargoyle', 'Juvenile Tower Gargoyle');
 
     // Describe the NPC, item or building under the marker.
     text.set('info', new Map());
@@ -111,7 +112,8 @@ Main.text.initialize = function () {
         + ' eliminates far away intruders in a straight line with one shot.');
 
     // TODO: change the description.
-    text.get('info').set('gargoyle', 'Placeholder.');
+    text.get('info').set('gargoyle', 'Placeholder 1.');
+    text.get('info').set('juvenileGargoyle', 'Placeholder 2.');
 
     text.get('info').set('fire', 'Range 1, damage 1. 100% drop rate.');
     text.get('info').set('ice',

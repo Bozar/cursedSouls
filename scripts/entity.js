@@ -251,6 +251,30 @@ Main.entity.gargoyle = function (x, y) {
     e.AttackRange.setRange('extend', 2);
     e.CombatRole.setRole('isBoss', true);
     e.CombatRole.setRole('hasTail', true);
+    e.CombatRole.setRole('hasSummoned', false);
+
+    e.act = Main.system.gargoyleAct;
+
+    Main.entities.get('npc').set(e.getID(), e);
+
+    return e;
+};
+
+Main.entity.juvenileGargoyle = function (x, y) {
+    let e = new Main.Factory('juvenileGargoyle');
+
+    e.addComponent(new Main.Component.Position(9, x, y));
+    e.addComponent(new Main.Component.Display('g'));
+    e.addComponent(new Main.Component.ActionDuration());
+    e.addComponent(new Main.Component.Inventory(1, 'lump'));
+    e.addComponent(new Main.Component.HitPoint(2));
+    e.addComponent(new Main.Component.Damage(1));
+    e.addComponent(new Main.Component.AttackRange(1));
+    e.addComponent(new Main.Component.CombatRole(false, false));
+
+    e.Damage.setDamage('high', 2);
+    e.CombatRole.setRole('isBoss', true);
+    e.CombatRole.setRole('hasTail', true);
 
     e.act = Main.system.gargoyleAct;
 

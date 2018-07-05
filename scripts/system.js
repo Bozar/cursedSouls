@@ -107,13 +107,20 @@ Main.system.verifyEnemyPosition = function (x, y, pcSight, isElite) {
 
     function tooMany(x, y) {
         let number = 0;
+        let extendSight = Main.system.getActorSight(Main.getEntity('pc'), 7);
 
-        Main.getEntity('npc').forEach((value) => {
-            if (pcSight.indexOf(x + ',' + y) > -1
-                && Main.system.getDistance(value, Main.getEntity('pc')) <= 5) {
-                number++;
-            }
-        });
+        if (pcSight.indexOf(x + ',' + y) > -1) {
+            number++;
+
+            Main.getEntity('npc').forEach((value) => {
+                if (extendSight.indexOf(
+                    value.Position.getX() + ',' + value.Position.getY())
+                    > -1
+                ) {
+                    number++;
+                }
+            });
+        }
 
         return number > 3;
     }

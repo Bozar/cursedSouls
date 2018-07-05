@@ -546,7 +546,7 @@ Main.system.examineMode = function () {
     function examine(e) {
         // Exit the examine mode.
         if (Main.input.getAction(e, 'fixed') === 'no') {
-            exitExamineOrAimMode();
+            exitExamineOrAimMode(true);
         }
         // Move the marker.
         else if (Main.input.getAction(e, 'move')) {
@@ -592,9 +592,11 @@ Main.system.examineMode = function () {
         Main.screens.main.display();
     }
 
-    function exitExamineOrAimMode() {
+    function exitExamineOrAimMode(addKey) {
         Main.input.listenEvent('remove', examine);
-        Main.input.listenEvent('add', 'main');
+        if (addKey) {
+            Main.input.listenEvent('add', 'main');
+        }
 
         setOrRemoveMarker(false);
     }
@@ -694,7 +696,9 @@ Main.system.examineMode = function () {
         } else if (Main.screens.getCurrentMode() === 'aim') {
             Main.getEntity('message').Message.setModeline(
                 Main.text.modeLine('aim'));
-        } else {
+        } else if (!Main.getEntity('pc').Inventory.getIsDead()) {
+            // Print 'The End' in the modeline if the PC is dead. Otherwise,
+            // clear the modeline after exiting the Examine/Aim mode.
             Main.getEntity('message').Message.setModeline('');
         }
     }
@@ -707,48 +711,45 @@ Main.system.examineMode = function () {
         let pcHere = Main.system.pcHere(
             Main.getEntity('marker').Position.getX(),
             Main.getEntity('marker').Position.getY());
+        let markerPosition = [
+            Main.getEntity('marker').Position.getX(),
+            Main.getEntity('marker').Position.getY()
+        ];
 
         let takeAction = false;
 
         if (Main.screens.getCurrentMode() === 'aim'
-            && Main.system.insideOrbRange()) {
-            if ((orb === 'fire' || orb === 'lump' || orb === 'nuke')
-                && npcHere) {
-                takeAction = true;
-
-                switch (orb) {
-                    case 'fire':
-                    case 'lump':
-                    case 'nuke':
+            && Main.system.insideOrbRange()
+        ) {
+            switch (orb) {
+                case 'fire':
+                case 'lump':
+                case 'nuke':
+                    if (npcHere) {
+                        takeAction = true;
                         Main.system.pcAttack(npcHere, orb);
-                        break;
-                }
-            } else if (orb === 'slime'
-                && Main.system.isFloor(
-                    Main.getEntity('marker').Position.getX(),
-                    Main.getEntity('marker').Position.getY())
-                && !npcHere
-                && !pcHere) {
-                //takeAction = true;
-
-                let tmpX = Main.getEntity('marker').Position.getX();
-                let tmpY = Main.getEntity('marker').Position.getY();
-
-                exitExamineOrAimMode();
-
-                Main.system.pcUseSlimeOrb(
-                    tmpX,
-                    tmpY
-                );
-            } else if (orb === 'ice') {
-                takeAction = true;
-
-                Main.system.pcUseIceOrb();
+                    }
+                    break;
+                case 'slime':
+                    if (Main.system.isFloor(
+                        Main.getEntity('marker').Position.getX(),
+                        Main.getEntity('marker').Position.getY())
+                        && !npcHere
+                        && !pcHere
+                    ) {
+                        takeAction = true;
+                        Main.system.pcUseSlimeOrb(...markerPosition);
+                    }
+                    break;
+                case 'ice':
+                    takeAction = true;
+                    Main.system.pcUseIceOrb();
+                    break;
             }
         }
 
         if (takeAction) {
-            exitExamineOrAimMode();
+            exitExamineOrAimMode(false);
         }
     }
 };

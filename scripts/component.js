@@ -155,6 +155,7 @@ Main.Component.Position = function (range, x, y) {
 Main.Component.ActionDuration = function () {
     this._name = 'ActionDuration';
 
+    // Available actions: slowMove, slowAttack, fastMove, fastAttack.
     this._duration = new Map();
 
     // Most actions take 1 turn.
@@ -282,10 +283,27 @@ Main.Component.DropRate = function () {
 };
 
 // The switch to change the NPC's AI.
-Main.Component.CombatRole = function (isCautious) {
+Main.Component.CombatRole = function (isCautious, hasExtendRange) {
     this._name = 'CombatRole';
 
-    this._cautious = isCautious;
+    // Available roles: cautious, extendRange, isBoss.
+    this._combatRoles = new Map();
 
-    this.getCautious = function () { return this._cautious; };
+    this._combatRoles.set('cautious', isCautious);
+    this._combatRoles.set('extendRange', hasExtendRange);
+
+    this.getCautious = function () {
+        return this._combatRoles.get('cautious');
+    };
+    this.getExtendRange = function () {
+        return this._combatRoles.get('extendRange');
+    };
+
+    this.getRole = function (role) {
+        return this._combatRoles.get(role);
+    };
+
+    this.setRole = function (role, boolValue) {
+        this._combatRoles.set(role, boolValue);
+    };
 };

@@ -1,5 +1,7 @@
 ﻿# Cursed Souls: Giovanni's Orchestra
 
+![image](https://github.com/Bozar/cursedSouls/blob/master/img/demo.gif)
+
 ## Goal
 
 > You find yourself lying on the ground, like a nameless body in the morgue, who is unknown to death, nor known to life. Weeping and whispers echo in your mind. One of the voices is calling to you: come here, ashen one.
@@ -99,6 +101,12 @@ There is no randomness in the hit chance or damage. No enemies, including the bo
 
 The PC's actions take exactly 1 turn. But this rule dose not apply to some enemies.
 
+In addition to deal damage, some enemies have special abilities. There are 3 types of such abilities and they are introduced on the first three dungeon levels.
+
+* Summon allies (Level 1): Add one or more enemies to the dungeon under certain circumstances.
+* ??? (Level 2): ???.
+* ??? (Level 3): ???.
+
 [Work In Progress]
 
 During the boss fight, the PC can siphon far away orbs at low HP.
@@ -169,5 +177,7 @@ else {
 * Remove an orb: `-`.
 * Print the current turn in the browser console: `\`.
 * Switch the fog of war: `]`.
+* Kill all enemies and teleport to the downstairs: `0`.
+* Print the seed: `=`.
 
 vim: set lbr:

@@ -40,11 +40,7 @@ Main.screens.main.initialize = function () {
         Main.getEntity('pc'),
         Main.system.verifyPCPosition);
 
-    Main.getEntity('dungeon').fov.compute(
-        Main.getEntity('pc').Position.getX(),
-        Main.getEntity('pc').Position.getY(),
-        Main.getEntity('pc').Position.getRange(),
-        (x, y) => { pcCanSee.push(x + ',' + y); });
+    pcCanSee = Main.system.getActorSight(Main.getEntity('pc'));
 
     Main.getEntity('timer').scheduler.add(Main.getEntity('pc'), true);
 
@@ -122,7 +118,8 @@ Main.screens.main.display = function () {
     for (const keyValue of Main.getEntity('orb')) {
         Main.screens.drawActor(
             keyValue[1],
-            Main.getEntity('dungeon').BossFight.getBossFightStatus() === 'win'
+            Main.getEntity('dungeon').BossFight.getBossFightStatus()
+            !== 'inactive'
         );
     }
 
@@ -168,7 +165,10 @@ Main.screens.main.keyInput = function (e) {
             Main.getEntity('dungeon').Dungeon.setFov();
         } else if (keyAction(e, 'fixed') === 'turn') {
             console.log(Main.getEntity('timer').scheduler.getTime());
-        } else if (keyAction(e, 'fixed') === 'dummy') {
+        } else if (keyAction(e, 'fixed') === 'teleport') {
+            Main.system.killAndTeleport();
+        }
+        else if (keyAction(e, 'fixed') === 'dummy') {
             Main.getEntity('timer').scheduler.add(
                 Main.entity.dummy(
                     Main.getEntity('pc').Position.getX() - 1,

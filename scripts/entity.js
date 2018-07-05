@@ -123,7 +123,7 @@ Main.entity.dummy = function (x, y) {
     e.addComponent(new Main.Component.HitPoint(1));
     e.addComponent(new Main.Component.Damage(1));
     e.addComponent(new Main.Component.AttackRange(1));
-    e.addComponent(new Main.Component.CombatRole(false));
+    e.addComponent(new Main.Component.CombatRole(false, false));
 
     e.act = Main.system.dummyAct;
 
@@ -142,7 +142,7 @@ Main.entity.rat = function (x, y) {
     e.addComponent(new Main.Component.HitPoint(1));
     e.addComponent(new Main.Component.Damage(1));
     e.addComponent(new Main.Component.AttackRange(1));
-    e.addComponent(new Main.Component.CombatRole(false));
+    e.addComponent(new Main.Component.CombatRole(false, false));
 
     e.act = Main.system.dummyAct;
 
@@ -161,7 +161,7 @@ Main.entity.dog = function (x, y) {
     e.addComponent(new Main.Component.HitPoint(2));
     e.addComponent(new Main.Component.Damage(1));
     e.addComponent(new Main.Component.AttackRange(1));
-    e.addComponent(new Main.Component.CombatRole(false));
+    e.addComponent(new Main.Component.CombatRole(false, false));
 
     e.act = Main.system.dummyAct;
 
@@ -180,7 +180,7 @@ Main.entity.raven = function (x, y) {
     e.addComponent(new Main.Component.HitPoint(1));
     e.addComponent(new Main.Component.Damage(1));
     e.addComponent(new Main.Component.AttackRange(1));
-    e.addComponent(new Main.Component.CombatRole(true));
+    e.addComponent(new Main.Component.CombatRole(true, false));
 
     e.ActionDuration.setDuration('fastMove', 0.5);
 
@@ -201,7 +201,7 @@ Main.entity.zombie = function (x, y) {
     e.addComponent(new Main.Component.HitPoint(3));
     e.addComponent(new Main.Component.Damage(1));
     e.addComponent(new Main.Component.AttackRange(1));
-    e.addComponent(new Main.Component.CombatRole(false));
+    e.addComponent(new Main.Component.CombatRole(false, false));
 
     e.ActionDuration.setDuration('slowMove', 1.5);
 
@@ -215,16 +215,67 @@ Main.entity.zombie = function (x, y) {
 Main.entity.archer = function (x, y) {
     let e = new Main.Factory('archer');
 
-    e.addComponent(new Main.Component.Position(7, x, y));
+    e.addComponent(new Main.Component.Position(5, x, y));
     e.addComponent(new Main.Component.Display('a'));
     e.addComponent(new Main.Component.ActionDuration());
     e.addComponent(new Main.Component.Inventory(1, 'lump'));
     e.addComponent(new Main.Component.HitPoint(1));
     e.addComponent(new Main.Component.Damage(2));
     e.addComponent(new Main.Component.AttackRange(2));
-    e.addComponent(new Main.Component.CombatRole(true));
+    e.addComponent(new Main.Component.CombatRole(true, true));
+
+    e.AttackRange.setRange('extend', 3);
 
     e.act = Main.system.dummyAct;
+
+    Main.entities.get('npc').set(e.getID(), e);
+
+    return e;
+};
+
+Main.entity.gargoyle = function (x, y) {
+    let e = new Main.Factory('gargoyle');
+
+    e.addComponent(new Main.Component.Position(9, x, y));
+    e.addComponent(new Main.Component.Display('G'));
+    e.addComponent(new Main.Component.ActionDuration());
+    e.addComponent(new Main.Component.Inventory(1, 'lump'));
+    e.addComponent(new Main.Component.HitPoint(5));
+    e.addComponent(new Main.Component.Damage(1));
+    e.addComponent(new Main.Component.AttackRange(1));
+    e.addComponent(new Main.Component.CombatRole(false, true));
+
+    e.ActionDuration.setDuration('slowMove', 1.2);
+    e.ActionDuration.setDuration('slowAttack', 1.2);
+    e.Damage.setDamage('high', 2);
+    e.AttackRange.setRange('extend', 2);
+    e.CombatRole.setRole('isBoss', true);
+    e.CombatRole.setRole('hasTail', true);
+    e.CombatRole.setRole('hasSummoned', false);
+
+    e.act = Main.system.gargoyleAct;
+
+    Main.entities.get('npc').set(e.getID(), e);
+
+    return e;
+};
+
+Main.entity.juvenileGargoyle = function (x, y) {
+    let e = new Main.Factory('juvenileGargoyle');
+
+    e.addComponent(new Main.Component.Position(9, x, y));
+    e.addComponent(new Main.Component.Display('g'));
+    e.addComponent(new Main.Component.ActionDuration());
+    e.addComponent(new Main.Component.Inventory(1, 'lump'));
+    e.addComponent(new Main.Component.HitPoint(2));
+    e.addComponent(new Main.Component.Damage(1));
+    e.addComponent(new Main.Component.AttackRange(1));
+    e.addComponent(new Main.Component.CombatRole(false, false));
+
+    e.CombatRole.setRole('isBoss', true);
+    e.CombatRole.setRole('hasTail', true);
+
+    e.act = Main.system.gargoyleAct;
 
     Main.entities.get('npc').set(e.getID(), e);
 

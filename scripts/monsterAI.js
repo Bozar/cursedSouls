@@ -1,7 +1,6 @@
 ﻿'use strict';
 
 Main.system.dummyAct = function () {
-    let pcIsDead = false;
     let approach = false;
     let moveDuration
         = this.ActionDuration.getDuration('slowMove')
@@ -19,8 +18,8 @@ Main.system.dummyAct = function () {
         Main.system.npcSearchOrWait(this, moveDuration);
     } else if (Main.system.pcIsInsideAttackRange(this)) {
         // 2-4: Attack the PC.
-        pcIsDead = Main.system.pcTakeDamage(this.Damage.getDamage());
-        Main.system.npcHitOrKill(this, attackDuration, pcIsDead);
+        Main.system.pcTakeDamage(this.Damage.getDamage('base'));
+        Main.system.npcHitOrKill(this, attackDuration, false);
     } else {
         if (this.CombatRole.getCautious()) {
             // A cautious enemy does not approach the PC easily.
@@ -48,7 +47,6 @@ Main.system.dummyAct = function () {
 };
 
 Main.system.gargoyleAct = function () {
-    let pcIsDead = false;
     let newActor = null;
     let newPosition = null;
 
@@ -82,27 +80,28 @@ Main.system.gargoyleAct = function () {
         && Main.system.getDistance(this, Main.getEntity('pc'))
         > this.AttackRange.getRange('base')
     ) {
-        pcIsDead = Main.system.pcTakeDamage(this.Damage.getDamage('base'));
+        Main.system.pcTakeDamage(this.Damage.getDamage('base'));
 
         Main.getEntity('message').Message.pushMsg(
             Main.text.action('gargoyleThrust'));
 
-        Main.system.npcHitOrKill(this, getAttackDuration(this), pcIsDead, true);
+        Main.system.npcHitOrKill(this, getAttackDuration(this), true);
     }
     // 2C-3: Breathe fire.
     else if (
         Main.system.getDistance(this, Main.getEntity('pc'))
         === this.AttackRange.getRange('base')
     ) {
-        if (Main.system.pcIsInStraightLine(this)) {
-            pcIsDead = Main.system.pcTakeDamage(this.Damage.getDamage('high'));
-        } else {
-            pcIsDead = Main.system.pcTakeDamage(this.Damage.getDamage('base'));
-        }
+        Main.system.pcTakeDamage(
+            Main.system.pcIsInStraightLine(this)
+                ? this.Damage.getDamage('high')
+                : this.Damage.getDamage('base')
+        );
+
         Main.getEntity('message').Message.pushMsg(
             Main.text.gargoyleBreathe(this));
 
-        Main.system.npcHitOrKill(this, getAttackDuration(this), pcIsDead, true);
+        Main.system.npcHitOrKill(this, getAttackDuration(this), true);
     }
     // 3-3: Approach the PC in sight.
     else {
@@ -258,13 +257,13 @@ Main.system.npcDecideNextStep = function (actor, nextStep, duration, distance) {
     }
 };
 
-Main.system.npcHitOrKill = function (actor, duration, pcIsDead, isBoss) {
+Main.system.npcHitOrKill = function (actor, duration, isBoss) {
     if (!isBoss) {
         // Bosses have special hit messages.
         Main.getEntity('message').Message.pushMsg(Main.text.npcHit(actor));
     }
 
-    if (pcIsDead) {
+    if (Main.getEntity('pc').Inventory.getIsDead()) {
         Main.getEntity('message').Message.pushMsg(Main.text.action('die'));
         Main.getEntity('message').Message.pushMsg(Main.text.lastWords());
         // Print 'The End' in the modeline.

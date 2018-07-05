@@ -62,8 +62,7 @@ Main.text.initialize = function () {
 
     text.get('action').set('gargoyleThrust',
         'The Tower Gargoyle thrusts you with the halberd.');
-    text.get('action').set('gargoyleBreathe',
-        'The %% breathes scorching fire.');
+    text.get('action').set('gargoyleBreathe', 'The %% breathes fire.');
 
     text.get('action').set('die', 'You die.');
     text.get('action').set('end', '===The End===');

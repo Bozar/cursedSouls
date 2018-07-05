@@ -272,7 +272,6 @@ Main.entity.juvenileGargoyle = function (x, y) {
     e.addComponent(new Main.Component.AttackRange(1));
     e.addComponent(new Main.Component.CombatRole(false, false));
 
-    e.Damage.setDamage('high', 2);
     e.CombatRole.setRole('isBoss', true);
     e.CombatRole.setRole('hasTail', true);
 

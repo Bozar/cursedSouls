@@ -270,7 +270,7 @@ Main.system.npcHitOrKill = function (actor, duration, pcIsDead, isBoss) {
         // Print 'The End' in the modeline.
         Main.getEntity('message').Message.setModeline(Main.text.action('end'));
     } else {
-        Main.system.unlockEngine(actor.ActionDuration.getDuration(duration));
+        Main.system.unlockEngine(duration);
     }
 };
 

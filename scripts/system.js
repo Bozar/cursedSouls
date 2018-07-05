@@ -729,9 +729,17 @@ Main.system.examineMode = function () {
                     Main.getEntity('marker').Position.getY())
                 && !npcHere
                 && !pcHere) {
-                takeAction = true;
+                //takeAction = true;
 
-                Main.system.pcUseSlimeOrb();
+                let tmpX = Main.getEntity('marker').Position.getX();
+                let tmpY = Main.getEntity('marker').Position.getY();
+
+                exitExamineOrAimMode();
+
+                Main.system.pcUseSlimeOrb(
+                    tmpX,
+                    tmpY
+                );
             } else if (orb === 'ice') {
                 takeAction = true;
 
@@ -868,14 +876,13 @@ Main.system.pcAttack = function (target, attackType) {
     Main.system.unlockEngine(Main.getEntity('pc').ActionDuration.getDuration());
 };
 
-Main.system.pcUseSlimeOrb = function () {
-    Main.getEntity('pc').Position.setX(
-        Main.getEntity('marker').Position.getX());
-    Main.getEntity('pc').Position.setY(
-        Main.getEntity('marker').Position.getY());
+Main.system.pcUseSlimeOrb = function (x, y) {
+    Main.getEntity('pc').Position.setX(x);
+    Main.getEntity('pc').Position.setY(y);
 
     Main.getEntity('message').Message.pushMsg(Main.text.action('teleport'));
 
+    console.log(Main.screens.getCurrentMode());
     Main.system.unlockEngine(
         Main.getEntity('pc').ActionDuration.getDuration());
 };

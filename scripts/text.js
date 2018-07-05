@@ -28,11 +28,15 @@ Main.text.initialize = function () {
 
     // UI elements outside the dungeon section
     text.set('ui', new Map());
-    text.get('ui').set('enhance', '*');
-    text.get('ui').set('ground', '@');
-    text.get('ui').set('help', 'Help:');
     text.get('ui').set('wizard', 'Wiz|');
+    text.get('ui').set('help', 'Help:');
     text.get('ui').set('studio', 'Red Tabby Studio');
+
+    text.get('ui').set('enhance', '*');
+    text.get('ui').set('hp', 'HP: %%');
+    text.get('ui').set('dead', 'Dead');
+    text.get('ui').set('ground', '@');
+
     text.get('ui').set('examine', 'Ex');
     text.get('ui').set('aim', 'Aim');
     text.get('ui').set('range', 'Range: %%');
@@ -49,11 +53,19 @@ Main.text.initialize = function () {
 
     text.get('action').set('hit', 'You hit the %%.');
     text.get('action').set('kill', 'You kill the %%.');
-    text.get('action').set('drop', 'The %1% drops %2% %3% Orb.');
 
+    text.get('action').set('breakTail', 'You break the Tower Gargoyle\'s tail!');
+
+    text.get('action').set('drop', 'The %1% drops %2% %3% Orb.');
     text.get('action').set('npcHit', 'The %% hits you.');
+    text.get('action').set('npcSummon', 'The %% summons its companion.');
+
+    text.get('action').set('gargoyleThrust',
+        'The Tower Gargoyle thrusts you with the halberd.');
+    text.get('action').set('gargoyleBreathe', 'The %% breathes fire.');
 
     text.get('action').set('die', 'You die.');
+    text.get('action').set('end', '===The End===');
     text.get('action').set('deathGeneral', 'Rest in peace, ashen one.');
     text.get('action').set('deathBoss1',
         'Ashen one, hearest thou my voice, still?');
@@ -62,16 +74,52 @@ Main.text.initialize = function () {
     text.set('name', new Map());
     text.get('name').set('dummy', 'Dummy');
 
+    text.get('name').set('rat', 'Rat');
+    text.get('name').set('dog', 'Zombie Dog');
+    text.get('name').set('raven', 'Raven');
+    text.get('name').set('zombie', 'Zombie');
+    text.get('name').set('archer', 'Skeleton Archer');
+
+    text.get('name').set('gargoyle', 'Tower Gargoyle');
+    text.get('name').set('juvenileGargoyle', 'Juvenile Tower Gargoyle');
+
     // Describe the NPC, item or building under the marker.
     text.set('info', new Map());
     text.get('info').set('dummy', 'This is a dummy.'
         + ' It has 1 hit point.'
         + ' It drops 1 Slime Orb when killed.');
 
-    text.get('info').set('fire', 'Melee. 100% drop rate.');
-    text.get('info').set('ice', 'Range 2, freeze for 2 turns. 60% drop rate.');
-    text.get('info').set('slime', 'Range 2, teleport yourself.');
-    text.get('info').set('lump', 'Range 2. 60% drop rate.');
+    text.get('info').set('rat',
+        'These filthy little bastards eat whatever they can find.'
+        + ' But they are not a real threat unless you get yourself cornered.');
+    text.get('info').set('dog',
+        'Zombie dogs are zombie\'s best friends.'
+        + ' They are good at shadowing far away preys'
+        + ' and they know nothing about pain.');
+    text.get('info').set('raven',
+        'Ravens are cunning and mischievous.'
+        + ' They fly quickly.'
+        + ' They like hiding among the allies and pecking the victim.');
+    text.get('info').set('zombie',
+        'Zombies are zombie dog\'s best friends.'
+        + ' Their skin is extraordinarily tough.'
+        + ' You can easily outrun a zombie,'
+        + ' but be ware of their loyal companions.');
+    text.get('info').set('archer',
+        'The restless guard and merciless killer,'
+        + ' who is summoned from his long death,'
+        + ' eliminates far away intruders in a straight line with one shot.');
+
+    // TODO: change the description.
+    text.get('info').set('gargoyle', 'Placeholder 1.');
+    text.get('info').set('juvenileGargoyle', 'Placeholder 2.');
+
+    text.get('info').set('fire', 'Range 1, damage 1. 100% drop rate.');
+    text.get('info').set('ice',
+        'Protect yourself with at most 2 layers of the Icy Armor.'
+        + ' 60% drop rate.');
+    text.get('info').set('slime', 'Range 2. Teleport yourself.');
+    text.get('info').set('lump', 'Range 2, damage 1. 60% drop rate.');
 
     text.get('info').set('downstairs1',
         'In the center of the dusty round pool, there stands a grotesque figure.'
@@ -247,6 +295,14 @@ Main.text.npcHit = function (attacker) {
     return text;
 };
 
+Main.text.npcSummon = function (actor) {
+    let text = Main.text.action('npcSummon');
+
+    text = text.replace('%%', Main.text.name(actor.getEntityName()));
+
+    return text;
+};
+
 Main.text.lastWords = function () {
     let text = '';
 
@@ -257,6 +313,32 @@ Main.text.lastWords = function () {
     } else {
         text = Main.text.action('deathGeneral');
     }
+
+    return text;
+};
+
+Main.text.uiHitPoint = function () {
+    let hp = Main.getEntity('pc').Inventory.getLength();
+    let text = Main.text.ui('hp');
+    let dead = Main.screens.colorfulText(Main.text.ui('dead'), 'grey');
+
+    if (hp < 4) {
+        hp = Main.screens.colorfulText(hp, 'orange');
+    }
+
+    if (Main.getEntity('pc').Inventory.getIsDead()) {
+        text = text.replace('%%', dead);
+    } else {
+        text = text.replace('%%', hp);
+    }
+
+    return text;
+};
+
+Main.text.gargoyleBreathe = function (actor) {
+    let text = Main.text.action('gargoyleBreathe');
+
+    text = text.replace('%%', Main.text.name(actor.getEntityName()));
 
     return text;
 };

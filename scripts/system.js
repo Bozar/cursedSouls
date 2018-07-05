@@ -7,10 +7,11 @@ Main.system.isFloor = function (x, y) {
         === 0;
 };
 
-Main.system.placeActor = function (actor, notQualified, forbidden) {
+Main.system.placeActor = function (actor, notQualified, forbidden, isElite) {
     let x = null;
     let y = null;
     let retry = 0;
+    let maxRetry = 999;
 
     do {
         x = Math.floor(
@@ -21,20 +22,29 @@ Main.system.placeActor = function (actor, notQualified, forbidden) {
             * ROT.RNG.getUniform());
         retry++;
     }
-    // Some notQualified callback functions require an extra argument, forbidden,
-    // which is a string array [x + ',' + y], so that they do not need to
+    // Some notQualified callback functions require extra arguments:
+    // * `forbidden` is a string array [x + ',' + y], so that they do not need to
     // calculate the forbidden zone every time when placing a new entity.
-    while (notQualified(x, y, forbidden) && retry < 999);
+    // * `isElite` is a boolean value that is used to calculate the distance
+    // between the PC and the NPC.
+    while (notQualified(x, y, forbidden, isElite) && retry < maxRetry);
 
-    if (Main.getDevelop() && retry > 10) {
-        console.log('Retry, ' + actor.getEntityName() + ': ' + retry);
+    if (retry > 10) {
+        Main._log.retry.push(actor.getEntityName() + ': ' + retry);
+    }
+
+    if (retry >= maxRetry) {
+        // Do not place the actor in an invalid place.
+        return false;
     }
 
     actor.Position.setX(x);
     actor.Position.setY(y);
+
+    return true;
 };
 
-Main.system.verifyPositionPC = function (x, y) {
+Main.system.verifyPCPosition = function (x, y) {
     return !Main.system.isFloor(x, y)
         || x < Main.getEntity('pc').Position.getRange()
         || x > Main.getEntity('dungeon').Dungeon.getWidth()
@@ -44,7 +54,7 @@ Main.system.verifyPositionPC = function (x, y) {
         - Main.getEntity('pc').Position.getRange();
 };
 
-Main.system.verifyPositionOrb = function (x, y) {
+Main.system.verifyOrbPosition = function (x, y) {
     return !Main.system.isFloor(x, y)
         || Main.system.getDistance([x, y], Main.getEntity('pc')) <= 2
         || Main.system.downstairsHere(x, y)
@@ -70,7 +80,7 @@ Main.system.npcIsTooDense = function (x, y) {
     return count > 0;
 };
 
-Main.system.verifyPositionGrunt = function (x, y, pcSight) {
+Main.system.verifyEnemyPosition = function (x, y, pcSight, isElite) {
     return !Main.system.isFloor(x, y)
         || tooClose(x, y)
         || tooMany(x, y)
@@ -78,44 +88,97 @@ Main.system.verifyPositionGrunt = function (x, y, pcSight) {
         || Main.system.npcHere(x, y);
 
     function tooClose(x, y) {
-        return pcSight.indexOf(x + ',' + y) > -1
-            && Main.system.getDistance([x, y], Main.getEntity('pc')) <= 3;
+        let isInsight = pcSight.indexOf(x + ',' + y) > -1;
+        let isTooClose = null;
+        let distance = null;
+
+        // PC's sight range: 5.
+        if (isElite) {
+            distance = 8;
+        } else {
+            distance = 3;
+        }
+
+        isTooClose
+            = Main.system.getDistance([x, y], Main.getEntity('pc')) <= distance;
+
+        return isInsight && isTooClose;
     }
 
     function tooMany(x, y) {
         let number = 0;
+        let extendSight = Main.system.getActorSight(Main.getEntity('pc'), 7);
 
-        Main.getEntity('npc').forEach((value) => {
-            if (pcSight.indexOf(x + ',' + y) > -1
-                && Main.system.getDistance(value, Main.getEntity('pc')) <= 5) {
-                number++;
-            }
-        });
+        if (pcSight.indexOf(x + ',' + y) > -1) {
+            number++;
 
-        return number > 4;
+            Main.getEntity('npc').forEach((value) => {
+                if (extendSight.indexOf(
+                    value.Position.getX() + ',' + value.Position.getY())
+                    > -1
+                ) {
+                    number++;
+                }
+            });
+        }
+
+        return number > 3;
     }
 };
 
-Main.system.verifyPositionDownstairs = function (x, y) {
+Main.system.verifyDownstairsPosition = function (x, y) {
     return !Main.system.isFloor(x, y)
         || Main.system.pcHere(x, y)
-        || floorInSight() < 36;
+        || floorInSight(x, y) < 36;
 
-    // Helper function.
-    function floorInSight() {
+    // Helper functions.
+    function floorInSight(x, y) {
         let floor = 0;
 
         Main.getEntity('dungeon').fov.compute(
             x, y,
             Main.getEntity('downstairs').Position.getRange(),
-            (x, y) => {
-                if (Main.system.isFloor(x, y)) {
+            (positionX, positionY) => {
+                if (Main.system.isFloor(positionX, positionY)) {
                     floor++;
                 }
             });
 
         return floor;
     }
+};
+
+Main.system.placeBoss = function (observer, target, distance) {
+    // Observer: Calculate the sight base on the observer's position.
+    // Target & Distance: Surround the target with a minimum distance.
+    let inSight = Main.system.getActorSight(observer, 5);
+    let x = null;
+    let y = null;
+    let newPosition = null;
+
+    inSight = inSight.filter((position) => {
+        x = Number.parseInt(position.split(',')[0], 10);
+        y = Number.parseInt(position.split(',')[1], 10);
+
+        return Main.system.isFloor(x, y)
+            && !Main.system.npcHere(x, y)
+            && !Main.system.pcHere(x, y)
+            && Main.system.getDistance(target, [x, y]) > distance;
+    });
+
+    // This function is called when the PC stand on the downstairs and press
+    // 'Space'. If the PC's sight range is 2, he can see at most 5 * 5 = 25
+    // grids. However, there must be at least 36 grids around the downstairs, see
+    // 'Main.system.verifyDownstairsPosition'. Therefore, pcSight cannot be
+    // empty.
+
+    newPosition = inSight[Math.floor(inSight.length * ROT.RNG.getUniform())];
+    newPosition = [
+        Number.parseInt(newPosition.split(',')[0], 10),
+        Number.parseInt(newPosition.split(',')[1], 10)
+    ];
+
+    return newPosition;
 };
 
 Main.system.createOrbs = function () {
@@ -130,6 +193,78 @@ Main.system.createOrbs = function () {
     }
 };
 
+Main.system.createEnemies = function () {
+    let enemyAmount = amount();
+    // TODO: change the enemies base on the dungeon level.
+    let enemyType = type(1);
+    let elite = [];
+    let grunt = [];
+
+    // Lump1 & Lump2.
+    for (let i = 0; i < 2; i++) {
+        for (let j = 0; j < enemyAmount[i]; j++) {
+            elite.push(Main.entity[enemyType[i]]());
+        }
+    }
+
+    // Fire, Ice & Slime.
+    for (let i = 2; i < enemyAmount.length; i++) {
+        for (let j = 0; j < enemyAmount[i]; j++) {
+            grunt.push(Main.entity[enemyType[i]]());
+        }
+    }
+
+    return [elite, grunt];
+
+    // Helper functions.
+    function amount() {
+        // 25 to 30 enemies on one level.
+        let total = 25 + Math.floor(6 * ROT.RNG.getUniform());
+
+        // Lump: 20%.
+        let lump = Math.ceil(total * 0.2);
+        // Fire & Ice: 50%.
+        let fireAndIce = Math.ceil((total - lump) * 0.5);
+        // Slime: 30%.
+        let slime = total - lump - fireAndIce;
+
+        let lump1 = Math.floor(lump * percent());
+        let lump2 = lump - lump1;
+        let fire = Math.floor(fireAndIce * percent());
+        let ice = fireAndIce - fire;
+
+        Main._log.enemyCount = total;
+        Main._log.enemyComposition = [lump1, lump2, fire, ice, slime];
+
+        return Main._log.enemyComposition;
+    }
+
+    function percent() {
+        // 40% to 60%.
+        return Math.floor(4 + 3 * ROT.RNG.getUniform()) / 10;
+    }
+
+    function type(dungeonLevel) {
+        let lump1 = '';
+        let lump2 = '';
+        let fire = '';
+        let ice = '';
+        let slime = '';
+
+        switch (dungeonLevel) {
+            case 1:
+                lump1 = 'archer';
+                lump2 = 'zombie';
+                fire = 'dog';
+                ice = 'raven';
+                slime = 'rat';
+                break;
+        }
+
+        return [lump1, lump2, fire, ice, slime];
+    }
+};
+
 Main.system.isPC = function (actor) {
     return actor.getID() === Main.getEntity('pc').getID();
 };
@@ -139,7 +274,7 @@ Main.system.isMarker = function (checkThis) {
 };
 
 Main.system.isInSight = function (source, target) {
-    let sight = [];
+    let sight = Main.system.getActorSight(source);
     let targetX = null;
     let targetY = null;
 
@@ -150,13 +285,6 @@ Main.system.isInSight = function (source, target) {
         targetX = target.Position.getX();
         targetY = target.Position.getY();
     }
-
-    // Store positions in sight to the list.
-    Main.getEntity('dungeon').fov.compute(
-        source.Position.getX(),
-        source.Position.getY(),
-        source.Position.getRange(),
-        (x, y) => { sight.push(x + ',' + y); });
 
     return sight.indexOf(targetX + ',' + targetY) > -1;
 };
@@ -176,6 +304,7 @@ Main.system.pcTakeDamage = function (damage) {
         = damage > Main.getEntity('pc').Inventory.getLength();
 
     Main.getEntity('pc').Inventory.removeItem(damage);
+    Main.getEntity('pc').Inventory.setIsDead(pcIsDead);
 
     return pcIsDead;
 };
@@ -200,9 +329,6 @@ Main.system.pcPickOrUse = function () {
         Main.screens.setCurrentMode(Main.screens.main.getMode(2));
 
         Main.system.examineMode();
-    } else {
-        // TODO: add more actions.
-        console.log('press space');
     }
 };
 
@@ -220,10 +346,13 @@ Main.system.pcPickUpOrb = function () {
     Main.getEntity('orb').delete(orbHere.getID());
 
     Main.system.unlockEngine(
-        Main.getEntity('pc').ActionDuration.getUseOrb());
+        Main.getEntity('pc').ActionDuration.getDuration());
 };
 
 Main.system.pcUseDownstairs = function () {
+    let position = [];
+    let newActor = null;
+
     switch (Main.getEntity('dungeon').BossFight.getBossFightStatus()) {
         case 'inactive':
             Main.input.listenEvent('remove', 'main');
@@ -233,6 +362,15 @@ Main.system.pcUseDownstairs = function () {
 
             // TODO: delete this line and call the boss-summoning function.
             console.log('start the boss fight');
+
+            position = Main.system.placeBoss(
+                Main.getEntity('downstairs'),
+                Main.getEntity('pc'),
+                2
+            );
+            newActor = Main.entity.gargoyle(position[0], position[1]);
+
+            Main.getEntity('timer').scheduler.add(newActor, true, 2);
 
             Main.screens.cutScene.enter();
             Main.input.listenEvent('add', 'cutScene');
@@ -327,8 +465,8 @@ Main.system.move = function (direction, who) {
         return Main.system.isMarker(actor)
             ? null
             : isWait
-                ? actor.ActionDuration.getWait()
-                : actor.ActionDuration.getMove();
+                ? actor.ActionDuration.getDuration()
+                : actor.ActionDuration.getDuration();
     }
 
     function getActorType() {
@@ -408,7 +546,7 @@ Main.system.examineMode = function () {
     function examine(e) {
         // Exit the examine mode.
         if (Main.input.getAction(e, 'fixed') === 'no') {
-            exitExamineOrAimMode();
+            exitExamineOrAimMode(true);
         }
         // Move the marker.
         else if (Main.input.getAction(e, 'move')) {
@@ -454,9 +592,11 @@ Main.system.examineMode = function () {
         Main.screens.main.display();
     }
 
-    function exitExamineOrAimMode() {
+    function exitExamineOrAimMode(addKey) {
         Main.input.listenEvent('remove', examine);
-        Main.input.listenEvent('add', 'main');
+        if (addKey) {
+            Main.input.listenEvent('add', 'main');
+        }
 
         setOrRemoveMarker(false);
     }
@@ -556,7 +696,9 @@ Main.system.examineMode = function () {
         } else if (Main.screens.getCurrentMode() === 'aim') {
             Main.getEntity('message').Message.setModeline(
                 Main.text.modeLine('aim'));
-        } else {
+        } else if (!Main.getEntity('pc').Inventory.getIsDead()) {
+            // Print 'The End' in the modeline if the PC is dead. Otherwise,
+            // clear the modeline after exiting the Examine/Aim mode.
             Main.getEntity('message').Message.setModeline('');
         }
     }
@@ -569,40 +711,45 @@ Main.system.examineMode = function () {
         let pcHere = Main.system.pcHere(
             Main.getEntity('marker').Position.getX(),
             Main.getEntity('marker').Position.getY());
+        let markerPosition = [
+            Main.getEntity('marker').Position.getX(),
+            Main.getEntity('marker').Position.getY()
+        ];
 
         let takeAction = false;
 
         if (Main.screens.getCurrentMode() === 'aim'
-            && Main.system.insideOrbRange()) {
-            if ((orb === 'fire' || orb === 'lump' || orb === 'nuke')
-                && npcHere) {
-                takeAction = true;
-
-                switch (orb) {
-                    case 'fire':
-                    case 'lump':
-                    case 'nuke':
+            && Main.system.insideOrbRange()
+        ) {
+            switch (orb) {
+                case 'fire':
+                case 'lump':
+                case 'nuke':
+                    if (npcHere) {
+                        takeAction = true;
                         Main.system.pcAttack(npcHere, orb);
-                        break;
-                }
-            } else if (orb === 'slime'
-                && Main.system.isFloor(
-                    Main.getEntity('marker').Position.getX(),
-                    Main.getEntity('marker').Position.getY())
-                && !npcHere
-                && !pcHere) {
-                takeAction = true;
-
-                Main.system.pcUseSlimeOrb();
-            } else if (orb === 'ice') {
-                takeAction = true;
-
-                Main.system.pcUseIceOrb();
+                    }
+                    break;
+                case 'slime':
+                    if (Main.system.isFloor(
+                        Main.getEntity('marker').Position.getX(),
+                        Main.getEntity('marker').Position.getY())
+                        && !npcHere
+                        && !pcHere
+                    ) {
+                        takeAction = true;
+                        Main.system.pcUseSlimeOrb(...markerPosition);
+                    }
+                    break;
+                case 'ice':
+                    takeAction = true;
+                    Main.system.pcUseIceOrb();
+                    break;
             }
         }
 
         if (takeAction) {
-            exitExamineOrAimMode();
+            exitExamineOrAimMode(false);
         }
     }
 };
@@ -655,7 +802,7 @@ Main.system.exitCutScene = function () {
         Main.screens.main.enter(true);
 
         Main.system.unlockEngine(
-            Main.getEntity('pc').ActionDuration.getMove());
+            Main.getEntity('pc').ActionDuration.getDuration());
     } else {
         Main.screens.main.enter(false);
     }
@@ -667,51 +814,78 @@ Main.system.pcAttack = function (target, attackType) {
     let dropRate = 0;
     let lastOrb = Main.getEntity('pc').Inventory.getLastOrb();
 
+    // Step 1-4: The enemy loses HP.
     target.HitPoint.takeDamage(
         lastOrb === 'nuke'
             ? Main.getEntity('pc').Damage.getDamage('nuke')
             : Main.getEntity('pc').Damage.getDamage('base')
     );
 
+    // Step 2A-4: The enemy is dead.
     if (target.HitPoint.isDead()) {
-        if (attackType === 'base') {
-            if (lastOrb === 'armor') {
-                dropRate = Main.getEntity('pc').DropRate.getDropRate('ice');
-            } else if (lastOrb === 'nuke') {
-                dropRate = Main.getEntity('pc').DropRate.getDropRate('nuke');
-            } else {
-                dropRate = Main.getEntity('pc').DropRate.getDropRate('base');
+        // 1a-5: Drop rate: the boss.
+        if (target.CombatRole.getRole('isBoss')) {
+            dropRate = Main.getEntity('pc').DropRate.getDropRate('fire');
+        }
+        // 1b-5: Drop rate: base attack vs. the grunts.
+        else if (attackType === 'base') {
+            switch (lastOrb) {
+                case 'armor':
+                    dropRate = Main.getEntity('pc').DropRate.getDropRate('ice');
+                    break;
+                case 'nuke':
+                    dropRate = Main.getEntity('pc').DropRate.getDropRate('nuke');
+                    break;
+                default:
+                    dropRate = Main.getEntity('pc').DropRate.getDropRate('base');
+                    break;
             }
-        } else {
+        }
+        // 1c-5: Drop rate: orb attack vs. the grunts.
+        else {
             dropRate
                 = Main.getEntity('pc').DropRate.getDropRate(attackType);
         }
 
+        // 2-5: Print the combat log.
         Main.getEntity('message').Message.pushMsg(
             Main.text.killTarget(target));
 
+        // 3-5: Drop the orb. Perform the last action.
         Main.system.npcDropOrb(target, dropRate);
+        Main.system.npcActBeforeDeath(target);
 
+        // 4-5: Remove the dead enemy.
         Main.getEntity('timer').scheduler.remove(target);
         Main.getEntity('npc').delete(target.getID());
-    } else {
+
+        // 5-5: Progress the game if the level boss is dead.
+        if (Main.system.bossIsDead(target)) {
+            Main.getEntity('dungeon').BossFight.goToNextBossFightStage();
+        }
+    }
+    // Step 2B-4: The enemy is still alive.
+    else {
         Main.getEntity('message').Message.pushMsg(
             Main.text.hitTarget(target));
     }
 
-    Main.system.unlockEngine(Main.getEntity('pc').ActionDuration.getAttack());
+    // Step 3-4: Check the boss related achievements.
+    Main.system.achievementBreakTail(target, attackType);
+
+    // Step 4-4: Unlock the engine.
+    Main.system.unlockEngine(Main.getEntity('pc').ActionDuration.getDuration());
 };
 
-Main.system.pcUseSlimeOrb = function () {
-    Main.getEntity('pc').Position.setX(
-        Main.getEntity('marker').Position.getX());
-    Main.getEntity('pc').Position.setY(
-        Main.getEntity('marker').Position.getY());
+Main.system.pcUseSlimeOrb = function (x, y) {
+    Main.getEntity('pc').Position.setX(x);
+    Main.getEntity('pc').Position.setY(y);
 
     Main.getEntity('message').Message.pushMsg(Main.text.action('teleport'));
 
+    console.log(Main.screens.getCurrentMode());
     Main.system.unlockEngine(
-        Main.getEntity('pc').ActionDuration.getUseOrb());
+        Main.getEntity('pc').ActionDuration.getDuration());
 };
 
 Main.system.pcUseIceOrb = function () {
@@ -722,7 +896,7 @@ Main.system.pcUseIceOrb = function () {
     Main.getEntity('message').Message.pushMsg(Main.text.action('armor'));
 
     Main.system.unlockEngine(
-        Main.getEntity('pc').ActionDuration.getUseOrb());
+        Main.getEntity('pc').ActionDuration.getDuration());
 };
 
 Main.system.npcDropOrb = function (actor, dropRate) {
@@ -749,4 +923,123 @@ Main.system.npcDropOrb = function (actor, dropRate) {
         Main.getEntity('message').Message.pushMsg(
             Main.text.targetDropOrb(actor, Main.getEntity('orb').get(orbID)));
     }
+};
+
+Main.system.printGenerationLog = function () {
+    let labels = ['Lump1: ', 'Lump2: ', 'Fire: ', 'Ice: ', 'Slime: '];
+
+    if (!Main._log.seedPrinted) {
+        console.log('Seed: '
+            + Main.getEntity('seed').Seed.getSeed());
+
+        Main._log.seedPrinted = true;
+    }
+
+    if (Main.getDevelop() && !Main._log.msgPrinted) {
+        console.log('Cycle: ' + Main._log.cycle);
+        console.log('Floor: ' + Main._log.floor + '%');
+        console.log('Enemy: ' + Main._log.enemyCount);
+
+        for (let i = 0; i < 5; i++) {
+            console.log(labels[i] + Main._log.enemyComposition[i]);
+        }
+
+        if (Main._log.retry.length > 0) {
+            console.log('==========');
+            console.log('Retry:');
+            Main._log.retry.forEach((value) => {
+                console.log(value);
+            });
+        }
+
+        Main._log.msgPrinted = true;
+    }
+};
+
+Main.system.countEnemiesInSight = function () {
+    let count = new Map();
+    let npcHere = null;
+
+    Main.getEntity('dungeon').fov.compute(
+        Main.getEntity('pc').Position.getX(),
+        Main.getEntity('pc').Position.getY(),
+        Main.getEntity('pc').Position.getRange(),
+        (x, y) => {
+            npcHere = Main.system.npcHere(x, y);
+
+            if (npcHere) {
+                if (count.get(npcHere.Display.getCharacter())) {
+                    count.set(npcHere.Display.getCharacter(),
+                        count.get(npcHere.Display.getCharacter()) + 1);
+                } else {
+                    count.set(npcHere.Display.getCharacter(), 1);
+                }
+            }
+        });
+
+    return count;
+};
+
+Main.system.getActorSight = function (actor, range) {
+    let actorCanSee = [];
+
+    Main.getEntity('dungeon').fov.compute(
+        actor.Position.getX(),
+        actor.Position.getY(),
+        range || actor.Position.getRange(),
+        (x, y) => { actorCanSee.push(x + ',' + y); }
+    );
+
+    return actorCanSee;
+};
+
+Main.system.bossIsDead = function (target) {
+    let bossIsDead = true;
+
+    if (target.CombatRole.getRole('isBoss')) {
+        switch (target.getEntityName()) {
+            case 'gargoyle':
+            case 'juvenileGargoyle':
+                Main.getEntity('npc').forEach((actor) => {
+                    if (actor.getEntityName() === 'gargoyle'
+                        || actor.getEntityName() === 'juvenileGargoyle'
+                    ) {
+                        bossIsDead = false;
+                    }
+                });
+                break;
+        }
+    } else {
+        bossIsDead = false;
+    }
+
+    return bossIsDead;
+};
+
+Main.system.achievementBreakTail = function (actor, attackType) {
+    if (actor.getEntityName() === 'gargoyle'
+        && attackType === 'fire') {
+        if (actor.CombatRole.getRole('hasTail')) {
+            actor.CombatRole.setRole('hasTail', false);
+
+            Main.getEntity('message').Message.pushMsg(
+                Main.text.action('breakTail')
+            );
+            // TODO: unlock the related achievement.
+        }
+    }
+};
+
+Main.system.killAndTeleport = function () {
+    Main.getEntity('npc').forEach((actor) => {
+        Main.getEntity('timer').scheduler.remove(actor);
+        Main.getEntity('npc').delete(actor.getID());
+    });
+
+    Main.getEntity('pc').Position.setX(
+        Main.getEntity('downstairs').Position.getX()
+    );
+    Main.getEntity('pc').Position.setY(
+        Main.getEntity('downstairs').Position.getY()
+    );
 };

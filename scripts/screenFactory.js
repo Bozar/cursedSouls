@@ -135,10 +135,12 @@ Main.screens.drawModeLine = function () {
             Main.UI.modeline.getX(), Main.UI.modeline.getY(),
             Main.getEntity('message').Message.getModeline());
 
-        // In the main screen (main mode), draw the modeline text only once.
-        // Otherwise, draw the text every turn.
+        // If in the main screen, main mode, and the PC is alive, draw the
+        // modeline text only once. Otherwise, draw the text every turn.
         if (Main.screens.getCurrentName() === 'main'
-            && Main.screens.getCurrentMode() === 'main') {
+            && Main.screens.getCurrentMode() === 'main'
+            && !Main.getEntity('pc').Inventory.getIsDead()
+        ) {
             Main.getEntity('message').Message.setModeline('');
         }
     }
@@ -296,14 +298,14 @@ Main.screens.drawActor = function (actor, noFov) {
     }
 
     if (drawThis) {
-        if (!Main.system.isMarker(actor)) {
-            if (Main.system.downstairsHere(
-                actor.Position.getX(), actor.Position.getY())) {
-                color = actor.Display.getDownstairsColor();
-            } else if (Main.system.orbHere(
-                actor.Position.getX(), actor.Position.getY())) {
-                color = actor.Display.getOrbColor();
-            }
+        if (Main.system.downstairsHere(
+            actor.Position.getX(), actor.Position.getY())) {
+            color = actor.Display.getDownstairsColor();
+        } else if (Main.system.orbHere(
+            actor.Position.getX(), actor.Position.getY())) {
+            color = actor.Display.getOrbColor();
+        } else if (Main.system.isPC(actor) && actor.Inventory.getIsDead()) {
+            color = actor.Display.getColor('die');
         } else {
             color = actor.Display.getColor();
         }
@@ -320,7 +322,8 @@ Main.screens.drawActor = function (actor, noFov) {
             // Character
             actor.Display.getCharacter(),
             // Color
-            color);
+            Main.getColor(color)
+        );
     }
 };
 
@@ -342,6 +345,13 @@ Main.screens.drawLevelName = function () {
         Main.UI.level.getX(),
         Main.UI.level.getY(),
         `${Main.text.dungeon('downstairsIcon')} ${levelName}`);
+};
+
+Main.screens.drawPCHitPoint = function () {
+    Main.display.drawText(
+        Main.UI.hitpoint.getX() + 2,
+        Main.UI.hitpoint.getY(),
+        Main.text.uiHitPoint());
 };
 
 Main.screens.drawPower = function () {
@@ -393,6 +403,20 @@ Main.screens.drawItemUnderYourFoot = function () {
                 itemFound.getEntityName()),
                 itemFound.Display.getColor())
             : Main.text.ui('ground'));
+};
+
+Main.screens.drawEnemyList = function () {
+    let enemyList = Main.system.countEnemiesInSight();
+    let i = 0;
+
+    for (let [key, value] of enemyList) {
+        Main.display.drawText(
+            Main.UI.enemy.getX() + 2,
+            Main.UI.enemy.getY() + i,
+            Main.screens.colorfulText(key + ': ' + value, 'orange')
+        );
+        i++;
+    }
 };
 
 Main.screens.drawHelp = function () {

@@ -23,6 +23,7 @@ Main.input.keybind.get('fixed').set('develop', ['~']);
 Main.input.keybind.get('fixed').set('fov', [']']);
 Main.input.keybind.get('fixed').set('turn', ['\\']);
 Main.input.keybind.get('fixed').set('dummy', ['d']);
+Main.input.keybind.get('fixed').set('teleport', ['0']);
 
 Main.input.keybind.get('fixed').set('addFire', ['1']);
 Main.input.keybind.get('fixed').set('addIce', ['2']);

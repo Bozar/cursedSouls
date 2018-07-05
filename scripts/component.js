@@ -62,8 +62,6 @@ Main.Component.Dungeon = function () {
 
     // The percentage of the floor area
     this._floorArea = [55, 65];
-    this._percent = 0;
-    this._cycle = 0;
 
     this.getWidth = function () { return this._width; };
     this.getHeight = function () { return this._height; };
@@ -74,13 +72,9 @@ Main.Component.Dungeon = function () {
     this.getMemory = function () { return this._memory; };
 
     this.getFloorArea = function () { return this._floorArea; };
-    this.getPercent = function () { return this._percent; };
-    this.getCycle = function () { return this._cycle; };
 
     this.setFov = function () { this._hasFov = !this._hasFov; };
     this.setMemory = function (memory) { this._memory = memory; };
-    this.setPercent = function (percent) { this._percent = percent; };
-    this.setCycle = function (cycle) { this._cycle = cycle; };
 };
 
 // Record the game progress.
@@ -112,22 +106,34 @@ Main.Component.BossFight = function () {
     };
 };
 
-Main.Component.Display = function (char, color, altColor) {
+Main.Component.Display = function (char, color, onlyOneColor) {
     this._name = 'Display';
 
     this._character = char;
-    // [The default color,
-    // the color when standing on an orb,
-    // the color when standing on the downstairs]
-    this._color = [
-        Main.getColor(color || 'white'),
-        Main.getColor(altColor || 'green'),
-        Main.getColor(altColor || 'orange')];
+
+    this._color = new Map();
+    this._color.set('default', color || 'white');
+
+    if (onlyOneColor) {
+        this._color.set('orb', this._color.get('default'));
+        this._color.set('downstairs', this._color.get('default'));
+    } else {
+        this._color.set('orb', 'green');
+        this._color.set('downstairs', 'orange');
+    }
 
     this.getCharacter = function () { return this._character; };
-    this.getColor = function () { return this._color[0]; };
-    this.getOrbColor = function () { return this._color[1]; };
-    this.getDownstairsColor = function () { return this._color[2]; };
+    this.getColor = function (color) {
+        return this._color.get(color || 'default');
+    };
+    this.getOrbColor = function () { return this._color.get('orb'); };
+    this.getDownstairsColor = function () {
+        return this._color.get('downstairs');
+    };
+
+    this.setColor = function (key, value) {
+        this._color.set(key, value);
+    };
 };
 
 Main.Component.Position = function (range, x, y) {
@@ -149,19 +155,19 @@ Main.Component.Position = function (range, x, y) {
 Main.Component.ActionDuration = function () {
     this._name = 'ActionDuration';
 
+    // Available actions: slowMove, slowAttack, fastMove, fastAttack.
     this._duration = new Map();
 
-    // No need to seperate these actions since they all take 1 turn. This is just
-    // an example.
-    this._duration.set('move', 1);
-    this._duration.set('useOrb', 1);
-    this._duration.set('attack', 1);
-    this._duration.set('wait', 1);
+    // Most actions take 1 turn.
+    this._duration.set('base', 1);
 
-    this.getMove = function () { return this._duration.get('move'); };
-    this.getUseOrb = function () { return this._duration.get('useOrb'); };
-    this.getAttack = function () { return this._duration.get('attack'); };
-    this.getWait = function () { return this._duration.get('wait'); };
+    this.getDuration = function (action) {
+        return this._duration.get(action || 'base');
+    };
+
+    this.setDuration = function (key, value) {
+        this._duration.set(key, value);
+    };
 };
 
 Main.Component.Inventory = function (capacity, firstItem) {
@@ -169,6 +175,7 @@ Main.Component.Inventory = function (capacity, firstItem) {
 
     this._inventory = [];
     this._capacity = capacity || 1;
+    this._isDead = false;
 
     // Enemies have only one of the four orbs: fire, ice, slime & lump.
     // Give the PC four orbs at the beginning of the game.
@@ -181,6 +188,7 @@ Main.Component.Inventory = function (capacity, firstItem) {
     this.getLastOrb = function () {
         return this._inventory[this._inventory.length - 1];
     };
+    this.getIsDead = function () { return this._isDead; };
     this.isEnhanced = function () {
         if (this._inventory.length > 1) {
             return this._inventory[this._inventory.length - 1]
@@ -211,6 +219,8 @@ Main.Component.Inventory = function (capacity, firstItem) {
 
         return this._inventory.pop();
     };
+
+    this.setIsDead = function (status) { this._isDead = status; };
 };
 
 Main.Component.HitPoint = function (hp) {
@@ -269,5 +279,31 @@ Main.Component.DropRate = function () {
 
     this.getDropRate = function (attackType) {
         return this._dropRate.get(attackType);
+    };
+};
+
+// The switch to change the NPC's AI.
+Main.Component.CombatRole = function (isCautious, hasExtendRange) {
+    this._name = 'CombatRole';
+
+    // Available roles: cautious, extendRange, isBoss.
+    this._combatRoles = new Map();
+
+    this._combatRoles.set('cautious', isCautious);
+    this._combatRoles.set('extendRange', hasExtendRange);
+
+    this.getCautious = function () {
+        return this._combatRoles.get('cautious');
+    };
+    this.getExtendRange = function () {
+        return this._combatRoles.get('extendRange');
+    };
+
+    this.getRole = function (role) {
+        return this._combatRoles.get(role);
+    };
+
+    this.setRole = function (role, boolValue) {
+        this._combatRoles.set(role, boolValue);
     };
 };

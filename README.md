@@ -1,6 +1,6 @@
 ﻿# Cursed Souls: Giovanni's Orchestra
 
-![image](https://github.com/Bozar/cursedSouls/blob/master/img/demo.gif)
+![image](https://github.com/Bozar/cursedSouls/blob/master/img/youDie.png)
 
 ## Goal
 

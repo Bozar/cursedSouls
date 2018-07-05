@@ -135,10 +135,12 @@ Main.screens.drawModeLine = function () {
             Main.UI.modeline.getX(), Main.UI.modeline.getY(),
             Main.getEntity('message').Message.getModeline());
 
-        // In the main screen (main mode), draw the modeline text only once.
-        // Otherwise, draw the text every turn.
+        // If in the main screen, main mode, and the PC is alive, draw the
+        // modeline text only once. Otherwise, draw the text every turn.
         if (Main.screens.getCurrentName() === 'main'
-            && Main.screens.getCurrentMode() === 'main') {
+            && Main.screens.getCurrentMode() === 'main'
+            && !Main.getEntity('pc').Inventory.getIsDead()
+        ) {
             Main.getEntity('message').Message.setModeline('');
         }
     }

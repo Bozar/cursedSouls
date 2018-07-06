@@ -107,22 +107,19 @@ Main.system.verifyEnemyPosition = function (x, y, pcSight, isElite) {
 
     function tooMany(x, y) {
         let number = 0;
-        let extendSight = Main.system.getActorSight(Main.getEntity('pc'), 7);
+        let extendRange = 7;
+        let countEnemies = null;
 
+        // The new enemy can appear in the PC's sight only if there are no more
+        // than 2 enemies who are already in the PC's extended sight.
         if (pcSight.indexOf(x + ',' + y) > -1) {
-            number++;
-
-            Main.getEntity('npc').forEach((value) => {
-                if (extendSight.indexOf(
-                    value.Position.getX() + ',' + value.Position.getY())
-                    > -1
-                ) {
-                    number++;
-                }
+            countEnemies = Main.system.countEnemiesInSight(extendRange);
+            countEnemies.forEach((value) => {
+                number += value;
             });
         }
 
-        return number > 3;
+        return number > 2;
     }
 };
 
@@ -947,26 +944,31 @@ Main.system.printGenerationLog = function () {
     }
 };
 
-Main.system.countEnemiesInSight = function () {
+Main.system.countEnemiesInSight = function (range) {
+    let pcSight = Main.system.getActorSight(
+        Main.getEntity('pc'),
+        range || Main.getEntity('pc').Position.getRange()
+    );
+    // Key: the enemy's character; Value: the number of enemies of the same type.
     let count = new Map();
-    let npcHere = null;
 
-    Main.getEntity('dungeon').fov.compute(
-        Main.getEntity('pc').Position.getX(),
-        Main.getEntity('pc').Position.getY(),
-        Main.getEntity('pc').Position.getRange(),
-        (x, y) => {
-            npcHere = Main.system.npcHere(x, y);
-
-            if (npcHere) {
-                if (count.get(npcHere.Display.getCharacter())) {
-                    count.set(npcHere.Display.getCharacter(),
-                        count.get(npcHere.Display.getCharacter()) + 1);
-                } else {
-                    count.set(npcHere.Display.getCharacter(), 1);
-                }
+    Main.getEntity('npc').forEach((value) => {
+        // The enemy is in the PC's sight.
+        if (pcSight.indexOf(
+            value.Position.getX() + ',' + value.Position.getY())
+            > -1
+        ) {
+            // This type of enemy already exists.
+            if (count.get(value.Display.getCharacter())) {
+                count.set(value.Display.getCharacter(),
+                    count.get(value.Display.getCharacter()) + 1);
             }
-        });
+            // This is a new type of enemy.
+            else {
+                count.set(value.Display.getCharacter(), 1);
+            }
+        }
+    });
 
     return count;
 };

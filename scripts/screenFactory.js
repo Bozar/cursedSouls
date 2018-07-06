@@ -282,10 +282,9 @@ Main.screens.drawActor = function (actor, noFov) {
         noFov
         // 1B: Draw everything when the fog of war is off. But do not draw the
         // marker in the main mode.
-        || (!Main.getEntity('dungeon').Dungeon.getFov()
-            && typeof actor.Position.getX() === 'number'
-            && typeof actor.Position.getY() === 'number'
-        )
+        || !Main.getEntity('dungeon').Dungeon.getFov()
+        && typeof actor.Position.getX() === 'number'
+        && typeof actor.Position.getY() === 'number'
         // 1C: Always draw the PC.
         || Main.system.isPC(actor)
     ) {

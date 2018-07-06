@@ -151,7 +151,7 @@ Main.system.verifyDownstairsPosition = function (x, y) {
 Main.system.placeBoss = function (observer, target, distance) {
     // Observer: Calculate the sight base on the observer's position.
     // Target & Distance: Surround the target with a minimum distance.
-    let inSight = Main.system.getActorSight(observer, 5);
+    let inSight = Main.system.getActorSight(observer, 3);
     let x = null;
     let y = null;
     let newPosition = null;
@@ -391,29 +391,21 @@ Main.system.move = function (direction, who) {
     let actor = who || Main.getEntity('pc');
     let x = actor.Position.getX();
     let y = actor.Position.getY();
+    let newCoordinates = [];
     // `who` can be the marker, which takes no time to move.
     let duration = getDuration(false);
     let actorType = getActorType();
     let isMoveable = false;
 
     // Get new coordinates.
-    switch (direction) {
-        case 'left':
-            x -= 1;
-            break;
-        case 'right':
-            x += 1;
-            break;
-        case 'up':
-            y -= 1;
-            break;
-        case 'down':
-            y += 1;
-            break;
-        case 'wait':
-            // No matter how long 1-step-movement takes, waiting always costs
-            // exactly 1 turn, or `null` if the actor is marker.
-            duration = getDuration(true);
+    if (direction === 'wait') {
+        // No matter how long 1-step-movement takes, waiting always costs exactly
+        // 1 turn, or `null` if the actor is marker.
+        duration = getDuration(true);
+    } else {
+        newCoordinates = Main.system.getNewCoordinates([x, y], direction);
+        x = newCoordinates[0];
+        y = newCoordinates[1];
     }
 
     // Verify the new position.
@@ -1041,4 +1033,26 @@ Main.system.killAndTeleport = function () {
     Main.getEntity('pc').Position.setY(
         Main.getEntity('downstairs').Position.getY()
     );
+};
+
+Main.system.getNewCoordinates = function (currentPosition, direction) {
+    let x = currentPosition[0];
+    let y = currentPosition[1];
+
+    switch (direction) {
+        case 'left':
+            x -= 1;
+            break;
+        case 'right':
+            x += 1;
+            break;
+        case 'up':
+            y -= 1;
+            break;
+        case 'down':
+            y += 1;
+            break;
+    }
+
+    return [x, y];
 };

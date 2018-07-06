@@ -883,7 +883,6 @@ Main.system.pcUseSlimeOrb = function (x, y) {
 
     Main.getEntity('message').Message.pushMsg(Main.text.action('teleport'));
 
-    console.log(Main.screens.getCurrentMode());
     Main.system.unlockEngine(
         Main.getEntity('pc').ActionDuration.getDuration());
 };

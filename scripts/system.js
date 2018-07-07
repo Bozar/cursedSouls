@@ -1058,3 +1058,16 @@ Main.system.getNewCoordinates = function (currentPosition, direction) {
 
     return [x, y];
 };
+
+Main.system.pcRememberTerrain = function () {
+    let pcSight = Main.system.getActorSight(Main.getEntity('pc'));
+
+    pcSight.forEach((position) => {
+        // Remember walls and floors in sight.
+        if (Main.getEntity('dungeon').Dungeon.getMemory().indexOf(position)
+            < 0
+        ) {
+            Main.getEntity('dungeon').Dungeon.getMemory().push(position);
+        }
+    });
+};

@@ -217,6 +217,8 @@ Main.screens.drawDescription = function () {
 };
 
 Main.screens.drawDungeon = function () {
+    let pcSight = Main.system.getActorSight(Main.getEntity('pc'));
+
     // Default: the fog of war is on.
     if (Main.getEntity('dungeon').Dungeon.getFov()) {
         // Draw walls and floors that the PC has seen before.
@@ -233,20 +235,18 @@ Main.screens.drawDungeon = function () {
             }
         }
 
-        Main.getEntity('dungeon').fov.compute(
-            Main.getEntity('pc').Position.getX(),
-            Main.getEntity('pc').Position.getY(),
-            Main.getEntity('pc').Position.getRange(),
-            function (x, y) {
-                // Remember walls and floors in sight.
-                if (Main.getEntity('dungeon').Dungeon
-                    .getMemory().indexOf(x + ',' + y) < 0) {
-                    Main.getEntity('dungeon').Dungeon
-                        .getMemory().push(x + ',' + y);
-                }
-                // Draw walls and floors in sight.
-                drawWallAndFloor(x, y, 'white');
-            });
+        // Draw walls and floors in sight.
+        pcSight.forEach((position) => {
+            if (Main.getEntity('dungeon').Dungeon.getMemory().indexOf(position)
+                > -1
+            ) {
+                drawWallAndFloor(
+                    Number.parseInt(position.split(',')[0], 10),
+                    Number.parseInt(position.split(',')[1], 10),
+                    'white'
+                );
+            }
+        });
     }
     // Wizard mode: the fog of war if off. Draw all walls and floors.
     else {
@@ -254,7 +254,8 @@ Main.screens.drawDungeon = function () {
             drawWallAndFloor(
                 keyValue[0].split(',')[0],
                 keyValue[0].split(',')[1],
-                'white');
+                'white'
+            );
         }
     }
 

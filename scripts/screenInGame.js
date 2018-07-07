@@ -102,6 +102,9 @@ Main.screens.main.initialize = function () {
 //      Press any key in the examine mode.
 //      Perform an invalid movement.
 Main.screens.main.display = function () {
+    // Update the terrain in the PC's sight.
+    Main.system.pcRememberTerrain();
+
     Main.screens.drawBorder();
     Main.screens.drawVersion();
     Main.screens.drawHelp();

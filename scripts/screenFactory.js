@@ -191,7 +191,7 @@ Main.screens.drawDescription = function () {
     if (npcHere) {
         drawTextBlock(
             // Top line
-            Main.text.info(npcHere.getEntityName()),
+            getTopLine(npcHere),
             // Bottom line
             Main.text.npcBottomDescription(downstairsHere, npcHere, orbHere));
     } else if (downstairsHere) {
@@ -200,6 +200,21 @@ Main.screens.drawDescription = function () {
         drawTextBlock(Main.text.orbTopDescription(orbHere), '');
     } else {
         Main.screens.drawMessage();
+    }
+
+    // Helper functions.
+    function getTopLine(actor) {
+        let text = null;
+
+        switch (actor.getEntityName()) {
+            case 'gargoyle':
+                text = Main.text.gargoyleDescription(actor);
+                break;
+            default:
+                text = Main.text.info(npcHere.getEntityName());
+        }
+
+        return text;
     }
 
     function drawTextBlock(top, bottom) {

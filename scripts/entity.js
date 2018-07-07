@@ -330,6 +330,7 @@ Main.entity.orb = function (orbName) {
 
     e.addComponent(new Main.Component.Position(0));
     e.addComponent(new Main.Component.Display(orbChar, 'green', true));
+    e.addComponent(new Main.Component.Memory());
 
     Main.entities.get('orb').set(e.getID(), e);
 

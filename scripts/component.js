@@ -282,6 +282,15 @@ Main.Component.DropRate = function () {
     };
 };
 
+Main.Component.Memory = function () {
+    this._name = 'Memory';
+
+    this._hasSeen = false;
+
+    this.getHasSeen = function () { return this._hasSeen; };
+    this.setHasSeen = function (status) { this._hasSeen = status; };
+};
+
 // The switch to change the NPC's AI.
 Main.Component.CombatRole = function (isCautious, hasExtendRange) {
     this._name = 'CombatRole';

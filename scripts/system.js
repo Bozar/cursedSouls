@@ -1069,5 +1069,13 @@ Main.system.pcRememberTerrain = function () {
         ) {
             Main.getEntity('dungeon').Dungeon.getMemory().push(position);
         }
+        // Remember the orbs in sight.
+        Main.getEntity('orb').forEach((orb) => {
+            if (!orb.Memory.getHasSeen()
+                && position === orb.Position.getX() + ',' + orb.Position.getY()
+            ) {
+                orb.Memory.setHasSeen(true);
+            }
+        });
     });
 };

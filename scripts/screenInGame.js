@@ -157,10 +157,7 @@ Main.screens.main.keyInput = function (e) {
             Main.display.clear();
             Main.screens.main.display();
         } else if (keyAction(e, 'fastMove')) {
-            Main.getEntity('pc').FastMove.resetStep();
-            Main.getEntity('pc').FastMove.setDirection(keyAction(e, 'fastMove'));
-
-            Main.system.pcFastMove(keyAction(e, 'fastMove'));
+            Main.system.pcFastMove(true, keyAction(e, 'fastMove'));
         }
     } else if (keyAction(e, 'move')) {
         Main.system.move(keyAction(e, 'move'));

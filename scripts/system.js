@@ -290,7 +290,7 @@ Main.system.pcAct = function () {
     Main.getEntity('timer').engine.lock();
 
     if (this.FastMove.getStep() > 0) {
-        Main.system.pcFastMove(this.FastMove.getDirection());
+        Main.system.pcFastMove(false, this.FastMove.getDirection());
     } else {
         Main.input.listenEvent('add', 'main');
     }
@@ -1084,23 +1084,26 @@ Main.system.pcRememberTerrain = function () {
     });
 };
 
-Main.system.pcFastMove = function () {
+Main.system.pcFastMove = function (initialize, direction) {
     let newPosition = Main.system.getNewCoordinates(
         [
             Main.getEntity('pc').Position.getX(),
             Main.getEntity('pc').Position.getY()
         ],
-        Main.getEntity('pc').FastMove.getDirection()
+        direction
     );
+
+    if (initialize) {
+        Main.getEntity('pc').FastMove.resetStep();
+        Main.getEntity('pc').FastMove.setDirection(direction);
+    }
 
     if (Main.system.countEnemiesInSight().size === 0
         && Main.system.isFloor(...newPosition)
         && !Main.system.npcHere(...newPosition)
     ) {
         Main.getEntity('pc').FastMove.reduceStep();
-        Main.system.move(
-            Main.getEntity('pc').FastMove.getDirection(), Main.getEntity('pc')
-        );
+        Main.system.move(direction, Main.getEntity('pc'));
     } else {
         Main.getEntity('pc').FastMove.clearStep();
         Main.input.listenEvent('add', 'main');

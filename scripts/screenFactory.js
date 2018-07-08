@@ -191,7 +191,7 @@ Main.screens.drawDescription = function () {
     if (npcHere) {
         drawTextBlock(
             // Top line
-            Main.text.info(npcHere.getEntityName()),
+            getTopLine(npcHere),
             // Bottom line
             Main.text.npcBottomDescription(downstairsHere, npcHere, orbHere));
     } else if (downstairsHere) {
@@ -200,6 +200,21 @@ Main.screens.drawDescription = function () {
         drawTextBlock(Main.text.orbTopDescription(orbHere), '');
     } else {
         Main.screens.drawMessage();
+    }
+
+    // Helper functions.
+    function getTopLine(actor) {
+        let text = null;
+
+        switch (actor.getEntityName()) {
+            case 'gargoyle':
+                text = Main.text.gargoyleDescription(actor);
+                break;
+            default:
+                text = Main.text.info(npcHere.getEntityName());
+        }
+
+        return text;
     }
 
     function drawTextBlock(top, bottom) {
@@ -217,6 +232,8 @@ Main.screens.drawDescription = function () {
 };
 
 Main.screens.drawDungeon = function () {
+    let pcSight = Main.system.getActorSight(Main.getEntity('pc'));
+
     // Default: the fog of war is on.
     if (Main.getEntity('dungeon').Dungeon.getFov()) {
         // Draw walls and floors that the PC has seen before.
@@ -233,20 +250,18 @@ Main.screens.drawDungeon = function () {
             }
         }
 
-        Main.getEntity('dungeon').fov.compute(
-            Main.getEntity('pc').Position.getX(),
-            Main.getEntity('pc').Position.getY(),
-            Main.getEntity('pc').Position.getRange(),
-            function (x, y) {
-                // Remember walls and floors in sight.
-                if (Main.getEntity('dungeon').Dungeon
-                    .getMemory().indexOf(x + ',' + y) < 0) {
-                    Main.getEntity('dungeon').Dungeon
-                        .getMemory().push(x + ',' + y);
-                }
-                // Draw walls and floors in sight.
-                drawWallAndFloor(x, y, 'white');
-            });
+        // Draw walls and floors in sight.
+        pcSight.forEach((position) => {
+            if (Main.getEntity('dungeon').Dungeon.getMemory().indexOf(position)
+                > -1
+            ) {
+                drawWallAndFloor(
+                    Number.parseInt(position.split(',')[0], 10),
+                    Number.parseInt(position.split(',')[1], 10),
+                    'white'
+                );
+            }
+        });
     }
     // Wizard mode: the fog of war if off. Draw all walls and floors.
     else {
@@ -254,7 +269,8 @@ Main.screens.drawDungeon = function () {
             drawWallAndFloor(
                 keyValue[0].split(',')[0],
                 keyValue[0].split(',')[1],
-                'white');
+                'white'
+            );
         }
     }
 
@@ -273,52 +289,58 @@ Main.screens.drawDungeon = function () {
 };
 
 Main.screens.drawActor = function (actor, noFov) {
+    let pcSight = Main.system.getActorSight(Main.getEntity('pc'));
     let drawThis = false;
     let color = null;
 
-    if (// Force to draw this actor.
+    // 1-3: Decide whether or not to draw the actor.
+    if (// 1A: Force to draw this actor.
         noFov
-        // Switch the fog of war in wizard mode.
+        // 1B: Draw everything when the fog of war is off. But do not draw the
+        // marker in the main mode.
         || !Main.getEntity('dungeon').Dungeon.getFov()
-        // Always draw the PC.
-        || Main.system.isPC(actor)) {
+        && typeof actor.Position.getX() === 'number'
+        && typeof actor.Position.getY() === 'number'
+        // 1C: Always draw the PC.
+        || Main.system.isPC(actor)
+    ) {
         drawThis = true;
     } else {
-        // Draw the actor if he is in PC's sight.
-        Main.getEntity('dungeon').fov.compute(
-            Main.getEntity('pc').Position.getX(),
-            Main.getEntity('pc').Position.getY(),
-            Main.getEntity('pc').Position.getRange(),
-            function (x, y) {
-                if (x === Number.parseInt(actor.Position.getX(), 10)
-                    && y === Number.parseInt(actor.Position.getY(), 10)) {
-                    drawThis = true;
-                }
-            });
+        // 1D: Draw the actor if he is in PC's sight.
+        if (pcSight.indexOf(
+            actor.Position.getX() + ',' + actor.Position.getY())
+            > -1
+        ) {
+            drawThis = true;
+        }
     }
 
     if (drawThis) {
-        if (Main.system.downstairsHere(
-            actor.Position.getX(), actor.Position.getY())) {
+        // 2-3: Choose the color.
+        if (Main.system.isPC(actor) && actor.Inventory.getIsDead()) {
+            color = actor.Display.getColor('die');
+        } else if (Main.system.downstairsHere(
+            actor.Position.getX(), actor.Position.getY())
+        ) {
             color = actor.Display.getDownstairsColor();
         } else if (Main.system.orbHere(
-            actor.Position.getX(), actor.Position.getY())) {
+            actor.Position.getX(), actor.Position.getY())
+        ) {
             color = actor.Display.getOrbColor();
-        } else if (Main.system.isPC(actor) && actor.Inventory.getIsDead()) {
-            color = actor.Display.getColor('die');
         } else {
             color = actor.Display.getColor();
         }
 
+        // 3-3: Draw the actor.
         Main.display.draw(
             // X
             Main.UI.dungeon.getX()
             + Main.getEntity('dungeon').Dungeon.getPadding()
-            + Number.parseInt(actor.Position.getX(), 10),
+            + actor.Position.getX(),
             // Y
             Main.UI.dungeon.getY()
             + Main.getEntity('dungeon').Dungeon.getPadding()
-            + Number.parseInt(actor.Position.getY(), 10),
+            + actor.Position.getY(),
             // Character
             actor.Display.getCharacter(),
             // Color

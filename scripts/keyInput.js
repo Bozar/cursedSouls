@@ -41,6 +41,13 @@ Main.input.keybind.get('move').set('up', ['k', 'ArrowUp']);
 Main.input.keybind.get('move').set('right', ['l', 'ArrowRight']);
 Main.input.keybind.get('move').set('wait', ['z', '.']);
 
+// Fast Movement
+Main.input.keybind.set('fastMove', new Map());
+Main.input.keybind.get('fastMove').set('left', ['H', 'ArrowLeft']);
+Main.input.keybind.get('fastMove').set('down', ['J', 'ArrowDown']);
+Main.input.keybind.get('fastMove').set('up', ['K', 'ArrowUp']);
+Main.input.keybind.get('fastMove').set('right', ['L', 'ArrowRight']);
+
 // Interaction
 Main.input.keybind.set('interact', new Map());
 Main.input.keybind.get('interact').set('examine', ['x']);

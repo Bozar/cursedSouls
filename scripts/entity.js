@@ -98,6 +98,7 @@ Main.entity.pc = function () {
     e.addComponent(new Main.Component.Damage(1));
     e.addComponent(new Main.Component.DropRate());
     e.addComponent(new Main.Component.AttackRange());
+    e.addComponent(new Main.Component.FastMove());
 
     e.Display.setColor('die', 'grey');
     e.Damage.setDamage('nuke', 9);
@@ -272,6 +273,7 @@ Main.entity.juvenileGargoyle = function (x, y) {
     e.addComponent(new Main.Component.AttackRange(1));
     e.addComponent(new Main.Component.CombatRole(false, false));
 
+    e.Damage.setDamage('high', 2);
     e.CombatRole.setRole('isBoss', true);
     e.CombatRole.setRole('hasTail', true);
 
@@ -330,6 +332,7 @@ Main.entity.orb = function (orbName) {
 
     e.addComponent(new Main.Component.Position(0));
     e.addComponent(new Main.Component.Display(orbChar, 'green', true));
+    e.addComponent(new Main.Component.Memory());
 
     Main.entities.get('orb').set(e.getID(), e);
 

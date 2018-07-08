@@ -107,22 +107,19 @@ Main.system.verifyEnemyPosition = function (x, y, pcSight, isElite) {
 
     function tooMany(x, y) {
         let number = 0;
-        let extendSight = Main.system.getActorSight(Main.getEntity('pc'), 7);
+        let extendRange = 7;
+        let countEnemies = null;
 
+        // The new enemy can appear in the PC's sight only if there are no more
+        // than 2 enemies who are already in the PC's extended sight.
         if (pcSight.indexOf(x + ',' + y) > -1) {
-            number++;
-
-            Main.getEntity('npc').forEach((value) => {
-                if (extendSight.indexOf(
-                    value.Position.getX() + ',' + value.Position.getY())
-                    > -1
-                ) {
-                    number++;
-                }
+            countEnemies = Main.system.countEnemiesInSight(extendRange);
+            countEnemies.forEach((value) => {
+                number += value;
             });
         }
 
-        return number > 3;
+        return number > 2;
     }
 };
 
@@ -151,7 +148,7 @@ Main.system.verifyDownstairsPosition = function (x, y) {
 Main.system.placeBoss = function (observer, target, distance) {
     // Observer: Calculate the sight base on the observer's position.
     // Target & Distance: Surround the target with a minimum distance.
-    let inSight = Main.system.getActorSight(observer, 5);
+    let inSight = Main.system.getActorSight(observer, 3);
     let x = null;
     let y = null;
     let newPosition = null;
@@ -292,7 +289,11 @@ Main.system.isInSight = function (source, target) {
 Main.system.pcAct = function () {
     Main.getEntity('timer').engine.lock();
 
-    Main.input.listenEvent('add', 'main');
+    if (this.FastMove.getStep() > 0) {
+        Main.system.pcFastMove(false, this.FastMove.getDirection());
+    } else {
+        Main.input.listenEvent('add', 'main');
+    }
 
     // Do NOT redraw the screen here. Let every action to decide the moment.
     // Main.display.clear();
@@ -391,29 +392,21 @@ Main.system.move = function (direction, who) {
     let actor = who || Main.getEntity('pc');
     let x = actor.Position.getX();
     let y = actor.Position.getY();
+    let newCoordinates = [];
     // `who` can be the marker, which takes no time to move.
     let duration = getDuration(false);
     let actorType = getActorType();
     let isMoveable = false;
 
     // Get new coordinates.
-    switch (direction) {
-        case 'left':
-            x -= 1;
-            break;
-        case 'right':
-            x += 1;
-            break;
-        case 'up':
-            y -= 1;
-            break;
-        case 'down':
-            y += 1;
-            break;
-        case 'wait':
-            // No matter how long 1-step-movement takes, waiting always costs
-            // exactly 1 turn, or `null` if the actor is marker.
-            duration = getDuration(true);
+    if (direction === 'wait') {
+        // No matter how long 1-step-movement takes, waiting always costs exactly
+        // 1 turn, or `null` if the actor is marker.
+        duration = getDuration(true);
+    } else {
+        newCoordinates = Main.system.getNewCoordinates([x, y], direction);
+        x = newCoordinates[0];
+        y = newCoordinates[1];
     }
 
     // Verify the new position.
@@ -883,7 +876,6 @@ Main.system.pcUseSlimeOrb = function (x, y) {
 
     Main.getEntity('message').Message.pushMsg(Main.text.action('teleport'));
 
-    console.log(Main.screens.getCurrentMode());
     Main.system.unlockEngine(
         Main.getEntity('pc').ActionDuration.getDuration());
 };
@@ -956,26 +948,31 @@ Main.system.printGenerationLog = function () {
     }
 };
 
-Main.system.countEnemiesInSight = function () {
+Main.system.countEnemiesInSight = function (range) {
+    let pcSight = Main.system.getActorSight(
+        Main.getEntity('pc'),
+        range || Main.getEntity('pc').Position.getRange()
+    );
+    // Key: the enemy's character; Value: the number of enemies of the same type.
     let count = new Map();
-    let npcHere = null;
 
-    Main.getEntity('dungeon').fov.compute(
-        Main.getEntity('pc').Position.getX(),
-        Main.getEntity('pc').Position.getY(),
-        Main.getEntity('pc').Position.getRange(),
-        (x, y) => {
-            npcHere = Main.system.npcHere(x, y);
-
-            if (npcHere) {
-                if (count.get(npcHere.Display.getCharacter())) {
-                    count.set(npcHere.Display.getCharacter(),
-                        count.get(npcHere.Display.getCharacter()) + 1);
-                } else {
-                    count.set(npcHere.Display.getCharacter(), 1);
-                }
+    Main.getEntity('npc').forEach((value) => {
+        // The enemy is in the PC's sight.
+        if (pcSight.indexOf(
+            value.Position.getX() + ',' + value.Position.getY())
+            > -1
+        ) {
+            // This type of enemy already exists.
+            if (count.get(value.Display.getCharacter())) {
+                count.set(value.Display.getCharacter(),
+                    count.get(value.Display.getCharacter()) + 1);
             }
-        });
+            // This is a new type of enemy.
+            else {
+                count.set(value.Display.getCharacter(), 1);
+            }
+        }
+    });
 
     return count;
 };
@@ -1042,4 +1039,73 @@ Main.system.killAndTeleport = function () {
     Main.getEntity('pc').Position.setY(
         Main.getEntity('downstairs').Position.getY()
     );
+};
+
+Main.system.getNewCoordinates = function (currentPosition, direction) {
+    let x = currentPosition[0];
+    let y = currentPosition[1];
+
+    switch (direction) {
+        case 'left':
+            x -= 1;
+            break;
+        case 'right':
+            x += 1;
+            break;
+        case 'up':
+            y -= 1;
+            break;
+        case 'down':
+            y += 1;
+            break;
+    }
+
+    return [x, y];
+};
+
+Main.system.pcRememberTerrain = function () {
+    let pcSight = Main.system.getActorSight(Main.getEntity('pc'));
+
+    pcSight.forEach((position) => {
+        // Remember walls and floors in sight.
+        if (Main.getEntity('dungeon').Dungeon.getMemory().indexOf(position)
+            < 0
+        ) {
+            Main.getEntity('dungeon').Dungeon.getMemory().push(position);
+        }
+        // Remember the orbs in sight.
+        Main.getEntity('orb').forEach((orb) => {
+            if (!orb.Memory.getHasSeen()
+                && position === orb.Position.getX() + ',' + orb.Position.getY()
+            ) {
+                orb.Memory.setHasSeen(true);
+            }
+        });
+    });
+};
+
+Main.system.pcFastMove = function (initialize, direction) {
+    let newPosition = Main.system.getNewCoordinates(
+        [
+            Main.getEntity('pc').Position.getX(),
+            Main.getEntity('pc').Position.getY()
+        ],
+        direction
+    );
+
+    if (initialize) {
+        Main.getEntity('pc').FastMove.resetStep();
+        Main.getEntity('pc').FastMove.setDirection(direction);
+    }
+
+    if (Main.system.countEnemiesInSight().size === 0
+        && Main.system.isFloor(...newPosition)
+        && !Main.system.npcHere(...newPosition)
+    ) {
+        Main.getEntity('pc').FastMove.reduceStep();
+        Main.system.move(direction, Main.getEntity('pc'));
+    } else {
+        Main.getEntity('pc').FastMove.clearStep();
+        Main.input.listenEvent('add', 'main');
+    }
 };

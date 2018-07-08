@@ -1,6 +1,6 @@
 ﻿# Cursed Souls: Giovanni's Orchestra
 
-![image](https://github.com/Bozar/cursedSouls/blob/master/img/demo.gif)
+![image](https://github.com/Bozar/cursedSouls/blob/master/img/youDie.png)
 
 ## Goal
 
@@ -22,6 +22,7 @@ So why bother killing grunts along the way? That's a good question.
 Normal Mode:
 
 * Move: `arrow keys`, `hjkl`.
+* Fast move: `Shift` + Movement keys.
 * Pick up an orb or interact with the downstairs: `Space`.
 * Wait 1 turn: `z`, `.`.
 * Help: `?`.
@@ -108,8 +109,6 @@ In addition to deal damage, some enemies have special abilities. There are 3 typ
 * ??? (Level 3): ???.
 
 [Work In Progress]
-
-During the boss fight, the PC can siphon far away orbs at low HP.
 
 After the boss fight, at most 4 orbs on the ground will reappear on the next dungeon level, which are selected in this order: Lump, Fire, Ice, Slime.
 

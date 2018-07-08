@@ -54,7 +54,8 @@ Main.text.initialize = function () {
     text.get('action').set('hit', 'You hit the %%.');
     text.get('action').set('kill', 'You kill the %%.');
 
-    text.get('action').set('breakTail', 'You break the Tower Gargoyle\'s tail!');
+    text.get('action').set('breakTail',
+        'You chop off the Tower Gargoyle\'s tail!');
 
     text.get('action').set('drop', 'The %1% drops %2% %3% Orb.');
     text.get('action').set('npcHit', 'The %% hits you.');
@@ -110,9 +111,18 @@ Main.text.initialize = function () {
         + ' who is summoned from his long death,'
         + ' eliminates far away intruders in a straight line with one shot.');
 
-    // TODO: change the description.
-    text.get('info').set('gargoyle', 'Placeholder 1.');
-    text.get('info').set('juvenileGargoyle', 'Placeholder 2.');
+    text.get('info').set('gargoyle',
+        'The Tower Gargoyle moves slowly,'
+        + ' but it can reach the enemy with the halberd.'
+        + ' It breathes fire in which few can survive head on.'
+        + ' %%'
+    );
+    text.get('info').set('juvenileGargoyle',
+        'The Juvenile Tower Gargoyle breathes fire'
+        + ' in which few can survive head on.'
+    );
+    text.get('info').set('gargoyleHasTail', 'Its tail is a stone axe.');
+    text.get('info').set('gargoyleLoseTail', 'Its tail is chopped off.');
 
     text.get('info').set('fire', 'Range 1, damage 1. 100% drop rate.');
     text.get('info').set('ice',
@@ -339,6 +349,18 @@ Main.text.gargoyleBreathe = function (actor) {
     let text = Main.text.action('gargoyleBreathe');
 
     text = text.replace('%%', Main.text.name(actor.getEntityName()));
+
+    return text;
+};
+
+Main.text.gargoyleDescription = function (actor) {
+    let text = Main.text.info('gargoyle');
+
+    if (actor.CombatRole.getRole('hasTail')) {
+        text = text.replace('%%', Main.text.info('gargoyleHasTail'));
+    } else {
+        text = text.replace('%%', Main.text.info('gargoyleLoseTail'));
+    }
 
     return text;
 };

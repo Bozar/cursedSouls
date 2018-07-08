@@ -102,6 +102,9 @@ Main.screens.main.initialize = function () {
 //      Press any key in the examine mode.
 //      Perform an invalid movement.
 Main.screens.main.display = function () {
+    // Update the terrain in the PC's sight.
+    Main.system.pcRememberTerrain();
+
     Main.screens.drawBorder();
     Main.screens.drawVersion();
     Main.screens.drawHelp();
@@ -112,16 +115,18 @@ Main.screens.main.display = function () {
     Main.screens.drawPower();
     Main.screens.drawItemUnderYourFoot();
     Main.screens.drawEnemyList();
-
     Main.screens.drawDungeon();
 
-    for (const keyValue of Main.getEntity('orb')) {
-        Main.screens.drawActor(
-            keyValue[1],
-            Main.getEntity('dungeon').BossFight.getBossFightStatus()
-            !== 'inactive'
-        );
-    }
+    Main.getEntity('orb').forEach(
+        (orb) => {
+            Main.screens.drawActor(
+                orb,
+                Main.getEntity('dungeon').BossFight.getBossFightStatus()
+                !== 'inactive'
+                || orb.Memory.getHasSeen()
+            );
+        }
+    );
 
     Main.screens.drawDownstairs();
 
@@ -151,6 +156,8 @@ Main.screens.main.keyInput = function (e) {
 
             Main.display.clear();
             Main.screens.main.display();
+        } else if (keyAction(e, 'fastMove')) {
+            Main.system.pcFastMove(true, keyAction(e, 'fastMove'));
         }
     } else if (keyAction(e, 'move')) {
         Main.system.move(keyAction(e, 'move'));

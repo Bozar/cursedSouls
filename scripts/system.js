@@ -361,16 +361,12 @@ Main.system.pcUseDownstairs = function () {
 
             Main.getEntity('dungeon').BossFight.goToNextBossFightStage();
 
-            // TODO: delete this line and call the boss-summoning function.
-            console.log('start the boss fight');
-
             position = Main.system.placeBoss(
                 Main.getEntity('downstairs'),
                 Main.getEntity('pc'),
                 2
             );
             newActor = Main.entity.gargoyle(position[0], position[1]);
-
             Main.getEntity('timer').scheduler.add(newActor, true, 2);
 
             Main.screens.cutScene.enter();
@@ -380,10 +376,8 @@ Main.system.pcUseDownstairs = function () {
             Main.input.listenEvent('remove', 'main');
             Main.screens.main.exit();
 
-            // TODO: delete this line and call the save function.
-            console.log('you win');
-
-            // Enter the save screen.
+            // TODO: Call the save function.
+            Main.screens.cutScene.enter();
             break;
     }
 };

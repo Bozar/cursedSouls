@@ -134,7 +134,15 @@ Main.text.initialize = function () {
     text.get('info').set('downstairs1',
         'In the center of the dusty round pool, there stands a grotesque figure.'
         + ' His eyes fixed on the ground,'
-        + ' and he carries an empty jar on the right shoulder.');
+        + ' %%');
+
+    text.get('info').set('downstairs1Inactive',
+        'and he carries an empty jar on the right shoulder.');
+    text.get('info').set('downstairs1Active',
+        'and the blood is pouring out of the jar on his right shoulder.');
+    text.get('info').set('downstairs1Win',
+        'and the jar on his right shoulder is dripping blood.');
+
     text.get('info').set('downstairs2', 'Level 2 downstairs.');
     text.get('info').set('downstairs3', 'Level 3 downstairs.');
     text.get('info').set('downstairs4', 'Level 4 downstairs.');
@@ -291,10 +299,19 @@ Main.text.targetDropOrb = function (target, orb) {
 };
 
 Main.text.downstairs = function () {
-    // TODO: get the current level from the dungeon object.
-    let dungeonLevel = 1;
+    // Dungeon level: 1 to 4.
+    let dungeonLevel = Main.getEntity('dungeon').BossFight.getDungeonLevel();
+    // Progress: inactive, active, win.
+    let progress = Main.getEntity('dungeon').BossFight.getBossFightStatus();
+    // Text: the string with the placeholder '%%'.
+    let text = Main.text.info('downstairs' + dungeonLevel);
 
-    return Main.text.info('downstairs' + dungeonLevel);
+    progress = progress.charAt(0).toUpperCase() + progress.slice(1);
+    text = text.replace('%%', Main.text.info(
+        'downstairs' + dungeonLevel + progress
+    ));
+
+    return text;
 };
 
 Main.text.npcHit = function (attacker) {

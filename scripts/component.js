@@ -316,3 +316,19 @@ Main.Component.CombatRole = function (isCautious, hasExtendRange) {
         this._combatRoles.set(role, boolValue);
     };
 };
+
+Main.Component.FastMove = function () {
+    this._name = 'FastMove';
+
+    this._maxStep = 5;
+    this._step = this._maxStep;
+    this._direction = null;
+
+    this.getStep = function () { return this._step; };
+    this.getDirection = function () { return this._direction; };
+
+    this.reduceStep = function () { this._step -= 1; };
+    this.resetStep = function () { this._step = this._maxStep; };
+    this.clearStep = function () { this._step = 0; };
+    this.setDirection = function (direction) { this._direction = direction; };
+};

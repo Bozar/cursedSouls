@@ -98,6 +98,7 @@ Main.entity.pc = function () {
     e.addComponent(new Main.Component.Damage(1));
     e.addComponent(new Main.Component.DropRate());
     e.addComponent(new Main.Component.AttackRange());
+    e.addComponent(new Main.Component.FastMove());
 
     e.Display.setColor('die', 'grey');
     e.Damage.setDamage('nuke', 9);

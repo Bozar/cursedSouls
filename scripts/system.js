@@ -289,7 +289,11 @@ Main.system.isInSight = function (source, target) {
 Main.system.pcAct = function () {
     Main.getEntity('timer').engine.lock();
 
-    Main.input.listenEvent('add', 'main');
+    if (this.FastMove.getStep() > 0) {
+        Main.system.pcFastMove(this.FastMove.getDirection());
+    } else {
+        Main.input.listenEvent('add', 'main');
+    }
 
     // Do NOT redraw the screen here. Let every action to decide the moment.
     // Main.display.clear();
@@ -1078,4 +1082,27 @@ Main.system.pcRememberTerrain = function () {
             }
         });
     });
+};
+
+Main.system.pcFastMove = function () {
+    let newPosition = Main.system.getNewCoordinates(
+        [
+            Main.getEntity('pc').Position.getX(),
+            Main.getEntity('pc').Position.getY()
+        ],
+        Main.getEntity('pc').FastMove.getDirection()
+    );
+
+    if (Main.system.countEnemiesInSight().size === 0
+        && Main.system.isFloor(...newPosition)
+        && !Main.system.npcHere(...newPosition)
+    ) {
+        Main.getEntity('pc').FastMove.reduceStep();
+        Main.system.move(
+            Main.getEntity('pc').FastMove.getDirection(), Main.getEntity('pc')
+        );
+    } else {
+        Main.getEntity('pc').FastMove.clearStep();
+        Main.input.listenEvent('add', 'main');
+    }
 };

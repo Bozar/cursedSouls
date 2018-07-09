@@ -156,10 +156,10 @@ Main.text.initialize = function () {
         + ' Rats scatter as you climb out of the moist muddy bed.'
         + ' A raven that rests on the tombstone flies into the cloudy sky'
         + ' and circles around the bell tower.'
-        + ' \n\nAlthough you are alone in this churchyard,'
-        + ' you can hear weeping and whisper echo in your mind.'
-        + ' Your skin withers and your throat burns like fire.'
+        + '\n\nYour skin withers and your throat burns like fire.'
         + ' It is certain that you are cursed. But by whom?'
+        + ' Although you are alone in this churchyard,'
+        + ' you can hear weeping and whisper echo in your mind.'
         + ' One of the voices is calling to you: come here, ashen one.');
     text.get('scene').set('beforeBossFight1',
         'A Shakespearean monologue by the boss.'

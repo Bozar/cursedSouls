@@ -15,7 +15,7 @@ Main.text.initialize = function () {
     text.set('dungeon', new Map());
     text.get('dungeon').set('downstairsIcon', '>');
     text.get('dungeon').set('downstairs', 'Downstairs');
-    text.get('dungeon').set('grave', 'Graveyard');
+    text.get('dungeon').set('grave', 'Churchyard');
 
     text.get('dungeon').set('fire', 'Fire');
     text.get('dungeon').set('ice', 'Ice');
@@ -150,10 +150,16 @@ Main.text.initialize = function () {
     // Cut-scenes.
     text.set('scene', new Map());
     text.get('scene').set('enterLevel1',
-        'You find yourself lying on the ground,'
+        'You find yourself lying in an open grave,'
         + ' like a nameless body in the morgue,'
         + ' who is unknown to death, nor known to life.'
-        + ' Weeping and whispers echo in your mind.'
+        + ' Rats scatter as you climb out of the moist muddy bed.'
+        + ' A raven that rests on the tombstone flies into the cloudy sky'
+        + ' and circles around the bell tower.'
+        + ' \n\nAlthough you are alone in this churchyard,'
+        + ' you can hear weeping and whisper echo in your mind.'
+        + ' Your skin withers and your throat burns like fire.'
+        + ' It is certain that you are cursed. But by whom?'
         + ' One of the voices is calling to you: come here, ashen one.');
     text.get('scene').set('beforeBossFight1',
         'A Shakespearean monologue by the boss.'

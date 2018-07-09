@@ -150,17 +150,18 @@ Main.text.initialize = function () {
     // Cut-scenes.
     text.set('scene', new Map());
     text.get('scene').set('enterLevel1',
-        'You find yourself lying in an open grave,'
+        'You wake up in an open grave,'
         + ' like a nameless body in the morgue,'
         + ' who is unknown to death, nor known to life.'
         + ' Rats scatter as you climb out of the moist muddy bed.'
         + ' A raven that rests on the tombstone flies into the cloudy sky'
         + ' and circles around the bell tower.'
         + '\n\nYour skin withers and your throat burns like fire.'
-        + ' It is certain that you are cursed. But by whom?'
-        + ' Although you are alone in this churchyard,'
-        + ' you can hear weeping and whisper echo in your mind.'
-        + ' One of the voices is calling to you: come here, ashen one.');
+        + ' You are certainly cursed. But by whom?'
+        + ' Although you are alone in the churchyard,'
+        + ' you can hear weeping and whisper in your mind.'
+        + ' One of the voices is calling you: come down to me, ashen one.'
+    );
     text.get('scene').set('beforeBossFight1',
         'A Shakespearean monologue by the boss.'
         + '\n\n Thou shalt not press Space to skip this screen.');

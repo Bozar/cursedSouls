@@ -150,6 +150,7 @@ Main.text.initialize = function () {
 
     // Cut-scenes.
     text.set('scene', new Map());
+
     text.get('scene').set('enterLevel1',
         'You wake up in an open grave,'
         + ' like a nameless body in the morgue,'
@@ -166,17 +167,17 @@ Main.text.initialize = function () {
     );
     text.get('scene').set('beforeBossFight1',
         'At first, you think it is the trick of the light'
-        + ' -- how can a statue raise his head?'
+        + ' -- how can a statue change his position?'
         + ' Then you take another look and confirm that'
         + ' the grotesque stone figure is looking at you, with mouth wide open,'
         + ' as if crying in slience.'
-        + ' The blood starts pouring out of the jar on his shoulder'
-        + ' when the tower bell strikes.'
+        + ' Blood starts pouring out of the jar on his shoulder'
+        + ' when the bell strikes.'
         + '\n\n'
         + 'You step back fearfully and raise your head'
         + ' to notice a giant beast swooping down from the bell tower.'
-        + ' The Tower Gargoyle lands heavily with the halberd in its right hand'
-        + ' and lets out a thundering roar.'
+        + ' The Tower Gargoyle, holding the halberd in its right hand,'
+        + ' lands heavily and lets out a thundering roar.'
         + ' Its skin has burnt scars and its tail,'
         + ' the end of which has the shape of an axe,'
         + ' nearly cuts you in half with a single whip.'

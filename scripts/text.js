@@ -133,8 +133,9 @@ Main.text.initialize = function () {
 
     text.get('info').set('downstairs1',
         'In the center of the dusty round pool, there stands a grotesque figure.'
-        + ' His eyes fixed on the ground,'
-        + ' %%');
+        + ' His eyes fix on the ground,'
+        + ' %%'
+    );
 
     text.get('info').set('downstairs1Inactive',
         'and he carries an empty jar on the right shoulder.');
@@ -156,15 +157,30 @@ Main.text.initialize = function () {
         + ' Rats scatter as you climb out of the moist muddy bed.'
         + ' A raven that rests on the tombstone flies into the cloudy sky'
         + ' and circles around the bell tower.'
-        + '\n\nYour skin withers and your throat burns like fire.'
+        + '\n\n'
+        + 'Your skin withers and your throat burns like fire.'
         + ' You are certainly cursed. But by whom?'
         + ' Although you are alone in the churchyard,'
         + ' you can hear weeping and whisper in your mind.'
         + ' One of the voices is calling you: come down to me, ashen one.'
     );
     text.get('scene').set('beforeBossFight1',
-        'A Shakespearean monologue by the boss.'
-        + '\n\n Thou shalt not press Space to skip this screen.');
+        'At first, you think it is the trick of the light'
+        + ' -- how can a statue raise his head?'
+        + ' Then you take another look and confirm that'
+        + ' the grotesque stone figure is looking at you, with mouth wide open,'
+        + ' as if crying in slience.'
+        + ' The blood starts pouring out of the jar on his shoulder'
+        + ' when the tower bell strikes.'
+        + '\n\n'
+        + 'You step back fearfully and raise your head'
+        + ' to notice a giant beast swooping down from the bell tower.'
+        + ' The Tower Gargoyle lands heavily with the halberd in its right hand'
+        + ' and lets out a thundering roar.'
+        + ' Its skin has burnt scars and its tail,'
+        + ' the end of which has the shape of an axe,'
+        + ' nearly cuts you in half with a single whip.'
+    );
     text.get('scene').set('afterBossFight1', 'You win.');
 
     Main.text.libraryMap = text;

@@ -289,13 +289,6 @@ Main.system.isInSight = function (source, target) {
 Main.system.pcAct = function () {
     Main.getEntity('timer').engine.lock();
 
-    if (this.Inventory.getIsDead()) {
-        console.log('is dead');
-        console.log(Main.getEntity('timer').scheduler.getTime());
-
-        return;
-    }
-
     if (this.FastMove.getStep() > 0) {
         Main.system.pcFastMove(false, this.FastMove.getDirection());
     } else {
@@ -861,9 +854,12 @@ Main.system.pcAttack = function (target, attackType) {
     // Step 3-4: Check the boss related achievements.
     Main.system.achievementBreakTail(target, attackType);
 
-    // Step 4-4: Unlock the engine.
+    // Step 4-4: Remove the key-binding & unlock the engine.
+    // NOTE: Always remember to remove the key-bindings before unlocking. I have
+    // encountered a weird bug because of this.
+    Main.input.listenEvent('remove', 'main');
     Main.system.unlockEngine(
-        Main.getEntity('pc').ActionDuration.getDuration('base')
+        Main.getEntity('pc').ActionDuration.getDuration()
     );
 };
 

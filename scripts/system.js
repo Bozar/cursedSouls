@@ -107,7 +107,7 @@ Main.system.verifyEnemyPosition = function (x, y, pcSight, isElite) {
 
     function tooMany(x, y) {
         let number = 0;
-        let extendRange = 7;
+        let extendRange = 9;
         let countEnemies = null;
 
         // The new enemy can appear in the PC's sight only if there are no more

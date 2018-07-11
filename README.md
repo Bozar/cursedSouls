@@ -8,7 +8,7 @@
 
 Play the game [on-line](https://bozar.github.io/cursedSouls/).
 
-Cursed Souls: Giovanni's Orchestra is a roguelike game written in JavaScript with [rot.js](https://github.com/ondras/rot.js). The dungeon has 4 levels: 1 aboveground and 3 underground. Your goal is simple:
+Cursed Souls: Giovanni's Orchestra is a roguelike game written in JavaScript with [rot.js](https://github.com/ondras/rot.js). The dungeon has 3 levels: 1 aboveground and 2 underground. Your goal is simple:
 
 * Find the downstairs.
 * Stand on the downstairs and press `Space` to summon the boss.
@@ -97,6 +97,8 @@ Enemies' abilities are hinted in the descriptions. You can tell their challenge 
 * Easy: Slime.
 * Normal: Fire, Ice.
 * Hard: Lump.
+
+Enemies' key information is described in one line: `[Name][The Dropping Orb][Hit Point]`.
 
 There is no randomness in the hit chance or damage. No enemies, including the bosses, can do more than 3 points of damage in 1 turn.
 

@@ -158,6 +158,8 @@ Main.screens.main.keyInput = function (e) {
             Main.screens.main.display();
         } else if (keyAction(e, 'fastMove')) {
             Main.system.pcFastMove(true, keyAction(e, 'fastMove'));
+        } else if (keyAction(e, 'fixed') === 'help') {
+            console.log('print help');
         }
     } else if (keyAction(e, 'move')) {
         Main.system.move(keyAction(e, 'move'));

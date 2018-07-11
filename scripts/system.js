@@ -289,6 +289,13 @@ Main.system.isInSight = function (source, target) {
 Main.system.pcAct = function () {
     Main.getEntity('timer').engine.lock();
 
+    if (this.Inventory.getIsDead()) {
+        console.log('is dead');
+        console.log(Main.getEntity('timer').scheduler.getTime());
+
+        return;
+    }
+
     if (this.FastMove.getStep() > 0) {
         Main.system.pcFastMove(false, this.FastMove.getDirection());
     } else {
@@ -388,16 +395,12 @@ Main.system.move = function (direction, who) {
     let y = actor.Position.getY();
     let newCoordinates = [];
     // `who` can be the marker, which takes no time to move.
-    let duration = getDuration(false);
+    let duration = getDuration();
     let actorType = getActorType();
     let isMoveable = false;
 
     // Get new coordinates.
-    if (direction === 'wait') {
-        // No matter how long 1-step-movement takes, waiting always costs exactly
-        // 1 turn, or `null` if the actor is marker.
-        duration = getDuration(true);
-    } else {
+    if (direction !== 'wait') {
         newCoordinates = Main.system.getNewCoordinates([x, y], direction);
         x = newCoordinates[0];
         y = newCoordinates[1];
@@ -448,12 +451,10 @@ Main.system.move = function (direction, who) {
     }
 
     // Helper functions
-    function getDuration(isWait) {
+    function getDuration() {
         return Main.system.isMarker(actor)
             ? null
-            : isWait
-                ? actor.ActionDuration.getDuration()
-                : actor.ActionDuration.getDuration();
+            : actor.ActionDuration.getDuration('base');
     }
 
     function getActorType() {
@@ -861,7 +862,9 @@ Main.system.pcAttack = function (target, attackType) {
     Main.system.achievementBreakTail(target, attackType);
 
     // Step 4-4: Unlock the engine.
-    Main.system.unlockEngine(Main.getEntity('pc').ActionDuration.getDuration());
+    Main.system.unlockEngine(
+        Main.getEntity('pc').ActionDuration.getDuration('base')
+    );
 };
 
 Main.system.pcUseSlimeOrb = function (x, y) {

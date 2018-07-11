@@ -182,7 +182,14 @@ Main.text.initialize = function () {
         + ' the end of which has the shape of an axe,'
         + ' nearly cuts you in half with a single whip.'
     );
-    text.get('scene').set('afterBossFight1', 'You win.');
+    text.get('scene').set('afterBossFight1',
+        'You follow the source of the voices and push open the church door.'
+        + ' There is a hole on the ground, revealing a downward ramp,'
+        + ' the bottom of which seems to be deeper than sea.'
+        + ' Sharper than blade is the chilling wind cutting through your face.'
+        + '\n\n\n'
+        + '[WIP]You win. Press F5 to reload the page.[/WIP]'
+    );
 
     Main.text.libraryMap = text;
 };

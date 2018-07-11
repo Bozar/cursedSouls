@@ -476,5 +476,10 @@ Main.screens.drawCutScene = function () {
             break;
     }
 
-    Main.display.drawText(6, 3, text, Main.UI.canvas.getWidth() - 12);
+    Main.display.drawText(
+        Main.UI.cutScene.getX(),
+        Main.UI.cutScene.getY(),
+        text,
+        Main.UI.cutScene.getWidth(),
+    );
 };

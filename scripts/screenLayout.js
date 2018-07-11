@@ -82,9 +82,9 @@ Main.UI.dungeon._height = Math.floor(Main.UI.dungeon._height);
 Main.UI.dungeon._x = Main.UI.padLeftRight;
 Main.UI.dungeon._y = Main.UI.padTopBottom;
 
-// =========
-// UI blocks
-// =========
+// ============================
+// UI blocks in the main screen
+// ============================
 
 Main.UI.level = new Main.UI(Main.UI.status.getWidth(), 1);
 Main.UI.level._x = Main.UI.status.getX();
@@ -112,3 +112,13 @@ Main.UI.help = new Main.UI(Main.UI.status.getWidth(), 1);
 Main.UI.help._x = Main.UI.status.getX();
 Main.UI.help._y = Main.UI.status.getY()
     + Main.UI.status.getHeight() - 2.5;
+
+// ====================
+// The cut-scene screen
+// ====================
+
+Main.UI.cutScene = new Main.UI(
+    Main.UI.canvas.getWidth() - 6 * 2, Main.UI.canvas.getHeight() - 3 * 2
+);
+Main.UI.cutScene._x = 6;
+Main.UI.cutScene._y = 3;

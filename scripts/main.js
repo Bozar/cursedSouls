@@ -5,8 +5,8 @@
 // ================================================
 
 var Main = {};
-Main._version = '0.0.1';
-Main._develop = true;
+Main._version = '0.1.0';
+// Main._develop = true;
 
 Main.getVersion = function () { return this._version; };
 Main.getDevelop = function () { return this._develop; };

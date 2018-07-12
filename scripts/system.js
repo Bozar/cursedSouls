@@ -792,6 +792,14 @@ Main.system.exitCutScene = function () {
     Main.input.listenEvent('add', 'main');
 };
 
+Main.system.exitHelp = function () {
+    Main.input.listenEvent('remove', 'help');
+    Main.screens.help.exit();
+
+    Main.screens.main.enter(true);
+    Main.input.listenEvent('add', 'main');
+};
+
 Main.system.pcAttack = function (target, attackType) {
     let dropRate = 0;
     let lastOrb = Main.getEntity('pc').Inventory.getLastOrb();
@@ -1105,17 +1113,9 @@ Main.system.pcFastMove = function (initialize, direction) {
 };
 
 Main.system.showHelp = function () {
-    console.log('print help');
-    let text = Main.text.help('keyBindings');
-
     Main.input.listenEvent('remove', 'main');
     Main.screens.main.exit();
 
-    // TODO: Call the save function.
-    Main.display.drawText(
-        Main.UI.cutScene.getX(),
-        Main.UI.cutScene.getY() - 1,
-        text,
-        Main.UI.cutScene.getWidth(),
-    );
+    Main.screens.help.enter();
+    Main.input.listenEvent('add', 'help');
 };

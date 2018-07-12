@@ -229,3 +229,24 @@ Main.screens.cutScene.keyInput = function (e) {
         Main.system.exitCutScene();
     }
 };
+
+// ====================
+// The help screen
+// ====================
+
+Main.screens.help = new Main.Screen('help', ['main']);
+
+Main.screens.help.display = function () {
+    Main.getEntity('message').Message.setModeline(
+        Main.text.action('continue'));
+
+    Main.screens.drawKeyBindings();
+    Main.screens.drawModeLine();
+    Main.screens.drawBottomRight(Main.text.ui('studio'));
+};
+
+Main.screens.help.keyInput = function (e) {
+    if (Main.input.getAction(e, 'fixed') === 'yes') {
+        Main.system.exitHelp();
+    }
+};

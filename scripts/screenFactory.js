@@ -483,3 +483,12 @@ Main.screens.drawCutScene = function () {
         Main.UI.cutScene.getWidth(),
     );
 };
+
+Main.screens.drawKeyBindings = function () {
+    Main.display.drawText(
+        Main.UI.cutScene.getX(),
+        Main.UI.cutScene.getY() - 1,
+        Main.text.help('keyBindings'),
+        Main.UI.cutScene.getWidth(),
+    );
+};

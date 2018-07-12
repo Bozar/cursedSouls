@@ -140,7 +140,7 @@ Main.text.initialize = function () {
     text.get('info').set('downstairs1Inactive',
         'and he carries an empty jar on the right shoulder.');
     text.get('info').set('downstairs1Active',
-        'and the blood is pouring out of the jar on his right shoulder.');
+        'and blood is pouring out of the jar on his right shoulder.');
     text.get('info').set('downstairs1Win',
         'and the jar on his right shoulder is dripping blood.');
 

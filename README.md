@@ -25,6 +25,7 @@ Normal Mode:
 * Fast move: `Shift` + Movement keys.
 * Pick up an orb or interact with the downstairs: `Space`.
 * Wait 1 turn: `z`, `.(period)`.
+* [WIP]View achievements: `a`.[/WIP]
 * Help: `?`.
 
 Examine Mode, Aim Mode:

@@ -487,7 +487,7 @@ Main.screens.drawCutScene = function () {
 Main.screens.drawKeyBindings = function () {
     Main.display.drawText(
         Main.UI.cutScene.getX(),
-        Main.UI.cutScene.getY() - 1,
+        Main.UI.cutScene.getY() - 1.5,
         Main.text.help('keyBindings'),
         Main.UI.cutScene.getWidth(),
     );

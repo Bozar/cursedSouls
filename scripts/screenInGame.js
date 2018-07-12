@@ -216,8 +216,7 @@ Main.screens.main.keyInput = function (e) {
 Main.screens.cutScene = new Main.Screen('cutScene', ['main']);
 
 Main.screens.cutScene.display = function () {
-    Main.getEntity('message').Message.setModeline(
-        Main.text.action('continue'));
+    Main.getEntity('message').Message.setModeline(Main.text.action('continue'));
 
     Main.screens.drawCutScene();
     Main.screens.drawModeLine();
@@ -237,8 +236,7 @@ Main.screens.cutScene.keyInput = function (e) {
 Main.screens.help = new Main.Screen('help', ['main']);
 
 Main.screens.help.display = function () {
-    Main.getEntity('message').Message.setModeline(
-        Main.text.action('continue'));
+    Main.getEntity('message').Message.setModeline(Main.text.action('exit'));
 
     Main.screens.drawKeyBindings();
     Main.screens.drawModeLine();
@@ -246,7 +244,7 @@ Main.screens.help.display = function () {
 };
 
 Main.screens.help.keyInput = function (e) {
-    if (Main.input.getAction(e, 'fixed') === 'yes') {
+    if (Main.input.getAction(e, 'fixed') === 'no') {
         Main.system.exitHelp();
     }
 };

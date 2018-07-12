@@ -15,7 +15,7 @@ Main.text.initialize = function () {
     text.set('dungeon', new Map());
     text.get('dungeon').set('downstairsIcon', '>');
     text.get('dungeon').set('downstairs', 'Downstairs');
-    text.get('dungeon').set('grave', 'Graveyard');
+    text.get('dungeon').set('grave', 'Churchyard');
 
     text.get('dungeon').set('fire', 'Fire');
     text.get('dungeon').set('ice', 'Ice');
@@ -133,24 +133,104 @@ Main.text.initialize = function () {
 
     text.get('info').set('downstairs1',
         'In the center of the dusty round pool, there stands a grotesque figure.'
-        + ' His eyes fixed on the ground,'
-        + ' and he carries an empty jar on the right shoulder.');
+        + ' His eyes fix on the ground,'
+        + ' %%'
+    );
+
+    text.get('info').set('downstairs1Inactive',
+        'and he carries an empty jar on the right shoulder.');
+    text.get('info').set('downstairs1Active',
+        'and blood is pouring out of the jar on his right shoulder.');
+    text.get('info').set('downstairs1Win',
+        'and the jar on his right shoulder is dripping blood.');
+
     text.get('info').set('downstairs2', 'Level 2 downstairs.');
     text.get('info').set('downstairs3', 'Level 3 downstairs.');
     text.get('info').set('downstairs4', 'Level 4 downstairs.');
 
+    // The help screen.
+    text.set('help', new Map());
+    text.get('help').set('keyBindings',
+        'Normal Mode:\n\n'
+        + '* Move: '
+        + Main.screens.colorfulText('Arrow keys', 'green') + ', '
+        + Main.screens.colorfulText('hjkl', 'green') + '.\n'
+        + '* Fast move: '
+        + Main.screens.colorfulText('Shift + Movement keys', 'green') + '.\n'
+        + '* Pick up an orb or interact with the downstairs: '
+        + Main.screens.colorfulText('Space', 'green') + '.\n'
+        + '* Wait 1 turn: '
+        + Main.screens.colorfulText('z', 'green') + ', '
+        + Main.screens.colorfulText('.(period)', 'green') + '.\n'
+        + '* Help: '
+        + Main.screens.colorfulText('?', 'green') + '.\n\n'
+        + 'Examine Mode, Aim Mode:\n\n'
+        + '* Enter the Examine Mode: '
+        + Main.screens.colorfulText('x', 'green') + '.\n'
+        + '* Enter the Aim Mode: '
+        + Main.screens.colorfulText('Space', 'green') + '.\n'
+        + '* Use the last orb (Aim Mode only): '
+        + Main.screens.colorfulText('Space', 'green') + '.\n'
+        + '* Lock the next target: '
+        + Main.screens.colorfulText('PgDn', 'green') + ', '
+        + Main.screens.colorfulText('n', 'green') + ', '
+        + Main.screens.colorfulText('o', 'green') + '.\n'
+        + '* Lock the previous target: '
+        + Main.screens.colorfulText('PgUp', 'green') + ', '
+        + Main.screens.colorfulText('p', 'green') + ', '
+        + Main.screens.colorfulText('i', 'green') + '.\n'
+        + '* Move the cursor: '
+        + Main.screens.colorfulText('Arrow keys', 'green') + ', '
+        + Main.screens.colorfulText('hjkl', 'green') + '.\n'
+        + '* Exit to the Normal Mode: '
+        + Main.screens.colorfulText('Esc', 'green') + '.\n\n\n'
+        + 'Please read the '
+        + Main.screens.colorfulText('README.md', 'green')
+        + ' for more information.'
+    );
+
     // Cut-scenes.
-    text.set('scene', new Map());
-    text.get('scene').set('enterLevel1',
-        'You find yourself lying on the ground,'
+    text.set('cutScene', new Map());
+
+    text.get('cutScene').set('enterLevel1',
+        'You wake up in an open grave,'
         + ' like a nameless body in the morgue,'
         + ' who is unknown to death, nor known to life.'
-        + ' Weeping and whispers echo in your mind.'
-        + ' One of the voices is calling to you: come here, ashen one.');
-    text.get('scene').set('beforeBossFight1',
-        'A Shakespearean monologue by the boss.'
-        + '\n\n Thou shalt not press Space to skip this screen.');
-    text.get('scene').set('afterBossFight1', 'You win.');
+        + ' Rats scatter as you climb out of the moist muddy bed.'
+        + ' A raven that rests on the tombstone flies into the cloudy sky'
+        + ' and circles around the bell tower.'
+        + '\n\n'
+        + 'Your skin withers and your throat burns like fire.'
+        + ' You are certainly cursed. But by whom?'
+        + ' Although you are alone in the churchyard,'
+        + ' you can hear weeping and whisper in your mind.'
+        + ' One of the voices is calling you: come down to me, ashen one.'
+    );
+    text.get('cutScene').set('beforeBossFight1',
+        'At first, you think it is the trick of the light'
+        + ' -- how can a statue change his position?'
+        + ' Then you take another look and confirm that'
+        + ' the grotesque stone figure is looking at you, with mouth wide open,'
+        + ' as if crying in slience.'
+        + ' Blood starts pouring out of the jar on his shoulder'
+        + ' when the bell strikes.'
+        + '\n\n'
+        + 'You step back fearfully and raise your head'
+        + ' to notice a giant beast swooping down from the bell tower.'
+        + ' The Tower Gargoyle, holding the halberd in its right hand,'
+        + ' lands heavily and lets out a thundering roar.'
+        + ' Its skin has burnt scars and its tail,'
+        + ' the end of which has the shape of an axe,'
+        + ' nearly cuts you in half with a single whip.'
+    );
+    text.get('cutScene').set('afterBossFight1',
+        'You follow the source of the voices and push open the church door.'
+        + ' There is a hole on the ground, revealing a downward ramp,'
+        + ' the bottom of which seems to be deeper than sea.'
+        + ' Sharper than blade is the chilling wind cutting through your face.'
+        + '\n\n\n'
+        + '[WIP]You win. Press F5 to reload the page.[/WIP]'
+    );
 
     Main.text.libraryMap = text;
 };
@@ -159,29 +239,21 @@ Main.text.initialize = function () {
 // Get static text from the library.
 // =================================
 
-Main.text.dungeon = function (id) {
-    return Main.text.libraryMap.get('dungeon').get(id);
-};
+Main.text.staticTextList = [
+    'dungeon',
+    'ui',
+    'action',
+    'name',
+    'info',
+    'help',
+    'cutScene'
+];
 
-Main.text.ui = function (id) {
-    return Main.text.libraryMap.get('ui').get(id);
-};
-
-Main.text.action = function (id) {
-    return Main.text.libraryMap.get('action').get(id);
-};
-
-Main.text.name = function (id) {
-    return Main.text.libraryMap.get('name').get(id);
-};
-
-Main.text.info = function (id) {
-    return Main.text.libraryMap.get('info').get(id);
-};
-
-Main.text.cutScene = function (id) {
-    return Main.text.libraryMap.get('scene').get(id);
-};
+Main.text.staticTextList.forEach((key) => {
+    Main.text[key] = function (id) {
+        return Main.text.libraryMap.get(key).get(id);
+    };
+});
 
 // ==========================
 // Combine fragments of text.
@@ -291,10 +363,19 @@ Main.text.targetDropOrb = function (target, orb) {
 };
 
 Main.text.downstairs = function () {
-    // TODO: get the current level from the dungeon object.
-    let dungeonLevel = 1;
+    // Dungeon level: 1 to 4.
+    let dungeonLevel = Main.getEntity('dungeon').BossFight.getDungeonLevel();
+    // Progress: inactive, active, win.
+    let progress = Main.getEntity('dungeon').BossFight.getBossFightStatus();
+    // Text: the string with the placeholder '%%'.
+    let text = Main.text.info('downstairs' + dungeonLevel);
 
-    return Main.text.info('downstairs' + dungeonLevel);
+    progress = progress.charAt(0).toUpperCase() + progress.slice(1);
+    text = text.replace('%%', Main.text.info(
+        'downstairs' + dungeonLevel + progress
+    ));
+
+    return text;
 };
 
 Main.text.npcHit = function (attacker) {

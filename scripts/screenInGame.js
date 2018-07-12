@@ -158,6 +158,8 @@ Main.screens.main.keyInput = function (e) {
             Main.screens.main.display();
         } else if (keyAction(e, 'fastMove')) {
             Main.system.pcFastMove(true, keyAction(e, 'fastMove'));
+        } else if (keyAction(e, 'fixed') === 'help') {
+            Main.system.showHelp();
         }
     } else if (keyAction(e, 'move')) {
         Main.system.move(keyAction(e, 'move'));
@@ -225,5 +227,26 @@ Main.screens.cutScene.display = function () {
 Main.screens.cutScene.keyInput = function (e) {
     if (Main.input.getAction(e, 'fixed') === 'yes') {
         Main.system.exitCutScene();
+    }
+};
+
+// ====================
+// The help screen
+// ====================
+
+Main.screens.help = new Main.Screen('help', ['main']);
+
+Main.screens.help.display = function () {
+    Main.getEntity('message').Message.setModeline(
+        Main.text.action('continue'));
+
+    Main.screens.drawKeyBindings();
+    Main.screens.drawModeLine();
+    Main.screens.drawBottomRight(Main.text.ui('studio'));
+};
+
+Main.screens.help.keyInput = function (e) {
+    if (Main.input.getAction(e, 'fixed') === 'yes') {
+        Main.system.exitHelp();
     }
 };

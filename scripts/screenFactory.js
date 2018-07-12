@@ -476,5 +476,19 @@ Main.screens.drawCutScene = function () {
             break;
     }
 
-    Main.display.drawText(8, 3, text, Main.UI.canvas.getWidth() - 16);
+    Main.display.drawText(
+        Main.UI.cutScene.getX(),
+        Main.UI.cutScene.getY(),
+        text,
+        Main.UI.cutScene.getWidth(),
+    );
+};
+
+Main.screens.drawKeyBindings = function () {
+    Main.display.drawText(
+        Main.UI.cutScene.getX(),
+        Main.UI.cutScene.getY() - 1,
+        Main.text.help('keyBindings'),
+        Main.UI.cutScene.getWidth(),
+    );
 };

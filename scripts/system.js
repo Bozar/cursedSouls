@@ -107,7 +107,8 @@ Main.system.verifyEnemyPosition = function (x, y, pcSight, isElite) {
 
     function tooMany(x, y) {
         let number = 0;
-        let extendRange = 7;
+        // 12 = 5 (PC's sight range) + 7 (NPC's extended sight range)
+        let extendRange = 12;
         let countEnemies = null;
 
         // The new enemy can appear in the PC's sight only if there are no more
@@ -361,16 +362,12 @@ Main.system.pcUseDownstairs = function () {
 
             Main.getEntity('dungeon').BossFight.goToNextBossFightStage();
 
-            // TODO: delete this line and call the boss-summoning function.
-            console.log('start the boss fight');
-
             position = Main.system.placeBoss(
                 Main.getEntity('downstairs'),
                 Main.getEntity('pc'),
                 2
             );
             newActor = Main.entity.gargoyle(position[0], position[1]);
-
             Main.getEntity('timer').scheduler.add(newActor, true, 2);
 
             Main.screens.cutScene.enter();
@@ -380,10 +377,8 @@ Main.system.pcUseDownstairs = function () {
             Main.input.listenEvent('remove', 'main');
             Main.screens.main.exit();
 
-            // TODO: delete this line and call the save function.
-            console.log('you win');
-
-            // Enter the save screen.
+            // TODO: Call the save function.
+            Main.screens.cutScene.enter();
             break;
     }
 };
@@ -394,16 +389,12 @@ Main.system.move = function (direction, who) {
     let y = actor.Position.getY();
     let newCoordinates = [];
     // `who` can be the marker, which takes no time to move.
-    let duration = getDuration(false);
+    let duration = getDuration();
     let actorType = getActorType();
     let isMoveable = false;
 
     // Get new coordinates.
-    if (direction === 'wait') {
-        // No matter how long 1-step-movement takes, waiting always costs exactly
-        // 1 turn, or `null` if the actor is marker.
-        duration = getDuration(true);
-    } else {
+    if (direction !== 'wait') {
         newCoordinates = Main.system.getNewCoordinates([x, y], direction);
         x = newCoordinates[0];
         y = newCoordinates[1];
@@ -454,12 +445,10 @@ Main.system.move = function (direction, who) {
     }
 
     // Helper functions
-    function getDuration(isWait) {
+    function getDuration() {
         return Main.system.isMarker(actor)
             ? null
-            : isWait
-                ? actor.ActionDuration.getDuration()
-                : actor.ActionDuration.getDuration();
+            : actor.ActionDuration.getDuration('base');
     }
 
     function getActorType() {
@@ -803,6 +792,14 @@ Main.system.exitCutScene = function () {
     Main.input.listenEvent('add', 'main');
 };
 
+Main.system.exitHelp = function () {
+    Main.input.listenEvent('remove', 'help');
+    Main.screens.help.exit();
+
+    Main.screens.main.enter(true);
+    Main.input.listenEvent('add', 'main');
+};
+
 Main.system.pcAttack = function (target, attackType) {
     let dropRate = 0;
     let lastOrb = Main.getEntity('pc').Inventory.getLastOrb();
@@ -866,8 +863,13 @@ Main.system.pcAttack = function (target, attackType) {
     // Step 3-4: Check the boss related achievements.
     Main.system.achievementBreakTail(target, attackType);
 
-    // Step 4-4: Unlock the engine.
-    Main.system.unlockEngine(Main.getEntity('pc').ActionDuration.getDuration());
+    // Step 4-4: Remove the key-binding & unlock the engine.
+    // NOTE: Always remember to remove the key-bindings before unlocking. I have
+    // encountered a weird bug because of this.
+    Main.input.listenEvent('remove', 'main');
+    Main.system.unlockEngine(
+        Main.getEntity('pc').ActionDuration.getDuration()
+    );
 };
 
 Main.system.pcUseSlimeOrb = function (x, y) {
@@ -1108,4 +1110,12 @@ Main.system.pcFastMove = function (initialize, direction) {
         Main.getEntity('pc').FastMove.clearStep();
         Main.input.listenEvent('add', 'main');
     }
+};
+
+Main.system.showHelp = function () {
+    Main.input.listenEvent('remove', 'main');
+    Main.screens.main.exit();
+
+    Main.screens.help.enter();
+    Main.input.listenEvent('add', 'help');
 };

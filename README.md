@@ -8,7 +8,7 @@
 
 Play the game [on-line](https://bozar.github.io/cursedSouls/).
 
-Cursed Souls: Giovanni's Orchestra is a roguelike game written in JavaScript with [rot.js](https://github.com/ondras/rot.js). The dungeon has 4 levels: 1 aboveground and 3 underground. Your goal is simple:
+Cursed Souls: Giovanni's Orchestra is a roguelike game written in JavaScript with [rot.js](https://github.com/ondras/rot.js). The dungeon has 3 levels: 1 aboveground and 2 underground. Your goal is simple:
 
 * Find the downstairs.
 * Stand on the downstairs and press `Space` to summon the boss.
@@ -21,10 +21,10 @@ So why bother killing grunts along the way? That's a good question.
 
 Normal Mode:
 
-* Move: `arrow keys`, `hjkl`.
+* Move: `Arrow keys`, `hjkl`.
 * Fast move: `Shift` + Movement keys.
 * Pick up an orb or interact with the downstairs: `Space`.
-* Wait 1 turn: `z`, `.`.
+* Wait 1 turn: `z`, `.(period)`.
 * Help: `?`.
 
 Examine Mode, Aim Mode:
@@ -34,7 +34,7 @@ Examine Mode, Aim Mode:
 * Use the last orb (Aim Mode only): `Space`.
 * Lock the next target: `PgDn`, `n`, `o`.
 * Lock the previous target: `PgUp`, `p`, `i`.
-* Move the cursor: `arrow keys`, `hjkl`.
+* Move the cursor: `Arrow keys`, `hjkl`.
 * Exit to the Normal Mode: `Esc`.
 
 When pressing `Space` in the Normal Mode, your character will try to do actions in this order:
@@ -97,6 +97,8 @@ Enemies' abilities are hinted in the descriptions. You can tell their challenge 
 * Easy: Slime.
 * Normal: Fire, Ice.
 * Hard: Lump.
+
+Enemies' key information is described in one line: `[Name][The Dropping Orb][Hit Point]`.
 
 There is no randomness in the hit chance or damage. No enemies, including the bosses, can do more than 3 points of damage in 1 turn.
 

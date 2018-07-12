@@ -45,6 +45,7 @@ Main.text.initialize = function () {
     // action.
     text.set('action', new Map());
     text.get('action').set('continue', 'Press Space to continue.');
+    text.get('action').set('exit', 'Press Esc to exit.');
     text.get('action').set('range', 'Out of range!');
 
     text.get('action').set('pick', 'You pick up the %% Orb.');

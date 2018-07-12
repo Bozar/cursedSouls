@@ -21,10 +21,10 @@ So why bother killing grunts along the way? That's a good question.
 
 Normal Mode:
 
-* Move: `arrow keys`, `hjkl`.
+* Move: `Arrow keys`, `hjkl`.
 * Fast move: `Shift` + Movement keys.
 * Pick up an orb or interact with the downstairs: `Space`.
-* Wait 1 turn: `z`, `.`.
+* Wait 1 turn: `z`, `.(period)`.
 * Help: `?`.
 
 Examine Mode, Aim Mode:
@@ -34,7 +34,7 @@ Examine Mode, Aim Mode:
 * Use the last orb (Aim Mode only): `Space`.
 * Lock the next target: `PgDn`, `n`, `o`.
 * Lock the previous target: `PgUp`, `p`, `i`.
-* Move the cursor: `arrow keys`, `hjkl`.
+* Move the cursor: `Arrow keys`, `hjkl`.
 * Exit to the Normal Mode: `Esc`.
 
 When pressing `Space` in the Normal Mode, your character will try to do actions in this order:

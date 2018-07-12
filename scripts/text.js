@@ -148,10 +148,51 @@ Main.text.initialize = function () {
     text.get('info').set('downstairs3', 'Level 3 downstairs.');
     text.get('info').set('downstairs4', 'Level 4 downstairs.');
 
-    // Cut-scenes.
-    text.set('scene', new Map());
+    // The help screen.
+    text.set('help', new Map());
+    text.get('help').set('keyBindings',
+        'Normal Mode:\n\n'
+        + '* Move: '
+        + Main.screens.colorfulText('Arrow keys', 'green') + ', '
+        + Main.screens.colorfulText('hjkl', 'green') + '.\n'
+        + '* Fast move: '
+        + Main.screens.colorfulText('Shift + Movement keys', 'green') + '.\n'
+        + '* Pick up an orb or interact with the downstairs: '
+        + Main.screens.colorfulText('Space', 'green') + '.\n'
+        + '* Wait 1 turn: '
+        + Main.screens.colorfulText('z', 'green') + ', '
+        + Main.screens.colorfulText('.(period)', 'green') + '.\n'
+        + '* Help: '
+        + Main.screens.colorfulText('?', 'green') + '.\n\n'
+        + 'Examine Mode, Aim Mode:\n\n'
+        + '* Enter the Examine Mode: '
+        + Main.screens.colorfulText('x', 'green') + '.\n'
+        + '* Enter the Aim Mode: '
+        + Main.screens.colorfulText('Space', 'green') + '.\n'
+        + '* Use the last orb (Aim Mode only): '
+        + Main.screens.colorfulText('Space', 'green') + '.\n'
+        + '* Lock the next target: '
+        + Main.screens.colorfulText('PgDn', 'green') + ', '
+        + Main.screens.colorfulText('n', 'green') + ', '
+        + Main.screens.colorfulText('o', 'green') + '.\n'
+        + '* Lock the previous target: '
+        + Main.screens.colorfulText('PgUp', 'green') + ', '
+        + Main.screens.colorfulText('p', 'green') + ', '
+        + Main.screens.colorfulText('i', 'green') + '.\n'
+        + '* Move the cursor: '
+        + Main.screens.colorfulText('Arrow keys', 'green') + ', '
+        + Main.screens.colorfulText('hjkl', 'green') + '.\n'
+        + '* Exit to the Normal Mode: '
+        + Main.screens.colorfulText('Esc', 'green') + '.\n\n\n'
+        + 'Please read the '
+        + Main.screens.colorfulText('README.md', 'green')
+        + ' for more information.'
+    );
 
-    text.get('scene').set('enterLevel1',
+    // Cut-scenes.
+    text.set('cutScene', new Map());
+
+    text.get('cutScene').set('enterLevel1',
         'You wake up in an open grave,'
         + ' like a nameless body in the morgue,'
         + ' who is unknown to death, nor known to life.'
@@ -165,7 +206,7 @@ Main.text.initialize = function () {
         + ' you can hear weeping and whisper in your mind.'
         + ' One of the voices is calling you: come down to me, ashen one.'
     );
-    text.get('scene').set('beforeBossFight1',
+    text.get('cutScene').set('beforeBossFight1',
         'At first, you think it is the trick of the light'
         + ' -- how can a statue change his position?'
         + ' Then you take another look and confirm that'
@@ -182,7 +223,7 @@ Main.text.initialize = function () {
         + ' the end of which has the shape of an axe,'
         + ' nearly cuts you in half with a single whip.'
     );
-    text.get('scene').set('afterBossFight1',
+    text.get('cutScene').set('afterBossFight1',
         'You follow the source of the voices and push open the church door.'
         + ' There is a hole on the ground, revealing a downward ramp,'
         + ' the bottom of which seems to be deeper than sea.'
@@ -198,29 +239,21 @@ Main.text.initialize = function () {
 // Get static text from the library.
 // =================================
 
-Main.text.dungeon = function (id) {
-    return Main.text.libraryMap.get('dungeon').get(id);
-};
+Main.text.staticTextList = [
+    'dungeon',
+    'ui',
+    'action',
+    'name',
+    'info',
+    'help',
+    'cutScene'
+];
 
-Main.text.ui = function (id) {
-    return Main.text.libraryMap.get('ui').get(id);
-};
-
-Main.text.action = function (id) {
-    return Main.text.libraryMap.get('action').get(id);
-};
-
-Main.text.name = function (id) {
-    return Main.text.libraryMap.get('name').get(id);
-};
-
-Main.text.info = function (id) {
-    return Main.text.libraryMap.get('info').get(id);
-};
-
-Main.text.cutScene = function (id) {
-    return Main.text.libraryMap.get('scene').get(id);
-};
+Main.text.staticTextList.forEach((key) => {
+    Main.text[key] = function (id) {
+        return Main.text.libraryMap.get(key).get(id);
+    };
+});
 
 // ==========================
 // Combine fragments of text.

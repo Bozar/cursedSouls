@@ -1102,3 +1102,19 @@ Main.system.pcFastMove = function (initialize, direction) {
         Main.input.listenEvent('add', 'main');
     }
 };
+
+Main.system.showHelp = function () {
+    console.log('print help');
+    let text = Main.text.help('keyBindings');
+
+    Main.input.listenEvent('remove', 'main');
+    Main.screens.main.exit();
+
+    // TODO: Call the save function.
+    Main.display.drawText(
+        Main.UI.cutScene.getX(),
+        Main.UI.cutScene.getY() - 1,
+        text,
+        Main.UI.cutScene.getWidth(),
+    );
+};

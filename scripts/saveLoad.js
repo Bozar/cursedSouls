@@ -39,3 +39,10 @@ Main.system.saveWizardMode = function () {
 Main.system.loadWizardMode = function () {
     return Main.storage.getItem('wizard') === 'true';
 };
+
+Main.system.clearStorage = function () {
+    if (Main.getDevelop()) {
+        Main.storage.clear();
+        console.log('The local storage is cleared.');
+    }
+};

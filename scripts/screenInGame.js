@@ -163,6 +163,8 @@ Main.screens.main.keyInput = function (e) {
             Main.system.pcFastMove(true, keyAction(e, 'fastMove'));
         } else if (keyAction(e, 'fixed') === 'help') {
             Main.system.showHelp();
+        } else if (keyAction(e, 'fixed') === 'clearStorage') {
+            Main.system.clearStorage();
         }
     } else if (keyAction(e, 'move')) {
         Main.system.move(keyAction(e, 'move'));

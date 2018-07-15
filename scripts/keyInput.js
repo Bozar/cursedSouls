@@ -17,6 +17,7 @@ Main.input.keybind.get('fixed').set('yes', [' ']);
 Main.input.keybind.get('fixed').set('no', ['Escape']);
 Main.input.keybind.get('fixed').set('help', ['?']);
 Main.input.keybind.get('fixed').set('seed', ['=']);
+Main.input.keybind.get('fixed').set('clearStorage', ['D']);
 
 // Development
 Main.input.keybind.get('fixed').set('develop', ['~']);

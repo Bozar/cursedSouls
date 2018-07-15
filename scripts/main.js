@@ -6,7 +6,8 @@
 
 var Main = {};
 Main._version = '0.1.0';
-//Main._develop = false;
+// Set the _develop value in the window.onload function.
+// Main._develop = false;
 
 Main.getVersion = function () { return this._version; };
 Main.getDevelop = function () { return this._develop; };

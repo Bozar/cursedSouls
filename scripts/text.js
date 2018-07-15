@@ -237,6 +237,14 @@ Main.text.initialize = function () {
         + '[WIP]You win. Press F5 to reload the page.[/WIP]'
     );
 
+    // Error messages.
+    text.set('error', new Map());
+    text.get('error').set('browser',
+        'Your browser dose not support the Rot.js.'
+        + '\n\n'
+        + 'Please use the lastest Chrome or Firefox.'
+    );
+
     Main.text.libraryMap = text;
 };
 
@@ -251,7 +259,8 @@ Main.text.staticTextList = [
     'name',
     'info',
     'help',
-    'cutScene'
+    'cutScene',
+    'error'
 ];
 
 Main.text.staticTextList.forEach((key) => {

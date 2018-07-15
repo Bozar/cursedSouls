@@ -6,7 +6,7 @@
 
 var Main = {};
 Main._version = '0.1.0';
-// Main._develop = true;
+Main._develop = true;
 
 Main.getVersion = function () { return this._version; };
 Main.getDevelop = function () { return this._develop; };
@@ -47,13 +47,25 @@ Main._log.enemyComposition = [];
 // ==============
 
 window.onload = function () {
-    if (!ROT.isSupported()) {
-        window.alert(Main.text.error('browser'));
-        return;
-    }
-    document.getElementById('game').appendChild(Main.display.getContainer());
+    let errorText = null;
+
     Main.text.initialize();
     Main.entity.message();
+    document.getElementById('game').appendChild(Main.display.getContainer());
+
+    if (!ROT.isSupported()) {
+        errorText = Main.text.error('browser')
+    }
+
+    if (errorText) {
+        Main.display.drawText(
+            Main.UI.cutScene.getX(),
+            Main.UI.cutScene.getY(),
+            errorText,
+            Main.UI.cutScene.getWidth()
+        );
+        return;
+    }
 
     Main.display.clear();
 

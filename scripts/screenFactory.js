@@ -480,7 +480,7 @@ Main.screens.drawCutScene = function () {
         Main.UI.cutScene.getX(),
         Main.UI.cutScene.getY(),
         text,
-        Main.UI.cutScene.getWidth(),
+        Main.UI.cutScene.getWidth()
     );
 };
 
@@ -489,6 +489,6 @@ Main.screens.drawKeyBindings = function () {
         Main.UI.cutScene.getX(),
         Main.UI.cutScene.getY() - 1.5,
         Main.text.help('keyBindings'),
-        Main.UI.cutScene.getWidth(),
+        Main.UI.cutScene.getWidth()
     );
 };

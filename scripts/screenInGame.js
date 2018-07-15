@@ -19,6 +19,8 @@ Main.screens.main.initialize = function () {
     Main.entity.seed();
     Main.getEntity('seed').Seed.setSeed(Main.getDevSeed());
     ROT.RNG.setSeed(Main.getEntity('seed').Seed.getSeed());
+    // TODO: reset the seed for another dungeon level.
+    // ROT.RNG.setSeed(ROT.RNG.getUniform() * 100000);
 
     // Timer.
     Main.entity.timer();

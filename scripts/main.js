@@ -54,7 +54,9 @@ window.onload = function () {
     document.getElementById('game').appendChild(Main.display.getContainer());
 
     if (!ROT.isSupported()) {
-        errorText = Main.text.error('browser')
+        errorText = Main.text.error('browser');
+    } else if (!Main.system.storageAvailable()) {
+        errorText = Main.text.error('storage');
     }
 
     if (errorText) {

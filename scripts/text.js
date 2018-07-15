@@ -244,6 +244,9 @@ Main.text.initialize = function () {
         + '\n\n'
         + 'Please use the lastest Chrome or Firefox.'
     );
+    text.get('error').set('storage',
+        'Please change your browser setting to save the game data locally.'
+    );
 
     Main.text.libraryMap = text;
 };

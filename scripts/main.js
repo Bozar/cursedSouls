@@ -6,7 +6,7 @@
 
 var Main = {};
 Main._version = '0.1.0';
-Main._develop = true;
+//Main._develop = false;
 
 Main.getVersion = function () { return this._version; };
 Main.getDevelop = function () { return this._develop; };
@@ -48,9 +48,11 @@ Main._log.enemyComposition = [];
 
 window.onload = function () {
     let errorText = null;
+    Main._develop = Main.system.loadWizardMode();
 
     Main.text.initialize();
     Main.entity.message();
+
     document.getElementById('game').appendChild(Main.display.getContainer());
 
     if (!ROT.isSupported()) {

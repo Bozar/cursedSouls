@@ -154,6 +154,7 @@ Main.screens.main.keyInput = function (e) {
     if (e.shiftKey) {
         if (keyAction(e, 'fixed') === 'develop') {
             Main.setDevelop();
+            Main.system.saveWizardMode();
             Main.system.printGenerationLog();
 
             Main.display.clear();

@@ -454,12 +454,12 @@ Main.screens.drawHelp = function () {
 Main.screens.drawCutScene = function () {
     let level
         = Main.getEntity('dungeon')
-            ? Main.getEntity('dungeon').BossFight.getDungeonLevel()
+            ? Main.getEntity('gameProgress').BossFight.getDungeonLevel()
             : 1;
 
     let bossFight
         = Main.getEntity('dungeon')
-            ? Main.getEntity('dungeon').BossFight.getBossFightStatus()
+            ? Main.getEntity('gameProgress').BossFight.getBossFightStatus()
             : 'inactive';
 
     let text = '';

@@ -381,9 +381,9 @@ Main.text.targetDropOrb = function (target, orb) {
 
 Main.text.downstairs = function () {
     // Dungeon level: 1 to 4.
-    let dungeonLevel = Main.getEntity('dungeon').BossFight.getDungeonLevel();
+    let dungeonLevel = Main.getEntity('gameProgress').BossFight.getDungeonLevel();
     // Progress: inactive, active, win.
-    let progress = Main.getEntity('dungeon').BossFight.getBossFightStatus();
+    let progress = Main.getEntity('gameProgress').BossFight.getBossFightStatus();
     // Text: the string with the placeholder '%%'.
     let text = Main.text.info('downstairs' + dungeonLevel);
 
@@ -414,10 +414,10 @@ Main.text.npcSummon = function (actor) {
 Main.text.lastWords = function () {
     let text = '';
 
-    if (Main.getEntity('dungeon').BossFight.getBossFightStatus()
+    if (Main.getEntity('gameProgress').BossFight.getBossFightStatus()
         === 'active') {
         text = Main.text.action('deathBoss'
-            + Main.getEntity('dungeon').BossFight.getDungeonLevel());
+            + Main.getEntity('gameProgress').BossFight.getDungeonLevel());
     } else {
         text = Main.text.action('deathGeneral');
     }

@@ -42,7 +42,6 @@ Main.entity.seed = function () {
 Main.entity.dungeon = function () {
     let e = new Main.Factory('dungeon');
     e.addComponent(new Main.Component.Dungeon());
-    e.addComponent(new Main.Component.BossFight());
 
     let cycle = 0;
 
@@ -86,6 +85,13 @@ Main.entity.dungeon = function () {
         return Math.floor(
             floor / (e.Dungeon.getWidth() * e.Dungeon.getHeight()) * 100);
     }
+};
+
+Main.entity.gameProgress = function () {
+    let e = new Main.Factory('gameProgress');
+    e.addComponent(new Main.Component.BossFight());
+
+    Main.entities.set('gameProgress', e);
 };
 
 Main.entity.pc = function () {

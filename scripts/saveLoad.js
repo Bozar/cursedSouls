@@ -43,6 +43,12 @@ Main.system.loadWizardMode = function () {
 Main.system.clearStorage = function () {
     if (Main.getDevelop()) {
         Main.storage.clear();
-        console.log('The local storage is cleared.');
+
+        if (Main.storage.length === 0) {
+            console.log('The local storage is cleared.');
+        } else {
+            // This should not happen.
+            console.log('The local storage is NOT cleared.');
+        }
     }
 };

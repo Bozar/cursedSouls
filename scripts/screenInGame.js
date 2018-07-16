@@ -27,6 +27,7 @@ Main.screens.main.initialize = function () {
     Main.getEntity('timer').engine.start();
 
     // Dungeon & marker.
+    Main.entity.gameProgress();
     Main.entity.dungeon();
     Main.entity.marker();
 
@@ -123,7 +124,7 @@ Main.screens.main.display = function () {
         (orb) => {
             Main.screens.drawActor(
                 orb,
-                Main.getEntity('dungeon').BossFight.getBossFightStatus()
+                Main.getEntity('gameProgress').BossFight.getBossFightStatus()
                 !== 'inactive'
                 || orb.Memory.getHasSeen()
             );
@@ -163,8 +164,6 @@ Main.screens.main.keyInput = function (e) {
             Main.system.pcFastMove(true, keyAction(e, 'fastMove'));
         } else if (keyAction(e, 'fixed') === 'help') {
             Main.system.showHelp();
-        } else if (keyAction(e, 'fixed') === 'clearStorage') {
-            Main.system.clearStorage();
         }
     } else if (keyAction(e, 'move')) {
         Main.system.move(keyAction(e, 'move'));
@@ -202,6 +201,8 @@ Main.screens.main.keyInput = function (e) {
             Main.getEntity('pc').Inventory.addItem('nuke');
         } else if (keyAction(e, 'fixed') === 'removeOrb') {
             Main.getEntity('pc').Inventory.removeItem(1);
+        } else if (keyAction(e, 'fixed') === 'clearStorage') {
+            Main.system.clearStorage();
         }
         // Redraw the screen after pressing a development key.
         Main.display.clear();

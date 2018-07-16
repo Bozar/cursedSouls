@@ -316,7 +316,7 @@ Main.system.pcPickOrUse = function () {
     if (Main.system.downstairsHere(
         Main.getEntity('pc').Position.getX(),
         Main.getEntity('pc').Position.getY())
-        && Main.getEntity('dungeon').BossFight.getBossFightStatus()
+        && Main.getEntity('gameProgress').BossFight.getBossFightStatus()
         !== 'active') {
         Main.system.pcUseDownstairs();
     } else if (Main.system.orbHere(
@@ -355,12 +355,12 @@ Main.system.pcUseDownstairs = function () {
     let position = [];
     let newActor = null;
 
-    switch (Main.getEntity('dungeon').BossFight.getBossFightStatus()) {
+    switch (Main.getEntity('gameProgress').BossFight.getBossFightStatus()) {
         case 'inactive':
             Main.input.listenEvent('remove', 'main');
             Main.screens.main.exit();
 
-            Main.getEntity('dungeon').BossFight.goToNextBossFightStage();
+            Main.getEntity('gameProgress').BossFight.goToNextBossFightStage();
 
             position = Main.system.placeBoss(
                 Main.getEntity('downstairs'),
@@ -851,7 +851,7 @@ Main.system.pcAttack = function (target, attackType) {
 
         // 5-5: Progress the game if the level boss is dead.
         if (Main.system.bossIsDead(target)) {
-            Main.getEntity('dungeon').BossFight.goToNextBossFightStage();
+            Main.getEntity('gameProgress').BossFight.goToNextBossFightStage();
         }
     }
     // Step 2B-4: The enemy is still alive.

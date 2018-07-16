@@ -380,8 +380,11 @@ Main.system.pcUseDownstairs = function () {
             // TODO: Uncomment these lines when the 2nd level is ready.
             // Main.getEntity('gameProgress').BossFight.goToNextDungeonLevel();
             // Main.system.saveDungeonLevel();
+            Main.system.saveSeed();
 
-            Main.getEntity('message').Message.pushMsg(Main.text.action('save'));
+            Main.getEntity('message').Message.pushMsg(
+                Main.text.action('save')
+            );
             Main.getEntity('message').Message.pushMsg(
                 Main.text.action('closeOrReload')
             );
@@ -1128,4 +1131,29 @@ Main.system.showHelp = function () {
 
     Main.screens.help.enter();
     Main.input.listenEvent('add', 'help');
+};
+
+Main.system.startRNG = function () {
+    let newSeed = null;
+
+    if (Main.getEntity('gameProgress').BossFight.getDungeonLevel() > 1
+        && Main.system.loadSeed()
+    ) {
+        Main.getEntity('seed').Seed.setSeed(Main.system.loadSeed());
+    } else {
+        Main.getEntity('seed').Seed.setSeed(Main.getDevSeed());
+    }
+
+    ROT.RNG.setSeed(Main.getEntity('seed').Seed.getSeed());
+
+    // Generate a new seed for deeper dungeon levels.
+    if (Main.getEntity('gameProgress').BossFight.getDungeonLevel() > 1) {
+        for (let i = 0;
+            i < Main.getEntity('gameProgress').BossFight.getDungeonLevel();
+            i++
+        ) {
+            newSeed = ROT.RNG.getUniform();
+        }
+        ROT.RNG.setSeed(newSeed * Math.pow(10, 9));
+    }
 };

@@ -29,12 +29,12 @@ Main.Component.Seed = function () {
         if (!seed) {
             this._seed = (Math.random() * 9 + 1) * Math.pow(10, 9);
             this._seed = Math.floor(this._seed);
-            this._seed = this._seed.toString();
 
-            this._printSeed = this._seed;
+            this._printSeed = this._seed.toString();
         } else {
             // Remove the beginning `#` if the seed is set manually.
             this._seed = seed.toString().replace(/^#{0,1}(.+)$/, '$1');
+            this._seed = Number.parseInt(this._seed, 10);
             this._printSeed = seed;
         }
         // Insert hyphen to the seed string.

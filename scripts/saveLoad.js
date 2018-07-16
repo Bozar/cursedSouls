@@ -79,3 +79,11 @@ Main.system.loadDungeonLevel = function () {
         ? Number.parseInt(Main.storage.getItem('dungeonLevel'), 10)
         : 1;
 };
+
+Main.system.saveSeed = function () {
+    Main.storage.setItem('seed', Main.getEntity('seed').Seed.getSeed());
+};
+
+Main.system.loadSeed = function () {
+    return Main.storage.getItem('seed');
+};

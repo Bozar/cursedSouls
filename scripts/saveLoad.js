@@ -45,6 +45,20 @@ Main.system.clearStorage = function () {
     }
 };
 
+Main.system.deleteSave = function () {
+    let achievement = Main.storage.getItem('achievement');
+    let wizard = Main.storage.getItem('wizard');
+
+    Main.storage.clear();
+
+    if (achievement) {
+        Main.storage.setItem('achievement', achievement);
+    }
+    if (wizard) {
+        Main.storage.setItem('wizard', wizard);
+    }
+};
+
 Main.system.saveWizardMode = function () {
     Main.storage.setItem('wizard', Main.getDevelop());
 };

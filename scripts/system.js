@@ -372,6 +372,7 @@ Main.system.pcUseDownstairs = function () {
 
             Main.screens.cutScene.enter();
             Main.input.listenEvent('add', 'cutScene');
+
             break;
         case 'win':
             Main.input.listenEvent('remove', 'main');
@@ -388,7 +389,6 @@ Main.system.pcUseDownstairs = function () {
             Main.display.clear();
             Main.screens.main.display();
 
-            //Main.screens.cutScene.enter();
             break;
     }
 };

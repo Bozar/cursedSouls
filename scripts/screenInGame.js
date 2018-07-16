@@ -89,6 +89,8 @@ Main.screens.main.initialize = function () {
 
     // Output the dungeon generation details.
     Main.system.printGenerationLog();
+    // Delete the save.
+    Main.system.deleteSave();
 };
 
 // Draw entities in this order:

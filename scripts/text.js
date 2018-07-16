@@ -66,6 +66,11 @@ Main.text.initialize = function () {
         'The Tower Gargoyle thrusts you with the halberd.');
     text.get('action').set('gargoyleBreathe', 'The %% breathes fire.');
 
+    text.get('action').set('save', 'Game saved.');
+    text.get('action').set('closeOrReload',
+        'You can close the tab or press F5 to continue.'
+    );
+
     text.get('action').set('die', 'You die.');
     text.get('action').set('end', '===The End===');
     text.get('action').set('deathGeneral', 'Rest in peace, ashen one.');
@@ -147,7 +152,6 @@ Main.text.initialize = function () {
 
     text.get('info').set('downstairs2', 'Level 2 downstairs.');
     text.get('info').set('downstairs3', 'Level 3 downstairs.');
-    text.get('info').set('downstairs4', 'Level 4 downstairs.');
 
     // The help screen.
     text.set('help', new Map());
@@ -228,14 +232,17 @@ Main.text.initialize = function () {
         + ' the end of which has the shape of an axe,'
         + ' nearly cuts you in half with a single whip.'
     );
-    text.get('cutScene').set('afterBossFight1',
+
+    text.get('cutScene').set('enterLevel2',
         'You follow the source of the voices and push open the church door.'
         + ' There is a hole on the ground, revealing a downward ramp,'
         + ' the bottom of which seems to be deeper than sea.'
         + ' Sharper than blade is the chilling wind cutting through your face.'
-        + '\n\n\n'
-        + '[WIP]You win. Press F5 to reload the page.[/WIP]'
     );
+    text.get('cutScene').set('beforeBossFight2', 'before 2');
+
+    text.get('cutScene').set('enterLevel3', 'level 3');
+    text.get('cutScene').set('beforeBossFight3', 'before 3');
 
     // Error messages.
     text.set('error', new Map());

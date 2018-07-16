@@ -32,14 +32,6 @@ Main.system.storageAvailable = function () {
     }
 };
 
-Main.system.saveWizardMode = function () {
-    Main.storage.setItem('wizard', Main.getDevelop());
-};
-
-Main.system.loadWizardMode = function () {
-    return Main.storage.getItem('wizard') === 'true';
-};
-
 Main.system.clearStorage = function () {
     if (Main.getDevelop()) {
         Main.storage.clear();
@@ -51,4 +43,25 @@ Main.system.clearStorage = function () {
             console.log('The local storage is NOT cleared.');
         }
     }
+};
+
+Main.system.saveWizardMode = function () {
+    Main.storage.setItem('wizard', Main.getDevelop());
+};
+
+Main.system.loadWizardMode = function () {
+    return Main.storage.getItem('wizard') === 'true';
+};
+
+Main.system.saveDungeonLevel = function () {
+    Main.storage.setItem(
+        'dungeonLevel',
+        Main.getEntity('gameProgress').BossFight.getDungeonLevel()
+    );
+};
+
+Main.system.loadDungeonLevel = function () {
+    return Main.storage.getItem('dungeonLevel')
+        ? Number.parseInt(Main.storage.getItem('dungeonLevel'), 10)
+        : 1;
 };

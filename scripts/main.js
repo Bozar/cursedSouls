@@ -53,6 +53,7 @@ window.onload = function () {
 
     Main.text.initialize();
     Main.entity.message();
+    Main.entity.gameProgress();
 
     document.getElementById('game').appendChild(Main.display.getContainer());
 
@@ -73,6 +74,10 @@ window.onload = function () {
     }
 
     Main.display.clear();
+
+    Main.getEntity('gameProgress').BossFight.setDungeonLevel(
+        Main.system.loadDungeonLevel()
+    );
 
     if (Main.getDevelop()) {
         Main.screens.main.enter();

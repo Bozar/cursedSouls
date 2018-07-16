@@ -375,10 +375,20 @@ Main.system.pcUseDownstairs = function () {
             break;
         case 'win':
             Main.input.listenEvent('remove', 'main');
-            Main.screens.main.exit();
 
-            // TODO: Call the save function.
-            Main.screens.cutScene.enter();
+            // TODO: Uncomment these lines when the 2nd level is ready.
+            // Main.getEntity('gameProgress').BossFight.goToNextDungeonLevel();
+            // Main.system.saveDungeonLevel();
+
+            Main.getEntity('message').Message.pushMsg(Main.text.action('save'));
+            Main.getEntity('message').Message.pushMsg(
+                Main.text.action('closeOrReload')
+            );
+
+            Main.display.clear();
+            Main.screens.main.display();
+
+            //Main.screens.cutScene.enter();
             break;
     }
 };

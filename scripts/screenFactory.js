@@ -452,16 +452,8 @@ Main.screens.drawHelp = function () {
 };
 
 Main.screens.drawCutScene = function () {
-    let level
-        = Main.getEntity('dungeon')
-            ? Main.getEntity('gameProgress').BossFight.getDungeonLevel()
-            : 1;
-
-    let bossFight
-        = Main.getEntity('dungeon')
-            ? Main.getEntity('gameProgress').BossFight.getBossFightStatus()
-            : 'inactive';
-
+    let level = Main.getEntity('gameProgress').BossFight.getDungeonLevel();
+    let bossFight = Main.getEntity('gameProgress').BossFight.getBossFightStatus();
     let text = '';
 
     switch (bossFight) {
@@ -470,9 +462,6 @@ Main.screens.drawCutScene = function () {
             break;
         case 'active':
             text = Main.text.cutScene('beforeBossFight' + level);
-            break;
-        case 'win':
-            text = Main.text.cutScene('afterBossFight' + level);
             break;
     }
 

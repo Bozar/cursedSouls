@@ -84,7 +84,7 @@ Main.Component.BossFight = function () {
     this._progress = ['inactive', 'active', 'win'];
     this._bossFight = this._progress[0];
     this._dungeonLevel = 1;
-    this._maxDungeonLevel = 4;
+    this._maxDungeonLevel = 3;
 
     this.getBossFightStatus = function () { return this._bossFight; };
     this.getDungeonLevel = function () { return this._dungeonLevel; };
@@ -103,6 +103,10 @@ Main.Component.BossFight = function () {
             this._maxDungeonLevel);
 
         this._dungeonLevel = nextLevel;
+    };
+
+    this.setDungeonLevel = function (level) {
+        this._dungeonLevel = level;
     };
 };
 

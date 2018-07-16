@@ -27,7 +27,6 @@ Main.screens.main.initialize = function () {
     Main.getEntity('timer').engine.start();
 
     // Dungeon & marker.
-    Main.entity.gameProgress();
     Main.entity.dungeon();
     Main.entity.marker();
 
@@ -164,6 +163,12 @@ Main.screens.main.keyInput = function (e) {
             Main.system.pcFastMove(true, keyAction(e, 'fastMove'));
         } else if (keyAction(e, 'fixed') === 'help') {
             Main.system.showHelp();
+        } else if (Main.getDevelop()) {
+            switch (keyAction(e, 'fixed')) {
+                case 'clearStorage':
+                    Main.system.clearStorage();
+                    break;
+            }
         }
     } else if (keyAction(e, 'move')) {
         Main.system.move(keyAction(e, 'move'));
@@ -174,35 +179,45 @@ Main.screens.main.keyInput = function (e) {
     } else if (keyAction(e, 'fixed') === 'seed') {
         console.log(Main.getEntity('seed').Seed.getSeed());
     } else if (Main.getDevelop()) {
-        if (keyAction(e, 'fixed') === 'fov') {
-            Main.getEntity('dungeon').Dungeon.setFov();
-        } else if (keyAction(e, 'fixed') === 'turn') {
-            console.log(Main.getEntity('timer').scheduler.getTime());
-        } else if (keyAction(e, 'fixed') === 'teleport') {
-            Main.system.killAndTeleport();
-        }
-        else if (keyAction(e, 'fixed') === 'dummy') {
-            Main.getEntity('timer').scheduler.add(
-                Main.entity.dummy(
-                    Main.getEntity('pc').Position.getX() - 1,
-                    Main.getEntity('pc').Position.getY()),
-                true);
-        } else if (keyAction(e, 'fixed') === 'addFire') {
-            Main.getEntity('pc').Inventory.addItem('fire');
-        } else if (keyAction(e, 'fixed') === 'addIce') {
-            Main.getEntity('pc').Inventory.addItem('ice');
-        } else if (keyAction(e, 'fixed') === 'addSlime') {
-            Main.getEntity('pc').Inventory.addItem('slime');
-        } else if (keyAction(e, 'fixed') === 'addLump') {
-            Main.getEntity('pc').Inventory.addItem('lump');
-        } else if (keyAction(e, 'fixed') === 'addArmor') {
-            Main.getEntity('pc').Inventory.addItem('armor');
-        } else if (keyAction(e, 'fixed') === 'addNuke') {
-            Main.getEntity('pc').Inventory.addItem('nuke');
-        } else if (keyAction(e, 'fixed') === 'removeOrb') {
-            Main.getEntity('pc').Inventory.removeItem(1);
-        } else if (keyAction(e, 'fixed') === 'clearStorage') {
-            Main.system.clearStorage();
+        switch (keyAction(e, 'fixed')) {
+            case 'fov':
+                Main.getEntity('dungeon').Dungeon.setFov();
+                break;
+            case 'turn':
+                console.log(Main.getEntity('timer').scheduler.getTime());
+                break;
+            case 'teleport':
+                Main.system.killAndTeleport();
+                break;
+            case 'dummy':
+                Main.getEntity('timer').scheduler.add(
+                    Main.entity.dummy(
+                        Main.getEntity('pc').Position.getX() - 1,
+                        Main.getEntity('pc').Position.getY()),
+                    true
+                );
+                break;
+            case 'addFire':
+                Main.getEntity('pc').Inventory.addItem('fire');
+                break;
+            case 'addIce':
+                Main.getEntity('pc').Inventory.addItem('ice');
+                break;
+            case 'addSlime':
+                Main.getEntity('pc').Inventory.addItem('slime');
+                break;
+            case 'addLump':
+                Main.getEntity('pc').Inventory.addItem('lump');
+                break;
+            case 'addArmor':
+                Main.getEntity('pc').Inventory.addItem('armor');
+                break;
+            case 'addNuke':
+                Main.getEntity('pc').Inventory.addItem('nuke');
+                break;
+            case 'removeOrb':
+                Main.getEntity('pc').Inventory.removeItem(1);
+                break;
         }
         // Redraw the screen after pressing a development key.
         Main.display.clear();

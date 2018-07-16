@@ -87,3 +87,16 @@ Main.system.saveSeed = function () {
 Main.system.loadSeed = function () {
     return Main.storage.getItem('seed');
 };
+
+Main.system.saveInventory = function () {
+    Main.storage.setItem('inventory',
+        Main.getEntity('pc').Inventory.getInventory().toString()
+    );
+};
+
+Main.system.loadInventory = function () {
+    if (Main.storage.getItem('inventory')) {
+        return Main.storage.getItem('inventory').split(',');
+    }
+    return [];
+};

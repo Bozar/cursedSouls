@@ -377,10 +377,14 @@ Main.system.pcUseDownstairs = function () {
         case 'win':
             Main.input.listenEvent('remove', 'main');
 
-            // TODO: Uncomment these lines when the 2nd level is ready.
-            // Main.getEntity('gameProgress').BossFight.goToNextDungeonLevel();
-            // Main.system.saveDungeonLevel();
-            Main.system.saveSeed();
+            // TODO: Change these lines when the 2nd level is ready.
+            let debug = 0;
+            if (debug > 0) {
+                Main.getEntity('gameProgress').BossFight.goToNextDungeonLevel();
+                Main.system.saveDungeonLevel();
+                Main.system.saveSeed();
+                Main.system.saveInventory();
+            }
 
             Main.getEntity('message').Message.pushMsg(
                 Main.text.action('save')
@@ -1136,13 +1140,9 @@ Main.system.showHelp = function () {
 Main.system.startRNG = function () {
     let newSeed = null;
 
-    if (Main.getEntity('gameProgress').BossFight.getDungeonLevel() > 1
-        && Main.system.loadSeed()
-    ) {
-        Main.getEntity('seed').Seed.setSeed(Main.system.loadSeed());
-    } else {
-        Main.getEntity('seed').Seed.setSeed(Main.getDevSeed());
-    }
+    Main.getEntity('seed').Seed.setSeed(
+        Main.system.loadSeed() || Main.getDevSeed()
+    );
 
     ROT.RNG.setSeed(Main.getEntity('seed').Seed.getSeed());
 
@@ -1155,5 +1155,19 @@ Main.system.startRNG = function () {
             newSeed = ROT.RNG.getUniform();
         }
         ROT.RNG.setSeed(newSeed * Math.pow(10, 9));
+    }
+};
+
+Main.system.fillInventory = function () {
+    if (Main.system.loadDungeonLevel() > 1) {
+        Main.system.loadInventory().forEach((orb) => {
+            Main.getEntity('pc').Inventory.addItem(orb);
+        });
+    } else {
+        Main.getEntity('pc').Inventory.addItem('slime');
+        Main.getEntity('pc').Inventory.addItem('armor');
+        Main.getEntity('pc').Inventory.addItem('armor');
+        Main.getEntity('pc').Inventory.addItem('fire');
+        Main.getEntity('pc').Inventory.addItem('lump');
     }
 };

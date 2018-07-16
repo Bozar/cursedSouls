@@ -182,6 +182,7 @@ Main.system.placeBoss = function (observer, target, distance) {
 Main.system.createOrbs = function () {
     // TODO: change the loop based on the dungeon level.
     let loop = 3;
+    let orbsInherited = Main.system.loadOrbsOnTheGround();
 
     for (var i = 0; i < loop; i++) {
         Main.entity.orb('fire');
@@ -189,6 +190,10 @@ Main.system.createOrbs = function () {
         Main.entity.orb('slime');
         Main.entity.orb('lump');
     }
+
+    orbsInherited.forEach((orb) => {
+        Main.entity.orb(orb);
+    });
 };
 
 Main.system.createEnemies = function () {
@@ -384,6 +389,7 @@ Main.system.pcUseDownstairs = function () {
                 Main.system.saveDungeonLevel();
                 Main.system.saveSeed();
                 Main.system.saveInventory();
+                Main.system.saveOrbsOnTheGround();
             }
 
             Main.getEntity('message').Message.pushMsg(

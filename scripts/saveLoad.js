@@ -100,3 +100,32 @@ Main.system.loadInventory = function () {
     }
     return [];
 };
+
+Main.system.saveOrbsOnTheGround = function () {
+    let saveOrbs = [];
+    let lump = [];
+    let fire = [];
+    let ice = [];
+    let slime = [];
+
+    Main.getEntity('orb').forEach((orb) => {
+        saveOrbs.push(orb.getEntityName());
+    });
+
+    lump = saveOrbs.filter((orb) => { return orb === 'lump'; });
+    fire = saveOrbs.filter((orb) => { return orb === 'fire'; });
+    ice = saveOrbs.filter((orb) => { return orb === 'ice'; });
+    slime = saveOrbs.filter((orb) => { return orb === 'slime'; });
+
+    saveOrbs = lump.concat(fire, ice, slime);
+    saveOrbs = saveOrbs.slice(0, 4);
+
+    Main.storage.setItem('orb', saveOrbs.toString());
+};
+
+Main.system.loadOrbsOnTheGround = function () {
+    if (Main.storage.getItem('orb')) {
+        return Main.storage.getItem('orb').split(',');
+    }
+    return [];
+};

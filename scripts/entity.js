@@ -83,7 +83,9 @@ Main.entity.dungeon = function () {
 
 Main.entity.gameProgress = function () {
     let e = new Main.Factory('gameProgress');
+
     e.addComponent(new Main.Component.BossFight());
+    e.addComponent(new Main.Component.Achievement());
 
     Main.entities.set('gameProgress', e);
 };
@@ -337,12 +339,4 @@ Main.entity.orb = function (orbName) {
     Main.entities.get('orb').set(e.getID(), e);
 
     return e.getID();
-};
-
-Main.entity.achievement = function () {
-    let e = new Main.Factory('achievement');
-
-    e.addComponent(new Main.Component.Achievement());
-
-    Main.entities.set('achievement', e);
 };

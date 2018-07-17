@@ -5,12 +5,6 @@
 // ===============
 
 Main.entities = new Map();
-Main.entities.set('message', null);
-Main.entities.set('seed', null);
-Main.entities.set('dungeon', null);
-Main.entities.set('pc', null);
-Main.entities.set('marker', null);
-Main.entities.set('downstairs', null);
 
 // Key: ID, value: object.
 Main.entities.set('npc', new Map());
@@ -343,4 +337,12 @@ Main.entity.orb = function (orbName) {
     Main.entities.get('orb').set(e.getID(), e);
 
     return e.getID();
+};
+
+Main.entity.achievement = function () {
+    let e = new Main.Factory('achievement');
+
+    e.addComponent(new Main.Component.Achievement());
+
+    Main.entities.set('achievement', e);
 };

@@ -1160,7 +1160,7 @@ Main.system.startRNG = function () {
         ) {
             newSeed = ROT.RNG.getUniform();
         }
-        ROT.RNG.setSeed(newSeed * Math.pow(10, 9));
+        ROT.RNG.setSeed(newSeed * Math.pow(10, 8));
     }
 };
 

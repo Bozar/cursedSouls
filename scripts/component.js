@@ -336,3 +336,36 @@ Main.Component.FastMove = function () {
     this.clearStep = function () { this._step = 0; };
     this.setDirection = function (direction) { this._direction = direction; };
 };
+
+Main.Component.Achievement = function () {
+    this._name = 'Achievement';
+
+    this._achievement = new Map();
+
+    this._achievement.set('noExamine', false);
+    // Gargoyle.
+    this._achievement.set('boss1Normal', false);
+    this._achievement.set('boss1Special', false);
+    // Butcher.
+    this._achievement.set('boss2Normal', false);
+    // Ghoul.
+    this._achievement.set('boss3Normal', false);
+    this._achievement.set('boss3Special', false);
+    // Giovanni.
+    this._achievement.set('boss4Normal', false);
+    this._achievement.set('boss4Special', false);
+
+    this.getAchievement = function (id) {
+        if (id && this._achievement.has(id)) {
+            return this._achievement.get(id);
+        } else {
+            return this._achievement;
+        }
+    };
+
+    this.setAchievement = function (key, value) {
+        if (key && this._achievement.has(key)) {
+            this._achievement.set(key, value);
+        }
+    };
+};

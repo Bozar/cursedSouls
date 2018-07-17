@@ -1177,3 +1177,19 @@ Main.system.fillInventory = function () {
         Main.getEntity('pc').Inventory.addItem('lump');
     }
 };
+
+// Set achievements when the game starts.
+Main.system.setAchievements = function () {
+    let achievements = Main.system.loadAchievements();
+
+    achievements.forEach((value) => {
+        Main.getEntity('gameProgress').Achievement.setAchievement(
+            value[0], value[1] === 'true' ? true : false
+        );
+    });
+};
+
+Main.system.unlockAchievements = function (id) {
+    Main.getEntity('gameProgress').Achievement.setAchievement(id, true);
+    Main.system.saveAchievements();
+};

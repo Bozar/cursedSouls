@@ -129,3 +129,30 @@ Main.system.loadOrbsOnTheGround = function () {
     }
     return [];
 };
+
+Main.system.saveAchievements = function () {
+    let achievements
+        = Main.getEntity('gameProgress').Achievement.getAchievement();
+    let save = [];
+
+    achievements.forEach((value, key) => {
+        save.push(key + ',' + value);
+    });
+
+    Main.storage.setItem('achievement', save.join(';'));
+};
+
+Main.system.loadAchievements = function () {
+    let save = [];
+    let achievements = [];
+
+    if (Main.storage.getItem('achievement')) {
+        save = Main.storage.getItem('achievement').split(';');
+    }
+
+    save.forEach((value) => {
+        achievements.push(value.split(','));
+    });
+
+    return achievements;
+};

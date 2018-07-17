@@ -7,7 +7,7 @@
 Main.screens.main = new Main.Screen('main', ['main', 'examine', 'aim']);
 
 // * Create & place entities (if necessacry) in this order:
-//   Seed, Timer, Dungeon, Marker, (PC, NPCs, Downstairs, Orbs).
+//   Seed, Timer, Dungeon, Marker, (PC, NPCs, Downstairs, Orbs), Achievements.
 // * The PC cannot stick to the wall.
 // * No more than 5 NPCs can appear in the PC's sight.
 // * Orbs cannot be generated on the downstairs.
@@ -79,6 +79,9 @@ Main.screens.main.initialize = function () {
             keyValue[1],
             Main.system.verifyOrbPosition);
     }
+
+    // Achievements.
+    Main.system.setAchievements();
 
     // Output the dungeon generation details.
     Main.system.printGenerationLog();

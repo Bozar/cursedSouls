@@ -283,19 +283,22 @@ Main.screens.achievement.display = function () {
         Main.display.drawText(
             Main.UI.cutScene.getX(),
             Main.UI.cutScene.getY() + i,
-            i.toString()
+            i > 0
+                ? i.toString()
+                : Main.screens.drawHighlightText('Bounty: Tower Gargoyle')
+            //i.toString()
         );
     }
     for (let i = 0; i < Main.UI.cutScene.getHeight(); i++) {
         Main.display.drawText(
-            Main.UI.cutScene.getX() + Main.UI.cutScene.getWidth() / 2,
+            Main.UI.cutScene.getX() + Main.UI.cutScene.getWidth() / 2 - 3,
             Main.UI.cutScene.getY() + i,
             '|'
         );
     }
     for (let i = 0; i < Main.UI.cutScene.getHeight(); i++) {
         Main.display.drawText(
-            Main.UI.cutScene.getX() + Main.UI.cutScene.getWidth() / 2 + 1.5,
+            Main.UI.cutScene.getX() + Main.UI.cutScene.getWidth() / 2 - 1.5,
             Main.UI.cutScene.getY() + i,
             i.toString()
         );

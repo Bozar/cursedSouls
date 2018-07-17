@@ -94,6 +94,33 @@ Main.screens.drawAlignRight = function (x, y, text, width, color) {
             : text);
 };
 
+Main.screens.drawHighlightText = function (text) {
+    // You can customize these data by passing arguments. I hardcode them for
+    // convenience.
+    let headLength = 1;
+    let fullLength = 26;
+    let fgColor = 'black';
+    let bgColor = 'white';
+
+    let tailLength = 0;
+    let headString = '';
+    let tailString = '';
+    let fullString = '';
+
+    tailLength = fullLength - headLength - text.length;
+
+    headString = '#'.repeat(headLength);
+    tailString = '#'.repeat(tailLength);
+
+    fullString
+        = Main.screens.colorfulText(headString, bgColor, bgColor)
+        + Main.screens.colorfulText(text, fgColor, bgColor)
+        + Main.screens.colorfulText(tailString, bgColor, bgColor)
+        ;
+
+    return fullString;
+};
+
 Main.screens.drawBorder = function () {
     // Dungeon | Status
     // ------- | Status

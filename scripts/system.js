@@ -1179,7 +1179,7 @@ Main.system.fillInventory = function () {
 };
 
 // Set achievements when the game starts.
-Main.system.setAchievements = function () {
+Main.system.setAchievement = function () {
     let achievements = Main.system.loadAchievements();
 
     achievements.forEach((value) => {
@@ -1189,7 +1189,23 @@ Main.system.setAchievements = function () {
     });
 };
 
-Main.system.unlockAchievements = function (id) {
+Main.system.unlockAchievement = function (id) {
     Main.getEntity('gameProgress').Achievement.setAchievement(id, true);
     Main.system.saveAchievements();
+};
+
+Main.system.showAchievement = function () {
+    Main.input.listenEvent('remove', 'main');
+    Main.screens.main.exit();
+
+    Main.screens.achievement.enter();
+    Main.input.listenEvent('add', 'achievement');
+};
+
+Main.system.exitAchievement = function () {
+    Main.input.listenEvent('remove', 'achievement');
+    Main.screens.achievement.exit();
+
+    Main.screens.main.enter(true);
+    Main.input.listenEvent('add', 'main');
 };

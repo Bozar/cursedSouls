@@ -81,7 +81,7 @@ Main.screens.main.initialize = function () {
     }
 
     // Achievements.
-    Main.system.setAchievements();
+    Main.system.setAchievement();
 
     // Output the dungeon generation details.
     Main.system.printGenerationLog();
@@ -176,6 +176,8 @@ Main.screens.main.keyInput = function (e) {
         Main.system.pcPickOrUse();
     } else if (keyAction(e, 'fixed') === 'seed') {
         console.log(Main.getEntity('seed').Seed.getSeed());
+    } else if (keyAction(e, 'fixed') === 'achievement') {
+        Main.system.showAchievement();
     } else if (Main.getDevelop()) {
         switch (keyAction(e, 'fixed')) {
             case 'fov':
@@ -265,5 +267,46 @@ Main.screens.help.display = function () {
 Main.screens.help.keyInput = function (e) {
     if (Main.input.getAction(e, 'fixed') === 'no') {
         Main.system.exitHelp();
+    }
+};
+
+// ====================
+// The achievement screen
+// ====================
+
+Main.screens.achievement = new Main.Screen('achievement', ['main']);
+
+Main.screens.achievement.display = function () {
+    Main.getEntity('message').Message.setModeline(Main.text.action('exit'));
+
+    for (let i = 0; i < Main.UI.cutScene.getHeight(); i++) {
+        Main.display.drawText(
+            Main.UI.cutScene.getX(),
+            Main.UI.cutScene.getY() + i,
+            i.toString()
+        );
+    }
+    for (let i = 0; i < Main.UI.cutScene.getHeight(); i++) {
+        Main.display.drawText(
+            Main.UI.cutScene.getX() + Main.UI.cutScene.getWidth() / 2,
+            Main.UI.cutScene.getY() + i,
+            '|'
+        );
+    }
+    for (let i = 0; i < Main.UI.cutScene.getHeight(); i++) {
+        Main.display.drawText(
+            Main.UI.cutScene.getX() + Main.UI.cutScene.getWidth() / 2 + 1.5,
+            Main.UI.cutScene.getY() + i,
+            i.toString()
+        );
+    }
+
+    Main.screens.drawModeLine();
+    Main.screens.drawBottomRight(Main.text.ui('studio'));
+};
+
+Main.screens.achievement.keyInput = function (e) {
+    if (Main.input.getAction(e, 'fixed') === 'no') {
+        Main.system.exitAchievement();
     }
 };

@@ -122,3 +122,27 @@ Main.UI.cutScene = new Main.UI(
 );
 Main.UI.cutScene._x = 6;
 Main.UI.cutScene._y = 3;
+
+// ===================================
+// UI blocks in the achievement screen
+// ===================================
+
+// The achievement and cut-scene shares the same layout.
+Main.UI.achievementLeft = new Main.UI(
+    26, Main.UI.cutScene.getHeight()
+);
+Main.UI.achievementLeft._x = Main.UI.cutScene.getX();
+Main.UI.achievementLeft._y = Main.UI.cutScene.getY();
+
+Main.UI.achievementMiddle = new Main.UI(1, Main.UI.cutScene.getHeight());
+Main.UI.achievementMiddle._x
+    = Main.UI.cutScene.getX() + Main.UI.achievementLeft.getWidth();
+Main.UI.achievementMiddle._y = Main.UI.cutScene.getY();
+
+Main.UI.achievementRight = new Main.UI(
+    Main.UI.cutScene.getWidth() - Main.UI.achievementLeft.getWidth() - 2.5,
+    Main.UI.cutScene.getHeight()
+);
+Main.UI.achievementRight._x
+    = Main.UI.cutScene.getX() + Main.UI.achievementLeft.getWidth() + 1.5;
+Main.UI.achievementRight._y = Main.UI.cutScene.getY();

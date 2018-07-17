@@ -270,39 +270,52 @@ Main.screens.help.keyInput = function (e) {
     }
 };
 
-// ====================
+// ======================
 // The achievement screen
-// ====================
+// ======================
 
 Main.screens.achievement = new Main.Screen('achievement', ['main']);
 
 Main.screens.achievement.display = function () {
     Main.getEntity('message').Message.setModeline(Main.text.action('exit'));
 
-    for (let i = 0; i < Main.UI.cutScene.getHeight(); i++) {
+    for (let i = 0; i < Main.UI.achievementLeft.getHeight(); i++) {
         Main.display.drawText(
-            Main.UI.cutScene.getX(),
-            Main.UI.cutScene.getY() + i,
+            Main.UI.achievementLeft.getX(),
+            Main.UI.achievementLeft.getY() + i,
             i > 0
                 ? i.toString()
                 : Main.screens.drawHighlightText('Bounty: Tower Gargoyle')
             //i.toString()
         );
     }
-    for (let i = 0; i < Main.UI.cutScene.getHeight(); i++) {
+
+    Main.display.drawText(
+        Main.UI.achievementLeft.getX() + Main.UI.achievementLeft.getWidth(),
+        Main.UI.achievementLeft.getY(),
+        '+'
+    );
+
+    for (let i = 1; i < Main.UI.achievementMiddle.getHeight(); i++) {
         Main.display.drawText(
-            Main.UI.cutScene.getX() + Main.UI.cutScene.getWidth() / 2 - 3,
-            Main.UI.cutScene.getY() + i,
+            Main.UI.achievementMiddle.getX(),
+            Main.UI.achievementMiddle.getY() + i,
             '|'
         );
     }
-    for (let i = 0; i < Main.UI.cutScene.getHeight(); i++) {
+    for (let i = 0; i < Main.UI.achievementRight.getHeight(); i++) {
         Main.display.drawText(
-            Main.UI.cutScene.getX() + Main.UI.cutScene.getWidth() / 2 - 1.5,
-            Main.UI.cutScene.getY() + i,
+            Main.UI.achievementRight.getX(),
+            Main.UI.achievementRight.getY() + i,
             i.toString()
         );
     }
+
+    Main.display.drawText(
+        Main.UI.achievementRight.getX() + Main.UI.achievementRight.getWidth(),
+        Main.UI.achievementRight.getY() + Main.UI.achievementRight.getHeight(),
+        '+'
+    );
 
     Main.screens.drawModeLine();
     Main.screens.drawBottomRight(Main.text.ui('studio'));

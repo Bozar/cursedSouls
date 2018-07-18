@@ -342,7 +342,9 @@ Main.Component.Achievement = function () {
 
     this._achievement = new Map();
 
+    // General achievements.
     this._achievement.set('noExamine', false);
+    this._achievement.set('unlockAll', false);
     // Gargoyle.
     this._achievement.set('boss1Normal', false);
     this._achievement.set('boss1Special', false);
@@ -358,9 +360,8 @@ Main.Component.Achievement = function () {
     this.getAchievement = function (id) {
         if (id && this._achievement.has(id)) {
             return this._achievement.get(id);
-        } else {
-            return this._achievement;
         }
+        return this._achievement;
     };
 
     this.setAchievement = function (key, value) {

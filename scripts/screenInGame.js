@@ -276,6 +276,13 @@ Main.screens.help.keyInput = function (e) {
 
 Main.screens.achievement = new Main.Screen('achievement', ['main']);
 
+Main.screens.achievement._index = 0;
+
+Main.screens.achievement.getIndex = function () { return this._index; };
+Main.screens.achievement.setIndex = function (value) {
+    this._index = value;
+};
+
 Main.screens.achievement.display = function () {
     Main.getEntity('message').Message.setModeline(Main.text.action('exit'));
 
@@ -324,5 +331,9 @@ Main.screens.achievement.display = function () {
 Main.screens.achievement.keyInput = function (e) {
     if (Main.input.getAction(e, 'fixed') === 'no') {
         Main.system.exitAchievement();
+    } else if (Main.input.getAction(e, 'move') === 'down'
+        || Main.input.getAction(e, 'move') === 'up'
+    ) {
+        Main.system.moveCursorInAchievement(Main.input.getAction(e, 'move'));
     }
 };

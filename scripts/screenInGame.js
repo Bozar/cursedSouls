@@ -319,7 +319,7 @@ Main.screens.achievement.display = function () {
     }
 
     Main.display.drawText(
-        Main.UI.achievementRight.getX() + Main.UI.achievementRight.getWidth(),
+        Main.UI.achievementRight.getX() + Main.UI.achievementRight.getWidth() - 1,
         Main.UI.achievementRight.getY() + Main.UI.achievementRight.getHeight(),
         '+'
     );

@@ -284,32 +284,6 @@ Main.screens.achievement.setIndex = function (value) {
 };
 
 Main.screens.achievement.display = function () {
-    Main.getEntity('message').Message.setModeline(Main.text.action('exit'));
-
-    for (let i = 0; i < Main.UI.achievementLeft.getHeight(); i++) {
-        Main.display.drawText(
-            Main.UI.achievementLeft.getX(),
-            Main.UI.achievementLeft.getY() + i,
-            i > 0
-                ? i.toString()
-                : Main.screens.drawHighlightText('Bounty: Tower Gargoyle')
-            //i.toString()
-        );
-    }
-
-    Main.display.drawText(
-        Main.UI.achievementLeft.getX() + Main.UI.achievementLeft.getWidth(),
-        Main.UI.achievementLeft.getY(),
-        '+'
-    );
-
-    for (let i = 1; i < Main.UI.achievementMiddle.getHeight(); i++) {
-        Main.display.drawText(
-            Main.UI.achievementMiddle.getX(),
-            Main.UI.achievementMiddle.getY() + i,
-            '|'
-        );
-    }
     for (let i = 0; i < Main.UI.achievementRight.getHeight(); i++) {
         Main.display.drawText(
             Main.UI.achievementRight.getX(),
@@ -324,6 +298,10 @@ Main.screens.achievement.display = function () {
         '+'
     );
 
+    Main.screens.drawAchievementLeft();
+    Main.screens.drawAchievementBorder();
+
+    Main.getEntity('message').Message.setModeline(Main.text.action('exit'));
     Main.screens.drawModeLine();
     Main.screens.drawBottomRight(Main.text.ui('studio'));
 };

@@ -141,6 +141,16 @@ Main.screens.drawBorder = function () {
     }
 };
 
+Main.screens.drawAchievementBorder = function () {
+    for (let i = 0; i < Main.UI.achievementMiddle.getHeight(); i++) {
+        Main.display.drawText(
+            Main.UI.achievementMiddle.getX(),
+            Main.UI.achievementMiddle.getY() + i,
+            '|'
+        );
+    }
+};
+
 Main.screens.drawVersion = function () {
     let version = '';
 
@@ -507,4 +517,42 @@ Main.screens.drawKeyBindings = function () {
         Main.text.help('keyBindings'),
         Main.UI.cutScene.getWidth()
     );
+};
+
+Main.screens.drawAchievementLeft = function () {
+    let orderdList = [
+        'boss1Normal',
+        'boss1Special',
+        'boss2Normal',
+        'boss3Normal',
+        'boss3Special',
+        'boss4Normal',
+        'boss4Special',
+        'noExamine',
+        'unlockAll'
+    ];
+    // Because there is a placdholder character in the highlighted string.
+    let placeHolder = Main.screens.colorfulText('#', 'black', 'black');
+
+    for (let i = 0; i < orderdList.length; i++) {
+        Main.display.drawText(
+            Main.UI.achievementLeft.getX(),
+            Main.UI.achievementLeft.getY() + i * 1.5,
+            highlightOrColorful(i)
+        );
+    }
+
+    function highlightOrColorful(index) {
+        if (index === Main.screens.achievement.getIndex()) {
+            return Main.screens.drawHighlightText(orderdList[index]);
+        } else if (
+            !Main.getEntity('gameProgress').Achievement.getAchievement(
+                orderdList[index]
+            )
+        ) {
+            return placeHolder
+                + Main.screens.colorfulText(orderdList[index], 'grey');
+        }
+        return placeHolder + orderdList[index];
+    }
 };

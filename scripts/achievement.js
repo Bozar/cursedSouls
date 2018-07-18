@@ -72,6 +72,6 @@ Main.system.moveCursorInAchievement = function (direction) {
         );
     }
 
-    console.log(direction);
-    console.log(Main.screens.achievement.getIndex());
+    Main.display.clear();
+    Main.screens.achievement.display();
 };

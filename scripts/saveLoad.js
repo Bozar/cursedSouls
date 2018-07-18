@@ -35,6 +35,7 @@ Main.system.storageAvailable = function () {
 Main.system.clearStorage = function () {
     if (Main.getDevelop()) {
         Main.storage.clear();
+        Main.getEntity('gameProgress').Achievement.resetAchievement();
 
         if (Main.storage.length === 0) {
             console.log('The local storage is cleared.');

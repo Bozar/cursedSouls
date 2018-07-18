@@ -369,4 +369,10 @@ Main.Component.Achievement = function () {
             this._achievement.set(key, value);
         }
     };
+
+    this.resetAchievement = function () {
+        for (let keyValue of this._achievement) {
+            this._achievement.set(keyValue[0], false);
+        }
+    };
 };

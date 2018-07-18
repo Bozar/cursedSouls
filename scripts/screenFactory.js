@@ -520,17 +520,7 @@ Main.screens.drawKeyBindings = function () {
 };
 
 Main.screens.drawAchievementLeft = function () {
-    let orderdList = [
-        'boss1Normal',
-        'boss1Special',
-        'boss2Normal',
-        'boss3Normal',
-        'boss3Special',
-        'boss4Normal',
-        'boss4Special',
-        'noExamine',
-        'unlockAll'
-    ];
+    let orderdList = Main.screens.achievement.getOrderedList();
     // Because there is a placdholder character in the highlighted string.
     let placeHolder = Main.screens.colorfulText('#', 'black', 'black');
 
@@ -544,15 +534,50 @@ Main.screens.drawAchievementLeft = function () {
 
     function highlightOrColorful(index) {
         if (index === Main.screens.achievement.getIndex()) {
-            return Main.screens.drawHighlightText(orderdList[index]);
+            return Main.screens.drawHighlightText(
+                Main.text.achievementLeft(orderdList[index])
+            );
         } else if (
             !Main.getEntity('gameProgress').Achievement.getAchievement(
                 orderdList[index]
             )
         ) {
             return placeHolder
-                + Main.screens.colorfulText(orderdList[index], 'grey');
+                + Main.screens.colorfulText(
+                    Main.text.achievementLeft(orderdList[index]), 'grey'
+                );
         }
-        return placeHolder + orderdList[index];
+        return placeHolder + Main.text.achievementLeft(orderdList[index]);
     }
+};
+
+Main.screens.drawAchievementRight = function () {
+    let status = null;
+
+    if (Main.getEntity('gameProgress').Achievement.getAchievement(
+        Main.screens.achievement.getOrderedList(
+            Main.screens.achievement.getIndex()
+        )
+    )) {
+        status = Main.text.achievementRight('unlocked');
+    } else {
+        status = Main.text.achievementRight('locked');
+    }
+
+    Main.display.drawText(
+        Main.UI.achievementRight.getX(),
+        Main.UI.achievementRight.getY(),
+        Main.screens.colorfulText(status, 'grey')
+    );
+
+    Main.display.drawText(
+        Main.UI.achievementRight.getX(),
+        Main.UI.achievementRight.getY() + 1.5,
+        Main.text.achievementRight(
+            Main.screens.achievement.getOrderedList(
+                Main.screens.achievement.getIndex()
+            )
+        ),
+        Main.UI.achievementRight.getWidth()
+    );
 };

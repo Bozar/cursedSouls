@@ -277,28 +277,33 @@ Main.screens.help.keyInput = function (e) {
 Main.screens.achievement = new Main.Screen('achievement', ['main']);
 
 Main.screens.achievement._index = 0;
+Main.screens.achievement._orderedList
+    = [
+        'boss1Normal',
+        'boss1Special',
+        'boss2Normal',
+        'boss3Normal',
+        'boss3Special',
+        'boss4Normal',
+        'boss4Special',
+        'noExamine',
+        'unlockAll'
+    ];
 
 Main.screens.achievement.getIndex = function () { return this._index; };
+Main.screens.achievement.getOrderedList = function (index) {
+    if (index > -1 && index < this._orderedList.length) {
+        return this._orderedList[index];
+    }
+    return this._orderedList;
+};
 Main.screens.achievement.setIndex = function (value) {
     this._index = value;
 };
 
 Main.screens.achievement.display = function () {
-    for (let i = 0; i < Main.UI.achievementRight.getHeight(); i++) {
-        Main.display.drawText(
-            Main.UI.achievementRight.getX(),
-            Main.UI.achievementRight.getY() + i,
-            i.toString()
-        );
-    }
-
-    Main.display.drawText(
-        Main.UI.achievementRight.getX() + Main.UI.achievementRight.getWidth() - 1,
-        Main.UI.achievementRight.getY() + Main.UI.achievementRight.getHeight(),
-        '+'
-    );
-
     Main.screens.drawAchievementLeft();
+    Main.screens.drawAchievementRight();
     Main.screens.drawAchievementBorder();
 
     Main.getEntity('message').Message.setModeline(Main.text.action('exit'));

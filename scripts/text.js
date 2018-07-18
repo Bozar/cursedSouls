@@ -198,6 +198,41 @@ Main.text.initialize = function () {
         + ' for more information.'
     );
 
+    // The achievement screen.
+    text.set('achievementLeft', new Map());
+    text.get('achievementLeft').set('boss1Normal', 'Bounty: Tower Gargoyle');
+    text.get('achievementLeft').set('boss1Special', 'Gargoyle Tail Axe');
+    text.get('achievementLeft').set('boss2Normal', 'boss2Normal');
+    text.get('achievementLeft').set('boss3Normal', 'boss3Normal');
+    text.get('achievementLeft').set('boss3Special', 'boss3Special');
+    text.get('achievementLeft').set('boss4Normal', 'boss4Normal');
+    text.get('achievementLeft').set('boss4Special', 'boss4Special');
+    text.get('achievementLeft').set('noExamine', 'Readme Is For Noobs');
+    text.get('achievementLeft').set('unlockAll', 'One Punch Man');
+
+    text.set('achievementRight', new Map());
+    text.get('achievementRight').set('locked', '[Locked]');
+    text.get('achievementRight').set('unlocked', '[Unlocked]');
+
+    text.get('achievementRight').set('boss1Normal', 'Beat the Tower Gargoyle.');
+    text.get('achievementRight').set('boss1Special',
+        'Keep calm and don\'t roll back.'
+    );
+    text.get('achievementRight').set('boss2Normal', 'boss2Normal');
+    text.get('achievementRight').set('boss3Normal', 'boss3Normal');
+    text.get('achievementRight').set('boss3Special', 'boss3Special');
+    text.get('achievementRight').set('boss4Normal', 'boss4Normal');
+    text.get('achievementRight').set('boss4Special', 'boss4Special');
+
+    // Hats off, gentlemen. Here before you stands a TRUE player.
+    // https://www.reddit.com/r/roguelikes/comments/3drjoz/rroguelikes_developer_ama_uunormal_and/ct8116x/
+    text.get('achievementRight').set('noExamine',
+        'You can beat Faster Than Light without pausing?'
+        + ' Then surely you can pass one dungeon level'
+        + ' without entering the Examine Mode.'
+    );
+    text.get('achievementRight').set('unlockAll', 'Unlock everything, Genos.');
+
     // Cut-scenes.
     text.set('cutScene', new Map());
 
@@ -269,6 +304,8 @@ Main.text.staticTextList = [
     'name',
     'info',
     'help',
+    'achievementLeft',
+    'achievementRight',
     'cutScene',
     'error'
 ];

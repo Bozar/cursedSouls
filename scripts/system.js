@@ -872,9 +872,11 @@ Main.system.pcAttack = function (target, attackType) {
         Main.getEntity('timer').scheduler.remove(target);
         Main.getEntity('npc').delete(target.getID());
 
-        // 5-5: Progress the game if the level boss is dead.
+        // 5a-5: Progress the game if the level boss is dead.
+        // 5b-5: Check the boss related normal achievements.
         if (Main.system.bossIsDead(target)) {
             Main.getEntity('gameProgress').BossFight.goToNextBossFightStage();
+            Main.system.checkAchBossNormal(target);
         }
     }
     // Step 2B-4: The enemy is still alive.
@@ -883,8 +885,8 @@ Main.system.pcAttack = function (target, attackType) {
             Main.text.hitTarget(target));
     }
 
-    // Step 3-4: Check the boss related achievements.
-    Main.system.achievementBreakTail(target, attackType);
+    // Step 3-4: Check the boss related special achievements.
+    Main.system.checkAchBoss1Special('boss1Special', target, attackType);
 
     // Step 4-4: Remove the key-binding & unlock the engine.
     // NOTE: Always remember to remove the key-bindings before unlocking. I have

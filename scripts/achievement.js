@@ -40,18 +40,15 @@ Main.system.exitAchievement = function () {
     Main.input.listenEvent('add', 'main');
 };
 
-Main.system.achievementBreakTail = function (actor, attackType) {
-    if (actor.getEntityName() === 'gargoyle'
-        && attackType === 'fire') {
-        if (actor.CombatRole.getRole('hasTail')) {
-            actor.CombatRole.setRole('hasTail', false);
-
-            Main.getEntity('message').Message.pushMsg(
-                Main.text.action('breakTail')
-            );
-            // TODO: unlock the related achievement.
-        }
+Main.system.achievementIsLocked = function (achieveID) {
+    if (Main.getEntity('gameProgress').Achievement.getAchievement()
+        .has(achieveID)
+    ) {
+        return !Main.getEntity('gameProgress').Achievement.getAchievement(
+            achieveID
+        );
     }
+    return false;
 };
 
 Main.system.moveCursorInAchievement = function (direction) {
@@ -80,4 +77,45 @@ Main.system.moveCursorInAchievement = function (direction) {
 
     Main.display.clear();
     Main.screens.achievement.display();
+};
+
+Main.system.checkAchBoss1Special = function (achieveID, actor, attackType) {
+    if (Main.system.achievementIsLocked(achieveID)
+        && actor.getEntityName() === 'gargoyle'
+        && attackType === 'fire'
+    ) {
+        if (actor.CombatRole.getRole('hasTail')) {
+            actor.CombatRole.setRole('hasTail', false);
+
+            Main.getEntity('message').Message.pushMsg(
+                Main.text.action('breakTail')
+            );
+            Main.system.unlockAchievement(achieveID);
+        }
+    }
+};
+
+// Call this function AFTER the boss is killed.
+Main.system.checkAchBossNormal = function (boss) {
+    let achieveID = null;
+
+    switch (boss.getEntityName()) {
+        case 'gargoyle':
+        case 'juvenileGargoyle':
+            achieveID = 'boss1Normal';
+            break;
+        case 'butcher':
+            achieveID = 'boss2Normal';
+            break;
+        case 'ghoul':
+            achieveID = 'boss3Normal';
+            break;
+        case 'giovanni':
+            achieveID = 'boss4Normal';
+            break;
+    }
+
+    if (Main.system.achievementIsLocked(achieveID)) {
+        Main.system.unlockAchievement(achieveID);
+    }
 };

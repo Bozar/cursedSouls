@@ -392,6 +392,8 @@ Main.system.pcUseDownstairs = function () {
                 Main.system.saveOrbsOnTheGround();
             }
 
+            Main.system.checkAchNoExamine();
+
             Main.getEntity('message').Message.pushMsg(
                 Main.text.action('save')
             );

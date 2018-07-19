@@ -142,3 +142,11 @@ Main.system.checkAchUnlockAll = function () {
         Main.system.unlockAchievement('unlockAll');
     }
 };
+
+Main.system.checkAchNoExamine = function () {
+    if (Main.system.achievementIsLocked('noExamine')
+        && Main.getEntity('gameProgress').Achievement.getNoExamine()
+    ) {
+        Main.system.unlockAchievement('noExamine');
+    }
+};

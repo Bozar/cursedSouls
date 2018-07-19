@@ -171,6 +171,9 @@ Main.screens.main.keyInput = function (e) {
     } else if (keyAction(e, 'move')) {
         Main.system.move(keyAction(e, 'move'));
     } else if (keyAction(e, 'interact') === 'examine') {
+        if (Main.getEntity('gameProgress').Achievement.getNoExamine()) {
+            Main.getEntity('gameProgress').Achievement.setNoExamine(false);
+        }
         Main.system.examineMode();
     } else if (keyAction(e, 'interact') === 'pickOrUse') {
         Main.system.pcPickOrUse();

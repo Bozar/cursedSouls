@@ -14,6 +14,12 @@ Main.system.setAchievement = function () {
 Main.system.unlockAchievement = function (id) {
     Main.getEntity('gameProgress').Achievement.setAchievement(id, true);
     Main.system.saveAchievements();
+
+    Main.getEntity('message').Message.pushMsg(
+        Main.text.unlockAchievement(
+            Main.text.achievementLeft(id)
+        )
+    );
 };
 
 Main.system.showAchievement = function () {

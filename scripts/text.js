@@ -55,6 +55,7 @@ Main.text.initialize = function () {
     text.get('action').set('hit', 'You hit the %%.');
     text.get('action').set('kill', 'You kill the %%.');
 
+    text.get('action').set('unlockAchievement', 'Unlock: %%.');
     text.get('action').set('breakTail',
         'You chop off the Tower Gargoyle\'s tail!');
 
@@ -503,6 +504,14 @@ Main.text.gargoyleDescription = function (actor) {
     } else {
         text = text.replace('%%', Main.text.info('gargoyleLoseTail'));
     }
+
+    return text;
+};
+
+Main.text.unlockAchievement = function (achievement) {
+    let text = Main.text.action('unlockAchievement');
+
+    text = text.replace('%%', Main.screens.colorfulText(achievement, 'green'));
 
     return text;
 };

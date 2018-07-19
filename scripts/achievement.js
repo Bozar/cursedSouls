@@ -91,6 +91,7 @@ Main.system.checkAchBoss1Special = function (achieveID, actor, attackType) {
                 Main.text.action('breakTail')
             );
             Main.system.unlockAchievement(achieveID);
+            Main.system.checkAchUnlockAll();
         }
     }
 };
@@ -117,5 +118,27 @@ Main.system.checkAchBossNormal = function (boss) {
 
     if (Main.system.achievementIsLocked(achieveID)) {
         Main.system.unlockAchievement(achieveID);
+        Main.system.checkAchUnlockAll();
+    }
+};
+
+Main.system.checkAchUnlockAll = function () {
+    let unlockable = true;
+
+    if (!Main.system.achievementIsLocked('unlockAll')) {
+        return;
+    }
+
+    for (let [key, value] of
+        Main.getEntity('gameProgress').Achievement.getAchievement()
+    ) {
+        if (value === false && key !== 'unlockAll') {
+            unlockable = false;
+            break;
+        }
+    }
+
+    if (unlockable) {
+        Main.system.unlockAchievement('unlockAll');
     }
 };

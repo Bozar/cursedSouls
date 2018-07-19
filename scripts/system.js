@@ -888,7 +888,7 @@ Main.system.pcAttack = function (target, attackType) {
     }
 
     // Step 3-4: Check the boss related special achievements.
-    Main.system.checkAchBoss1Special('boss1Special', target, attackType);
+    Main.system.checkAchBoss1Special(target, attackType);
 
     // Step 4-4: Remove the key-binding & unlock the engine.
     // NOTE: Always remember to remove the key-bindings before unlocking. I have

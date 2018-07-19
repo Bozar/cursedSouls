@@ -79,8 +79,30 @@ Main.system.moveCursorInAchievement = function (direction) {
     Main.screens.achievement.display();
 };
 
-Main.system.checkAchBoss1Special = function (achieveID, actor, attackType) {
-    if (Main.system.achievementIsLocked(achieveID)
+// Be sure to call this function after an achievement is unlocked.
+Main.system.checkAchUnlockAll = function () {
+    let unlockable = true;
+
+    if (!Main.system.achievementIsLocked('unlockAll')) {
+        return;
+    }
+
+    for (let [key, value] of
+        Main.getEntity('gameProgress').Achievement.getAchievement()
+    ) {
+        if (value === false && key !== 'unlockAll') {
+            unlockable = false;
+            break;
+        }
+    }
+
+    if (unlockable) {
+        Main.system.unlockAchievement('unlockAll');
+    }
+};
+
+Main.system.checkAchBoss1Special = function (actor, attackType) {
+    if (Main.system.achievementIsLocked('boss1Special')
         && actor.getEntityName() === 'gargoyle'
         && attackType === 'fire'
     ) {
@@ -90,7 +112,7 @@ Main.system.checkAchBoss1Special = function (achieveID, actor, attackType) {
             Main.getEntity('message').Message.pushMsg(
                 Main.text.action('breakTail')
             );
-            Main.system.unlockAchievement(achieveID);
+            Main.system.unlockAchievement('boss1Special');
             Main.system.checkAchUnlockAll();
         }
     }
@@ -122,31 +144,11 @@ Main.system.checkAchBossNormal = function (boss) {
     }
 };
 
-Main.system.checkAchUnlockAll = function () {
-    let unlockable = true;
-
-    if (!Main.system.achievementIsLocked('unlockAll')) {
-        return;
-    }
-
-    for (let [key, value] of
-        Main.getEntity('gameProgress').Achievement.getAchievement()
-    ) {
-        if (value === false && key !== 'unlockAll') {
-            unlockable = false;
-            break;
-        }
-    }
-
-    if (unlockable) {
-        Main.system.unlockAchievement('unlockAll');
-    }
-};
-
 Main.system.checkAchNoExamine = function () {
     if (Main.system.achievementIsLocked('noExamine')
         && Main.getEntity('gameProgress').Achievement.getNoExamine()
     ) {
         Main.system.unlockAchievement('noExamine');
+        Main.system.checkAchUnlockAll();
     }
 };

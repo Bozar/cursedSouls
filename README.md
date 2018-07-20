@@ -25,7 +25,7 @@ Normal Mode:
 * Fast move: `Shift` + Movement keys.
 * Pick up an orb or interact with the downstairs: `Space`.
 * Wait 1 turn: `z`, `.(period)`.
-* [WIP]View achievements: `a`.[/WIP]
+* View achievements: `a`.
 * Help: `?`.
 
 Examine Mode, Aim Mode:
@@ -175,11 +175,16 @@ else {
 ### Wizard Mode Key-bindings
 
 * Switch the Wizard Mode: `~`.
+* Print the seed: `=`.
 * Add an orb: `1` to `6`.
 * Remove an orb: `-`.
 * Print the current turn in the browser console: `\`.
 * Switch the fog of war: `]`.
 * Kill all enemies and teleport to the downstairs: `0`.
-* Print the seed: `=`.
+* Clear the local data: `C`.
+
+After pressing `C`, all local data, including the achievement progress, will be deleted. Do this at your own risk.
+
+It is not recommended to play the same seed repeatedly, but if you need to, there is a way. In `scripts/main.js`, search `12345`. Copy and uncomment the line, and then set the seed.
 
 vim: set lbr:

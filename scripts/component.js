@@ -29,12 +29,12 @@ Main.Component.Seed = function () {
         if (!seed) {
             this._seed = (Math.random() * 9 + 1) * Math.pow(10, 9);
             this._seed = Math.floor(this._seed);
-            this._seed = this._seed.toString();
 
-            this._printSeed = this._seed;
+            this._printSeed = this._seed.toString();
         } else {
             // Remove the beginning `#` if the seed is set manually.
             this._seed = seed.toString().replace(/^#{0,1}(.+)$/, '$1');
+            this._seed = Number.parseInt(this._seed, 10);
             this._printSeed = seed;
         }
         // Insert hyphen to the seed string.
@@ -84,7 +84,7 @@ Main.Component.BossFight = function () {
     this._progress = ['inactive', 'active', 'win'];
     this._bossFight = this._progress[0];
     this._dungeonLevel = 1;
-    this._maxDungeonLevel = 4;
+    this._maxDungeonLevel = 3;
 
     this.getBossFightStatus = function () { return this._bossFight; };
     this.getDungeonLevel = function () { return this._dungeonLevel; };
@@ -103,6 +103,10 @@ Main.Component.BossFight = function () {
             this._maxDungeonLevel);
 
         this._dungeonLevel = nextLevel;
+    };
+
+    this.setDungeonLevel = function (level) {
+        this._dungeonLevel = level;
     };
 };
 
@@ -331,4 +335,51 @@ Main.Component.FastMove = function () {
     this.resetStep = function () { this._step = this._maxStep; };
     this.clearStep = function () { this._step = 0; };
     this.setDirection = function (direction) { this._direction = direction; };
+};
+
+Main.Component.Achievement = function () {
+    this._name = 'Achievement';
+
+    this._achievement = new Map();
+
+    // General achievements.
+    this._achievement.set('noExamine', false);
+    this._achievement.set('unlockAll', false);
+    // Gargoyle.
+    this._achievement.set('boss1Normal', false);
+    this._achievement.set('boss1Special', false);
+    // Butcher.
+    this._achievement.set('boss2Normal', false);
+    // Ghoul.
+    this._achievement.set('boss3Normal', false);
+    this._achievement.set('boss3Special', false);
+    // Giovanni.
+    this._achievement.set('boss4Normal', false);
+    this._achievement.set('boss4Special', false);
+
+    // Use the boolean value to check if an achievement is unlockable. The
+    // default value is ALWAYS true (unlockable).
+    this._noExamine = true;
+
+    this.getAchievement = function (id) {
+        if (id && this._achievement.has(id)) {
+            return this._achievement.get(id);
+        }
+        return this._achievement;
+    };
+
+    this.setAchievement = function (key, value) {
+        if (key && this._achievement.has(key)) {
+            this._achievement.set(key, value);
+        }
+    };
+
+    this.resetAchievement = function () {
+        for (let keyValue of this._achievement) {
+            this._achievement.set(keyValue[0], false);
+        }
+    };
+
+    this.getNoExamine = function () { return this._noExamine; };
+    this.setNoExamine = function (status) { this._noExamine = status; };
 };

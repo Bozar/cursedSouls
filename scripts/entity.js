@@ -5,12 +5,6 @@
 // ===============
 
 Main.entities = new Map();
-Main.entities.set('message', null);
-Main.entities.set('seed', null);
-Main.entities.set('dungeon', null);
-Main.entities.set('pc', null);
-Main.entities.set('marker', null);
-Main.entities.set('downstairs', null);
 
 // Key: ID, value: object.
 Main.entities.set('npc', new Map());
@@ -42,7 +36,6 @@ Main.entity.seed = function () {
 Main.entity.dungeon = function () {
     let e = new Main.Factory('dungeon');
     e.addComponent(new Main.Component.Dungeon());
-    e.addComponent(new Main.Component.BossFight());
 
     let cycle = 0;
 
@@ -86,6 +79,15 @@ Main.entity.dungeon = function () {
         return Math.floor(
             floor / (e.Dungeon.getWidth() * e.Dungeon.getHeight()) * 100);
     }
+};
+
+Main.entity.gameProgress = function () {
+    let e = new Main.Factory('gameProgress');
+
+    e.addComponent(new Main.Component.BossFight());
+    e.addComponent(new Main.Component.Achievement());
+
+    Main.entities.set('gameProgress', e);
 };
 
 Main.entity.pc = function () {

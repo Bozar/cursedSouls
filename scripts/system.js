@@ -182,6 +182,7 @@ Main.system.placeBoss = function (observer, target, distance) {
 Main.system.createOrbs = function () {
     // TODO: change the loop based on the dungeon level.
     let loop = 3;
+    let orbsInherited = Main.system.loadOrbsOnTheGround();
 
     for (var i = 0; i < loop; i++) {
         Main.entity.orb('fire');
@@ -189,6 +190,10 @@ Main.system.createOrbs = function () {
         Main.entity.orb('slime');
         Main.entity.orb('lump');
     }
+
+    orbsInherited.forEach((orb) => {
+        Main.entity.orb(orb);
+    });
 };
 
 Main.system.createEnemies = function () {
@@ -316,7 +321,7 @@ Main.system.pcPickOrUse = function () {
     if (Main.system.downstairsHere(
         Main.getEntity('pc').Position.getX(),
         Main.getEntity('pc').Position.getY())
-        && Main.getEntity('dungeon').BossFight.getBossFightStatus()
+        && Main.getEntity('gameProgress').BossFight.getBossFightStatus()
         !== 'active') {
         Main.system.pcUseDownstairs();
     } else if (Main.system.orbHere(
@@ -355,12 +360,12 @@ Main.system.pcUseDownstairs = function () {
     let position = [];
     let newActor = null;
 
-    switch (Main.getEntity('dungeon').BossFight.getBossFightStatus()) {
+    switch (Main.getEntity('gameProgress').BossFight.getBossFightStatus()) {
         case 'inactive':
             Main.input.listenEvent('remove', 'main');
             Main.screens.main.exit();
 
-            Main.getEntity('dungeon').BossFight.goToNextBossFightStage();
+            Main.getEntity('gameProgress').BossFight.goToNextBossFightStage();
 
             position = Main.system.placeBoss(
                 Main.getEntity('downstairs'),
@@ -372,13 +377,33 @@ Main.system.pcUseDownstairs = function () {
 
             Main.screens.cutScene.enter();
             Main.input.listenEvent('add', 'cutScene');
+
             break;
         case 'win':
             Main.input.listenEvent('remove', 'main');
-            Main.screens.main.exit();
 
-            // TODO: Call the save function.
-            Main.screens.cutScene.enter();
+            // TODO: Change these lines when the 2nd level is ready.
+            let debug = 0;
+            if (debug > 0) {
+                Main.getEntity('gameProgress').BossFight.goToNextDungeonLevel();
+                Main.system.saveDungeonLevel();
+                Main.system.saveSeed();
+                Main.system.saveInventory();
+                Main.system.saveOrbsOnTheGround();
+            }
+
+            Main.system.checkAchNoExamine();
+
+            Main.getEntity('message').Message.pushMsg(
+                Main.text.action('save')
+            );
+            Main.getEntity('message').Message.pushMsg(
+                Main.text.action('closeOrReload')
+            );
+
+            Main.display.clear();
+            Main.screens.main.display();
+
             break;
     }
 };
@@ -849,9 +874,11 @@ Main.system.pcAttack = function (target, attackType) {
         Main.getEntity('timer').scheduler.remove(target);
         Main.getEntity('npc').delete(target.getID());
 
-        // 5-5: Progress the game if the level boss is dead.
+        // 5a-5: Progress the game if the level boss is dead.
+        // 5b-5: Check the boss related normal achievements.
         if (Main.system.bossIsDead(target)) {
-            Main.getEntity('dungeon').BossFight.goToNextBossFightStage();
+            Main.getEntity('gameProgress').BossFight.goToNextBossFightStage();
+            Main.system.checkAchBossNormal(target);
         }
     }
     // Step 2B-4: The enemy is still alive.
@@ -860,8 +887,8 @@ Main.system.pcAttack = function (target, attackType) {
             Main.text.hitTarget(target));
     }
 
-    // Step 3-4: Check the boss related achievements.
-    Main.system.achievementBreakTail(target, attackType);
+    // Step 3-4: Check the boss related special achievements.
+    Main.system.checkAchBoss1Special(target, attackType);
 
     // Step 4-4: Remove the key-binding & unlock the engine.
     // NOTE: Always remember to remove the key-bindings before unlocking. I have
@@ -1015,20 +1042,6 @@ Main.system.bossIsDead = function (target) {
     return bossIsDead;
 };
 
-Main.system.achievementBreakTail = function (actor, attackType) {
-    if (actor.getEntityName() === 'gargoyle'
-        && attackType === 'fire') {
-        if (actor.CombatRole.getRole('hasTail')) {
-            actor.CombatRole.setRole('hasTail', false);
-
-            Main.getEntity('message').Message.pushMsg(
-                Main.text.action('breakTail')
-            );
-            // TODO: unlock the related achievement.
-        }
-    }
-};
-
 Main.system.killAndTeleport = function () {
     Main.getEntity('npc').forEach((actor) => {
         Main.getEntity('timer').scheduler.remove(actor);
@@ -1118,4 +1131,39 @@ Main.system.showHelp = function () {
 
     Main.screens.help.enter();
     Main.input.listenEvent('add', 'help');
+};
+
+Main.system.startRNG = function () {
+    let newSeed = null;
+
+    Main.getEntity('seed').Seed.setSeed(
+        Main.system.loadSeed() || Main.getDevSeed()
+    );
+
+    ROT.RNG.setSeed(Main.getEntity('seed').Seed.getSeed());
+
+    // Generate a new seed for deeper dungeon levels.
+    if (Main.getEntity('gameProgress').BossFight.getDungeonLevel() > 1) {
+        for (let i = 0;
+            i < Main.getEntity('gameProgress').BossFight.getDungeonLevel();
+            i++
+        ) {
+            newSeed = ROT.RNG.getUniform();
+        }
+        ROT.RNG.setSeed(newSeed * Math.pow(10, 8));
+    }
+};
+
+Main.system.fillInventory = function () {
+    if (Main.system.loadDungeonLevel() > 1) {
+        Main.system.loadInventory().forEach((orb) => {
+            Main.getEntity('pc').Inventory.addItem(orb);
+        });
+    } else {
+        Main.getEntity('pc').Inventory.addItem('slime');
+        Main.getEntity('pc').Inventory.addItem('armor');
+        Main.getEntity('pc').Inventory.addItem('armor');
+        Main.getEntity('pc').Inventory.addItem('fire');
+        Main.getEntity('pc').Inventory.addItem('lump');
+    }
 };

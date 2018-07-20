@@ -17,6 +17,7 @@ Main.input.keybind.get('fixed').set('yes', [' ']);
 Main.input.keybind.get('fixed').set('no', ['Escape']);
 Main.input.keybind.get('fixed').set('help', ['?']);
 Main.input.keybind.get('fixed').set('seed', ['=']);
+Main.input.keybind.get('fixed').set('achievement', ['a']);
 
 // Development
 Main.input.keybind.get('fixed').set('develop', ['~']);
@@ -24,6 +25,7 @@ Main.input.keybind.get('fixed').set('fov', [']']);
 Main.input.keybind.get('fixed').set('turn', ['\\']);
 Main.input.keybind.get('fixed').set('dummy', ['d']);
 Main.input.keybind.get('fixed').set('teleport', ['0']);
+Main.input.keybind.get('fixed').set('clearStorage', ['C']);
 
 Main.input.keybind.get('fixed').set('addFire', ['1']);
 Main.input.keybind.get('fixed').set('addIce', ['2']);

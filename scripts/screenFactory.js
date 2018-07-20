@@ -94,6 +94,33 @@ Main.screens.drawAlignRight = function (x, y, text, width, color) {
             : text);
 };
 
+Main.screens.drawHighlightText = function (text) {
+    // You can customize these data by passing arguments. I hardcode them for
+    // convenience.
+    let headLength = 1;
+    let fullLength = 26;
+    let fgColor = 'black';
+    let bgColor = 'white';
+
+    let tailLength = 0;
+    let headString = '';
+    let tailString = '';
+    let fullString = '';
+
+    tailLength = fullLength - headLength - text.length;
+
+    headString = '#'.repeat(headLength);
+    tailString = '#'.repeat(tailLength);
+
+    fullString
+        = Main.screens.colorfulText(headString, bgColor, bgColor)
+        + Main.screens.colorfulText(text, fgColor, bgColor)
+        + Main.screens.colorfulText(tailString, bgColor, bgColor)
+        ;
+
+    return fullString;
+};
+
 Main.screens.drawBorder = function () {
     // Dungeon | Status
     // ------- | Status
@@ -111,6 +138,16 @@ Main.screens.drawBorder = function () {
         i++) {
         Main.display.draw(
             i, Main.UI.dungeon.getY() + Main.UI.dungeon.getHeight(), '-');
+    }
+};
+
+Main.screens.drawAchievementBorder = function () {
+    for (let i = 0; i < Main.UI.achievementMiddle.getHeight(); i++) {
+        Main.display.drawText(
+            Main.UI.achievementMiddle.getX(),
+            Main.UI.achievementMiddle.getY() + i,
+            '|'
+        );
     }
 };
 
@@ -452,16 +489,8 @@ Main.screens.drawHelp = function () {
 };
 
 Main.screens.drawCutScene = function () {
-    let level
-        = Main.getEntity('dungeon')
-            ? Main.getEntity('dungeon').BossFight.getDungeonLevel()
-            : 1;
-
-    let bossFight
-        = Main.getEntity('dungeon')
-            ? Main.getEntity('dungeon').BossFight.getBossFightStatus()
-            : 'inactive';
-
+    let level = Main.getEntity('gameProgress').BossFight.getDungeonLevel();
+    let bossFight = Main.getEntity('gameProgress').BossFight.getBossFightStatus();
     let text = '';
 
     switch (bossFight) {
@@ -471,16 +500,13 @@ Main.screens.drawCutScene = function () {
         case 'active':
             text = Main.text.cutScene('beforeBossFight' + level);
             break;
-        case 'win':
-            text = Main.text.cutScene('afterBossFight' + level);
-            break;
     }
 
     Main.display.drawText(
         Main.UI.cutScene.getX(),
         Main.UI.cutScene.getY(),
         text,
-        Main.UI.cutScene.getWidth(),
+        Main.UI.cutScene.getWidth()
     );
 };
 
@@ -489,6 +515,69 @@ Main.screens.drawKeyBindings = function () {
         Main.UI.cutScene.getX(),
         Main.UI.cutScene.getY() - 1.5,
         Main.text.help('keyBindings'),
-        Main.UI.cutScene.getWidth(),
+        Main.UI.cutScene.getWidth()
+    );
+};
+
+Main.screens.drawAchievementLeft = function () {
+    let orderdList = Main.screens.achievement.getOrderedList();
+    // Because there is a placdholder character in the highlighted string.
+    let placeHolder = Main.screens.colorfulText('#', 'black', 'black');
+
+    for (let i = 0; i < orderdList.length; i++) {
+        Main.display.drawText(
+            Main.UI.achievementLeft.getX(),
+            Main.UI.achievementLeft.getY() + i * 1.5,
+            highlightOrColorful(i)
+        );
+    }
+
+    function highlightOrColorful(index) {
+        if (index === Main.screens.achievement.getIndex()) {
+            return Main.screens.drawHighlightText(
+                Main.text.achievementLeft(orderdList[index])
+            );
+        } else if (
+            !Main.getEntity('gameProgress').Achievement.getAchievement(
+                orderdList[index]
+            )
+        ) {
+            return placeHolder
+                + Main.screens.colorfulText(
+                    Main.text.achievementLeft(orderdList[index]), 'grey'
+                );
+        }
+        return placeHolder + Main.text.achievementLeft(orderdList[index]);
+    }
+};
+
+Main.screens.drawAchievementRight = function () {
+    let status = null;
+
+    if (Main.getEntity('gameProgress').Achievement.getAchievement(
+        Main.screens.achievement.getOrderedList(
+            Main.screens.achievement.getIndex()
+        )
+    )) {
+        status = Main.text.achievementRight('unlocked');
+    } else {
+        status = Main.text.achievementRight('locked');
+    }
+
+    Main.display.drawText(
+        Main.UI.achievementRight.getX(),
+        Main.UI.achievementRight.getY(),
+        Main.screens.colorfulText(status, 'grey')
+    );
+
+    Main.display.drawText(
+        Main.UI.achievementRight.getX(),
+        Main.UI.achievementRight.getY() + 1.5,
+        Main.text.achievementRight(
+            Main.screens.achievement.getOrderedList(
+                Main.screens.achievement.getIndex()
+            )
+        ),
+        Main.UI.achievementRight.getWidth()
     );
 };

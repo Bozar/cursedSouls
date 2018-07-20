@@ -55,6 +55,7 @@ Main.text.initialize = function () {
     text.get('action').set('hit', 'You hit the %%.');
     text.get('action').set('kill', 'You kill the %%.');
 
+    text.get('action').set('unlockAchievement', 'Unlock: %%.');
     text.get('action').set('breakTail',
         'You chop off the Tower Gargoyle\'s tail!');
 
@@ -65,6 +66,11 @@ Main.text.initialize = function () {
     text.get('action').set('gargoyleThrust',
         'The Tower Gargoyle thrusts you with the halberd.');
     text.get('action').set('gargoyleBreathe', 'The %% breathes fire.');
+
+    text.get('action').set('save', 'Game saved.');
+    text.get('action').set('closeOrReload',
+        'You can close the tab or press F5 to continue.'
+    );
 
     text.get('action').set('die', 'You die.');
     text.get('action').set('end', '===The End===');
@@ -147,7 +153,6 @@ Main.text.initialize = function () {
 
     text.get('info').set('downstairs2', 'Level 2 downstairs.');
     text.get('info').set('downstairs3', 'Level 3 downstairs.');
-    text.get('info').set('downstairs4', 'Level 4 downstairs.');
 
     // The help screen.
     text.set('help', new Map());
@@ -163,10 +168,8 @@ Main.text.initialize = function () {
         + '* Wait 1 turn: '
         + Main.screens.colorfulText('z', 'green') + ', '
         + Main.screens.colorfulText('.(period)', 'green') + '.\n'
-        //+ '* View achievements: '
-        + '* [WIP]View achievements: '
-        + Main.screens.colorfulText('a', 'green') + '.[/WIP]\n'
-        //+ Main.screens.colorfulText('a', 'green') + '.\n'
+        + '* View achievements: '
+        + Main.screens.colorfulText('a', 'green') + '.\n'
         + '* Help: '
         + Main.screens.colorfulText('?', 'green') + '.\n\n'
         + 'Examine Mode, Aim Mode:\n\n'
@@ -193,6 +196,41 @@ Main.text.initialize = function () {
         + Main.screens.colorfulText('README.md', 'green')
         + ' for more information.'
     );
+
+    // The achievement screen.
+    text.set('achievementLeft', new Map());
+    text.get('achievementLeft').set('boss1Normal', 'Bounty: Tower Gargoyle');
+    text.get('achievementLeft').set('boss1Special', 'Gargoyle Tail Axe');
+    text.get('achievementLeft').set('boss2Normal', 'boss2Normal');
+    text.get('achievementLeft').set('boss3Normal', 'boss3Normal');
+    text.get('achievementLeft').set('boss3Special', 'boss3Special');
+    text.get('achievementLeft').set('boss4Normal', 'boss4Normal');
+    text.get('achievementLeft').set('boss4Special', 'boss4Special');
+    text.get('achievementLeft').set('noExamine', 'Readme Is For Noobs');
+    text.get('achievementLeft').set('unlockAll', 'One Punch Man');
+
+    text.set('achievementRight', new Map());
+    text.get('achievementRight').set('locked', '[Locked]');
+    text.get('achievementRight').set('unlocked', '[Unlocked]');
+
+    text.get('achievementRight').set('boss1Normal', 'Beat the Tower Gargoyle.');
+    text.get('achievementRight').set('boss1Special',
+        'Keep calm and don\'t roll back.'
+    );
+    text.get('achievementRight').set('boss2Normal', 'boss2Normal');
+    text.get('achievementRight').set('boss3Normal', 'boss3Normal');
+    text.get('achievementRight').set('boss3Special', 'boss3Special');
+    text.get('achievementRight').set('boss4Normal', 'boss4Normal');
+    text.get('achievementRight').set('boss4Special', 'boss4Special');
+
+    // Hats off, gentlemen. Here before you stands a TRUE player.
+    // https://www.reddit.com/r/roguelikes/comments/3drjoz/rroguelikes_developer_ama_uunormal_and/ct8116x/
+    text.get('achievementRight').set('noExamine',
+        'You can beat Faster Than Light without pausing?'
+        + ' Then surely you can pass one dungeon level'
+        + ' without entering the Examine Mode.'
+    );
+    text.get('achievementRight').set('unlockAll', 'Unlock everything, Genos.');
 
     // Cut-scenes.
     text.set('cutScene', new Map());
@@ -228,13 +266,27 @@ Main.text.initialize = function () {
         + ' the end of which has the shape of an axe,'
         + ' nearly cuts you in half with a single whip.'
     );
-    text.get('cutScene').set('afterBossFight1',
+
+    text.get('cutScene').set('enterLevel2',
         'You follow the source of the voices and push open the church door.'
         + ' There is a hole on the ground, revealing a downward ramp,'
         + ' the bottom of which seems to be deeper than sea.'
         + ' Sharper than blade is the chilling wind cutting through your face.'
-        + '\n\n\n'
-        + '[WIP]You win. Press F5 to reload the page.[/WIP]'
+    );
+    text.get('cutScene').set('beforeBossFight2', 'before 2');
+
+    text.get('cutScene').set('enterLevel3', 'level 3');
+    text.get('cutScene').set('beforeBossFight3', 'before 3');
+
+    // Error messages.
+    text.set('error', new Map());
+    text.get('error').set('browser',
+        'Your browser dose not support the Rot.js.'
+        + '\n\n'
+        + 'Please use the lastest Chrome or Firefox.'
+    );
+    text.get('error').set('storage',
+        'Please change your browser setting to save the game data locally.'
     );
 
     Main.text.libraryMap = text;
@@ -251,7 +303,10 @@ Main.text.staticTextList = [
     'name',
     'info',
     'help',
-    'cutScene'
+    'achievementLeft',
+    'achievementRight',
+    'cutScene',
+    'error'
 ];
 
 Main.text.staticTextList.forEach((key) => {
@@ -369,9 +424,9 @@ Main.text.targetDropOrb = function (target, orb) {
 
 Main.text.downstairs = function () {
     // Dungeon level: 1 to 4.
-    let dungeonLevel = Main.getEntity('dungeon').BossFight.getDungeonLevel();
+    let dungeonLevel = Main.getEntity('gameProgress').BossFight.getDungeonLevel();
     // Progress: inactive, active, win.
-    let progress = Main.getEntity('dungeon').BossFight.getBossFightStatus();
+    let progress = Main.getEntity('gameProgress').BossFight.getBossFightStatus();
     // Text: the string with the placeholder '%%'.
     let text = Main.text.info('downstairs' + dungeonLevel);
 
@@ -402,10 +457,10 @@ Main.text.npcSummon = function (actor) {
 Main.text.lastWords = function () {
     let text = '';
 
-    if (Main.getEntity('dungeon').BossFight.getBossFightStatus()
+    if (Main.getEntity('gameProgress').BossFight.getBossFightStatus()
         === 'active') {
         text = Main.text.action('deathBoss'
-            + Main.getEntity('dungeon').BossFight.getDungeonLevel());
+            + Main.getEntity('gameProgress').BossFight.getDungeonLevel());
     } else {
         text = Main.text.action('deathGeneral');
     }
@@ -447,6 +502,14 @@ Main.text.gargoyleDescription = function (actor) {
     } else {
         text = text.replace('%%', Main.text.info('gargoyleLoseTail'));
     }
+
+    return text;
+};
+
+Main.text.unlockAchievement = function (achievement) {
+    let text = Main.text.action('unlockAchievement');
+
+    text = text.replace('%%', Main.screens.colorfulText(achievement, 'green'));
 
     return text;
 };

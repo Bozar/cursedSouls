@@ -7,7 +7,7 @@
 Main.screens.main = new Main.Screen('main', ['main', 'examine', 'aim']);
 
 // * Create & place entities (if necessacry) in this order:
-//      * Seed, Timer, Dungeon, Marker, (PC, NPCs, Downstairs, Orbs), Marker.
+//   Seed, Timer, Dungeon, Marker, (PC, NPCs, Downstairs, Orbs), Achievements.
 // * The PC cannot stick to the wall.
 // * No more than 5 NPCs can appear in the PC's sight.
 // * Orbs cannot be generated on the downstairs.
@@ -17,8 +17,7 @@ Main.screens.main.initialize = function () {
 
     // Seed.
     Main.entity.seed();
-    Main.getEntity('seed').Seed.setSeed(Main.getDevSeed());
-    ROT.RNG.setSeed(Main.getEntity('seed').Seed.getSeed());
+    Main.system.startRNG();
 
     // Timer.
     Main.entity.timer();
@@ -30,11 +29,7 @@ Main.screens.main.initialize = function () {
 
     // PC.
     Main.entity.pc();
-    Main.getEntity('pc').Inventory.addItem('slime');
-    Main.getEntity('pc').Inventory.addItem('armor');
-    Main.getEntity('pc').Inventory.addItem('armor');
-    Main.getEntity('pc').Inventory.addItem('fire');
-    Main.getEntity('pc').Inventory.addItem('lump');
+    Main.system.fillInventory();
 
     Main.system.placeActor(
         Main.getEntity('pc'),
@@ -85,8 +80,13 @@ Main.screens.main.initialize = function () {
             Main.system.verifyOrbPosition);
     }
 
+    // Achievements.
+    Main.system.setAchievement();
+
     // Output the dungeon generation details.
     Main.system.printGenerationLog();
+    // Delete the save.
+    Main.system.deleteSave();
 };
 
 // Draw entities in this order:
@@ -121,7 +121,7 @@ Main.screens.main.display = function () {
         (orb) => {
             Main.screens.drawActor(
                 orb,
-                Main.getEntity('dungeon').BossFight.getBossFightStatus()
+                Main.getEntity('gameProgress').BossFight.getBossFightStatus()
                 !== 'inactive'
                 || orb.Memory.getHasSeen()
             );
@@ -152,6 +152,7 @@ Main.screens.main.keyInput = function (e) {
     if (e.shiftKey) {
         if (keyAction(e, 'fixed') === 'develop') {
             Main.setDevelop();
+            Main.system.saveWizardMode();
             Main.system.printGenerationLog();
 
             Main.display.clear();
@@ -160,43 +161,66 @@ Main.screens.main.keyInput = function (e) {
             Main.system.pcFastMove(true, keyAction(e, 'fastMove'));
         } else if (keyAction(e, 'fixed') === 'help') {
             Main.system.showHelp();
+        } else if (Main.getDevelop()) {
+            switch (keyAction(e, 'fixed')) {
+                case 'clearStorage':
+                    Main.system.clearStorage();
+                    break;
+            }
         }
     } else if (keyAction(e, 'move')) {
         Main.system.move(keyAction(e, 'move'));
     } else if (keyAction(e, 'interact') === 'examine') {
+        if (Main.getEntity('gameProgress').Achievement.getNoExamine()) {
+            Main.getEntity('gameProgress').Achievement.setNoExamine(false);
+        }
         Main.system.examineMode();
     } else if (keyAction(e, 'interact') === 'pickOrUse') {
         Main.system.pcPickOrUse();
     } else if (keyAction(e, 'fixed') === 'seed') {
         console.log(Main.getEntity('seed').Seed.getSeed());
+    } else if (keyAction(e, 'fixed') === 'achievement') {
+        Main.system.showAchievement();
     } else if (Main.getDevelop()) {
-        if (keyAction(e, 'fixed') === 'fov') {
-            Main.getEntity('dungeon').Dungeon.setFov();
-        } else if (keyAction(e, 'fixed') === 'turn') {
-            console.log(Main.getEntity('timer').scheduler.getTime());
-        } else if (keyAction(e, 'fixed') === 'teleport') {
-            Main.system.killAndTeleport();
-        }
-        else if (keyAction(e, 'fixed') === 'dummy') {
-            Main.getEntity('timer').scheduler.add(
-                Main.entity.dummy(
-                    Main.getEntity('pc').Position.getX() - 1,
-                    Main.getEntity('pc').Position.getY()),
-                true);
-        } else if (keyAction(e, 'fixed') === 'addFire') {
-            Main.getEntity('pc').Inventory.addItem('fire');
-        } else if (keyAction(e, 'fixed') === 'addIce') {
-            Main.getEntity('pc').Inventory.addItem('ice');
-        } else if (keyAction(e, 'fixed') === 'addSlime') {
-            Main.getEntity('pc').Inventory.addItem('slime');
-        } else if (keyAction(e, 'fixed') === 'addLump') {
-            Main.getEntity('pc').Inventory.addItem('lump');
-        } else if (keyAction(e, 'fixed') === 'addArmor') {
-            Main.getEntity('pc').Inventory.addItem('armor');
-        } else if (keyAction(e, 'fixed') === 'addNuke') {
-            Main.getEntity('pc').Inventory.addItem('nuke');
-        } else if (keyAction(e, 'fixed') === 'removeOrb') {
-            Main.getEntity('pc').Inventory.removeItem(1);
+        switch (keyAction(e, 'fixed')) {
+            case 'fov':
+                Main.getEntity('dungeon').Dungeon.setFov();
+                break;
+            case 'turn':
+                console.log(Main.getEntity('timer').scheduler.getTime());
+                break;
+            case 'teleport':
+                Main.system.killAndTeleport();
+                break;
+            case 'dummy':
+                Main.getEntity('timer').scheduler.add(
+                    Main.entity.dummy(
+                        Main.getEntity('pc').Position.getX() - 1,
+                        Main.getEntity('pc').Position.getY()),
+                    true
+                );
+                break;
+            case 'addFire':
+                Main.getEntity('pc').Inventory.addItem('fire');
+                break;
+            case 'addIce':
+                Main.getEntity('pc').Inventory.addItem('ice');
+                break;
+            case 'addSlime':
+                Main.getEntity('pc').Inventory.addItem('slime');
+                break;
+            case 'addLump':
+                Main.getEntity('pc').Inventory.addItem('lump');
+                break;
+            case 'addArmor':
+                Main.getEntity('pc').Inventory.addItem('armor');
+                break;
+            case 'addNuke':
+                Main.getEntity('pc').Inventory.addItem('nuke');
+                break;
+            case 'removeOrb':
+                Main.getEntity('pc').Inventory.removeItem(1);
+                break;
         }
         // Redraw the screen after pressing a development key.
         Main.display.clear();
@@ -246,5 +270,56 @@ Main.screens.help.display = function () {
 Main.screens.help.keyInput = function (e) {
     if (Main.input.getAction(e, 'fixed') === 'no') {
         Main.system.exitHelp();
+    }
+};
+
+// ======================
+// The achievement screen
+// ======================
+
+Main.screens.achievement = new Main.Screen('achievement', ['main']);
+
+Main.screens.achievement._index = 0;
+Main.screens.achievement._orderedList
+    = [
+        'boss1Normal',
+        'boss1Special',
+        'boss2Normal',
+        'boss3Normal',
+        'boss3Special',
+        'boss4Normal',
+        'boss4Special',
+        'noExamine',
+        'unlockAll'
+    ];
+
+Main.screens.achievement.getIndex = function () { return this._index; };
+Main.screens.achievement.getOrderedList = function (index) {
+    if (index > -1 && index < this._orderedList.length) {
+        return this._orderedList[index];
+    }
+    return this._orderedList;
+};
+Main.screens.achievement.setIndex = function (value) {
+    this._index = value;
+};
+
+Main.screens.achievement.display = function () {
+    Main.screens.drawAchievementLeft();
+    Main.screens.drawAchievementRight();
+    Main.screens.drawAchievementBorder();
+
+    Main.getEntity('message').Message.setModeline(Main.text.action('exit'));
+    Main.screens.drawModeLine();
+    Main.screens.drawBottomRight(Main.text.ui('studio'));
+};
+
+Main.screens.achievement.keyInput = function (e) {
+    if (Main.input.getAction(e, 'fixed') === 'no') {
+        Main.system.exitAchievement();
+    } else if (Main.input.getAction(e, 'move') === 'down'
+        || Main.input.getAction(e, 'move') === 'up'
+    ) {
+        Main.system.moveCursorInAchievement(Main.input.getAction(e, 'move'));
     }
 };

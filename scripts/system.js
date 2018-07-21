@@ -203,23 +203,26 @@ Main.system.createEnemies = function () {
     let elite = [];
     let grunt = [];
 
-    // Lump1 & Lump2.
-    for (let i = 0; i < 2; i++) {
-        for (let j = 0; j < enemyAmount[i]; j++) {
-            elite.push(Main.entity[enemyType[i]]());
-        }
+    // Lump.
+    for (let i = 0; i < enemyAmount[0]; i++) {
+        elite.push(Main.entity[
+            pickUp(enemyType[0])
+        ]());
     }
 
     // Fire, Ice & Slime.
-    for (let i = 2; i < enemyAmount.length; i++) {
+    for (let i = 1; i < enemyAmount.length; i++) {
         for (let j = 0; j < enemyAmount[i]; j++) {
-            grunt.push(Main.entity[enemyType[i]]());
+            grunt.push(Main.entity[
+                pickUp(enemyType[i])
+            ]());
         }
     }
 
     return [elite, grunt];
 
     // Helper functions.
+    // Generate the amount for each types.
     function amount() {
         // 25 to 30 enemies on one level.
         let total = 25 + Math.floor(6 * ROT.RNG.getUniform());
@@ -231,13 +234,11 @@ Main.system.createEnemies = function () {
         // Slime: 30%.
         let slime = total - lump - fireAndIce;
 
-        let lump1 = Math.floor(lump * percent());
-        let lump2 = lump - lump1;
         let fire = Math.floor(fireAndIce * percent());
         let ice = fireAndIce - fire;
 
         Main._log.enemyCount = total;
-        Main._log.enemyComposition = [lump1, lump2, fire, ice, slime];
+        Main._log.enemyComposition = [lump, fire, ice, slime];
 
         return Main._log.enemyComposition;
     }
@@ -247,24 +248,33 @@ Main.system.createEnemies = function () {
         return Math.floor(4 + 3 * ROT.RNG.getUniform()) / 10;
     }
 
+    // Generate the enemies' IDs.
     function type(dungeonLevel) {
-        let lump1 = '';
-        let lump2 = '';
-        let fire = '';
-        let ice = '';
-        let slime = '';
+        let lump = [];
+        let fire = [];
+        let ice = [];
+        let slime = [];
 
         switch (dungeonLevel) {
             case 1:
-                lump1 = 'archer';
-                lump2 = 'zombie';
-                fire = 'dog';
-                ice = 'raven';
-                slime = 'rat';
+                lump = ['archer', 'zombie'];
+                fire = ['dog'];
+                ice = ['raven'];
+                slime = ['rat'];
                 break;
         }
 
-        return [lump1, lump2, fire, ice, slime];
+        return [lump, fire, ice, slime];
+    }
+
+    // Pick up an enemy ID from the list.
+    function pickUp(enemyList) {
+        if (enemyList.length > 1) {
+            return enemyList[
+                Math.floor(enemyList.length * ROT.RNG.getUniform())
+            ];
+        }
+        return enemyList[0];
     }
 };
 
@@ -947,7 +957,7 @@ Main.system.npcDropOrb = function (actor, dropRate) {
 };
 
 Main.system.printGenerationLog = function () {
-    let labels = ['Lump1: ', 'Lump2: ', 'Fire: ', 'Ice: ', 'Slime: '];
+    let labels = ['Lump: ', 'Fire: ', 'Ice: ', 'Slime: '];
 
     if (!Main._log.seedPrinted) {
         console.log('Seed: '
@@ -961,7 +971,7 @@ Main.system.printGenerationLog = function () {
         console.log('Floor: ' + Main._log.floor + '%');
         console.log('Enemy: ' + Main._log.enemyCount);
 
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < labels.length; i++) {
             console.log(labels[i] + Main._log.enemyComposition[i]);
         }
 

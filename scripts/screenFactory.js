@@ -413,16 +413,29 @@ Main.screens.drawPCHitPoint = function () {
         Main.text.uiHitPoint());
 };
 
-Main.screens.drawPower = function () {
-    let powers = Main.getEntity('pc').Inventory.getInventory();
+Main.screens.drawInventory = function () {
     let enhance = false;
 
     // Power orbs
-    for (let i = 0; i < powers.length; i++) {
+    for (let i = 0;
+        i < Main.getEntity('pc').Inventory.getInventory().length;
+        i++
+    ) {
         Main.display.drawText(
             Main.UI.power.getX() + 2,
             Main.UI.power.getY() + i * 1.1,
-            Main.text.dungeon(powers[i]));
+            Main.screens.colorfulText(
+                // Text
+                Main.text.dungeon(
+                    Main.getEntity('pc').Inventory.getInventory()[i]
+                ),
+                // Color: normal (white), cursed (grey).
+                i < Main.getEntity('pc').Inventory.getCapacity()
+                    - Main.getEntity('pc').Inventory.getCurse()
+                    ? 'white'
+                    : 'grey'
+            )
+        );
     }
 
     // HP bar
@@ -439,6 +452,32 @@ Main.screens.drawPower = function () {
             Main.UI.power.getX(),
             Main.UI.power.getY(),
             Main.text.ui('enhance'));
+    }
+
+    // Curse
+    for (let i = Main.getEntity('pc').Inventory.getCapacity()
+        - Main.getEntity('pc').Inventory.getCurse();
+        i < Main.getEntity('pc').Inventory.getCapacity();
+        i++) {
+        // 1-2: Curse indicator.
+        Main.display.drawText(
+            Main.UI.power.getX(),
+            Main.UI.power.getY() + i * 1.1,
+            Main.screens.colorfulText('x', 'grey')
+            //Main.text.ui('enhance')
+        );
+
+        // 2-2: Curse bar.
+        if (i >= Main.getEntity('pc').Inventory.getInventory().length) {
+            Main.display.drawText(
+                Main.UI.power.getX() + 2,
+                Main.UI.power.getY() + i * 1.1,
+                Main.screens.colorfulText(
+                    Main.text.ui('curse').repeat(9),
+                    'grey', 'grey'
+                )
+            );
+        }
     }
 };
 

@@ -180,6 +180,7 @@ Main.Component.Inventory = function (capacity, firstItem) {
     this._inventory = [];
     this._capacity = capacity || 1;
     this._isDead = false;
+    this._curse = 0;
 
     // Enemies have only one of the four orbs: fire, ice, slime & lump.
     // Give the PC four orbs at the beginning of the game.
@@ -225,6 +226,13 @@ Main.Component.Inventory = function (capacity, firstItem) {
     };
 
     this.setIsDead = function (status) { this._isDead = status; };
+
+    this.getCurse = function () { return this._curse; };
+    this.setCurse = function (addOrRemove) {
+        this._curse = Math.min(this._capacity,
+            Math.max(0, this._curse + addOrRemove)
+        );
+    };
 };
 
 Main.Component.HitPoint = function (hp) {

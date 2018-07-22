@@ -33,6 +33,7 @@ Main.text.initialize = function () {
     text.get('ui').set('studio', 'Red Tabby Studio');
 
     text.get('ui').set('enhance', '*');
+    text.get('ui').set('curse', 'x');
     text.get('ui').set('hp', 'HP: %%');
     text.get('ui').set('dead', 'Dead');
     text.get('ui').set('ground', '@');

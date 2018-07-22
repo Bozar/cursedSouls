@@ -112,7 +112,7 @@ Main.screens.main.display = function () {
 
     Main.screens.drawLevelName();
     Main.screens.drawPCHitPoint();
-    Main.screens.drawPower();
+    Main.screens.drawInventory();
     Main.screens.drawItemUnderYourFoot();
     Main.screens.drawEnemyList();
     Main.screens.drawDungeon();
@@ -168,6 +168,14 @@ Main.screens.main.keyInput = function (e) {
                     break;
             }
         }
+    } else if (e.key === '9') {
+        Main.getEntity('pc').Inventory.setCurse(1);
+        Main.display.clear();
+        Main.screens.main.display();
+    } else if (e.key === '8') {
+        Main.getEntity('pc').Inventory.setCurse(-1);
+        Main.display.clear();
+        Main.screens.main.display();
     } else if (keyAction(e, 'move')) {
         Main.system.move(keyAction(e, 'move'));
     } else if (keyAction(e, 'interact') === 'examine') {

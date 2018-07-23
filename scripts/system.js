@@ -338,7 +338,9 @@ Main.system.pcPickOrUse = function () {
         Main.getEntity('pc').Position.getX(),
         Main.getEntity('pc').Position.getY())
         && Main.getEntity('pc').Inventory.getLength()
-        < Main.getEntity('pc').Inventory.getCapacity()) {
+        < Main.getEntity('pc').Inventory.getCapacity()
+        - Main.getEntity('pc').Inventory.getCurse()
+    ) {
         Main.system.pcPickUpOrb();
     } else if (Main.getEntity('pc').Inventory.getLength() > 0
         && Main.getEntity('pc').Inventory.getLastOrb() !== 'armor') {

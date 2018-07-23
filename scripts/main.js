@@ -78,6 +78,8 @@ window.onload = function () {
     Main.getEntity('gameProgress').BossFight.setDungeonLevel(
         Main.system.loadDungeonLevel()
     );
+    // TODO: delete this line when finish builidng the 2nd level.
+    Main.getEntity('gameProgress').BossFight.setDungeonLevel(2);
 
     if (Main.getDevelop()) {
         Main.screens.main.enter();

@@ -198,8 +198,9 @@ Main.system.createOrbs = function () {
 
 Main.system.createEnemies = function () {
     let enemyAmount = amount();
-    // TODO: change the enemies base on the dungeon level.
-    let enemyType = type(1);
+    let enemyType = type(
+        Main.getEntity('gameProgress').BossFight.getDungeonLevel()
+    );
     let elite = [];
     let grunt = [];
 
@@ -261,6 +262,18 @@ Main.system.createEnemies = function () {
                 fire = ['dog'];
                 ice = ['raven'];
                 slime = ['rat'];
+                break;
+            case 2:
+                lump = ['rat'];
+                fire = ['rat'];
+                ice = ['rat'];
+                slime = ['rat'];
+                break;
+            case 3:
+                lump = ['dog'];
+                fire = ['dog'];
+                ice = ['dog'];
+                slime = ['dog'];
                 break;
         }
 
@@ -394,9 +407,8 @@ Main.system.pcUseDownstairs = function () {
         case 'win':
             Main.input.listenEvent('remove', 'main');
 
-            // TODO: Change these lines when the 2nd level is ready.
-            let debug = 0;
-            if (debug > 0) {
+            // TODO: Change this when the 3rd level is ready.
+            if (Main.getEntity('gameProgress').BossFight.getDungeonLevel() < 2) {
                 Main.getEntity('gameProgress').BossFight.goToNextDungeonLevel();
                 Main.system.saveDungeonLevel();
                 Main.system.saveSeed();

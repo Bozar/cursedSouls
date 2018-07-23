@@ -188,11 +188,31 @@ Main.Component.Inventory = function (capacity, firstItem) {
         this._inventory.push(firstItem);
     }
 
-    this.getCapacity = function () { return this._capacity; };
-    this.getLength = function () { return this._inventory.length; };
-    this.getLastOrb = function () {
-        return this._inventory[this._inventory.length - 1];
+    this.getInventory = function (index) {
+        if (this._inventory[index]) {
+            return this._inventory[index];
+        }
+        return this._inventory;
     };
+    this.getLength = function () { return this._inventory.length; };
+    this.getCapacity = function () { return this._capacity; };
+
+    this.getLastOrb = function () {
+        let index = this.getLastIndex();
+
+        if (index > -1) {
+            return this._inventory[index];
+        }
+        return null;
+    };
+    this.getLastIndex = function () {
+        let index = Math.min(
+            this._inventory.length - 1, this._capacity - this._curse - 1
+        );
+
+        return index;
+    };
+
     this.getIsDead = function () { return this._isDead; };
     this.isEnhanced = function () {
         if (this._inventory.length > 1) {
@@ -202,19 +222,11 @@ Main.Component.Inventory = function (capacity, firstItem) {
         return false;
     };
 
-    this.getInventory = function (index) {
-        if (this._inventory[index]) {
-            return this._inventory[index];
-        }
-        return this._inventory;
-    };
-
     this.addItem = function (item) {
         if (item && this._inventory.length < this._capacity) {
             this._inventory.push(item);
         }
     };
-
     this.removeItem = function (amount) {
         amount = Math.min(amount, this._inventory.length);
 

@@ -168,14 +168,6 @@ Main.screens.main.keyInput = function (e) {
                     break;
             }
         }
-    } else if (e.key === '9') {
-        Main.getEntity('pc').Inventory.setCurse(1);
-        Main.display.clear();
-        Main.screens.main.display();
-    } else if (e.key === '8') {
-        Main.getEntity('pc').Inventory.setCurse(-1);
-        Main.display.clear();
-        Main.screens.main.display();
     } else if (keyAction(e, 'move')) {
         Main.system.move(keyAction(e, 'move'));
     } else if (keyAction(e, 'interact') === 'examine') {
@@ -228,6 +220,12 @@ Main.screens.main.keyInput = function (e) {
                 break;
             case 'removeOrb':
                 Main.getEntity('pc').Inventory.removeItem(1);
+                break;
+            case 'addCurse':
+                Main.getEntity('pc').Inventory.setCurse(1);
+                break;
+            case 'removeCurse':
+                Main.getEntity('pc').Inventory.setCurse(-1);
                 break;
         }
         // Redraw the screen after pressing a development key.

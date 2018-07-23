@@ -920,9 +920,19 @@ Main.system.pcUseSlimeOrb = function (x, y) {
 };
 
 Main.system.pcUseIceOrb = function () {
-    Main.getEntity('pc').Inventory.removeItem(1);
-    Main.getEntity('pc').Inventory.addItem('armor');
-    Main.getEntity('pc').Inventory.addItem('armor');
+    let cutIndex = Main.getEntity('pc').Inventory.getLastIndex();
+
+    // Remove the ice orb and add 2 Icy Armors.
+    Main.getEntity('pc').Inventory.getInventory().splice(cutIndex, 1);
+    Main.getEntity('pc').Inventory.getInventory().splice(cutIndex, 0,
+        'armor', 'armor'
+    );
+    // Remove overflowed orbs.
+    while (Main.getEntity('pc').Inventory.getInventory().length >
+        Main.getEntity('pc').Inventory.getCapacity()
+    ) {
+        Main.getEntity('pc').Inventory.getInventory().pop();
+    }
 
     Main.getEntity('message').Message.pushMsg(Main.text.action('armor'));
 

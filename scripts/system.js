@@ -407,15 +407,6 @@ Main.system.pcUseDownstairs = function () {
         case 'win':
             Main.input.listenEvent('remove', 'main');
 
-            // TODO: Change this when the 3rd level is ready.
-            if (Main.getEntity('gameProgress').BossFight.getDungeonLevel() < 2) {
-                Main.getEntity('gameProgress').BossFight.goToNextDungeonLevel();
-                Main.system.saveDungeonLevel();
-                Main.system.saveSeed();
-                Main.system.saveInventory();
-                Main.system.saveOrbsOnTheGround();
-            }
-
             Main.system.checkAchNoExamine();
 
             Main.getEntity('message').Message.pushMsg(
@@ -427,6 +418,16 @@ Main.system.pcUseDownstairs = function () {
 
             Main.display.clear();
             Main.screens.main.display();
+
+            // TODO: Change this when the 3rd level is ready.
+            // Do not display the name of the next level.
+            if (Main.getEntity('gameProgress').BossFight.getDungeonLevel() < 2) {
+                Main.getEntity('gameProgress').BossFight.goToNextDungeonLevel();
+                Main.system.saveDungeonLevel();
+                Main.system.saveSeed();
+                Main.system.saveInventory();
+                Main.system.saveOrbsOnTheGround();
+            }
 
             break;
     }

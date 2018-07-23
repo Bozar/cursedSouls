@@ -15,7 +15,9 @@ Main.text.initialize = function () {
     text.set('dungeon', new Map());
     text.get('dungeon').set('downstairsIcon', '>');
     text.get('dungeon').set('downstairs', 'Downstairs');
-    text.get('dungeon').set('grave', 'Churchyard');
+    text.get('dungeon').set('level1', 'Churchyard');
+    text.get('dungeon').set('level2', 'Cellar');
+    text.get('dungeon').set('level3', 'Sanctum');
 
     text.get('dungeon').set('fire', 'Fire');
     text.get('dungeon').set('ice', 'Ice');

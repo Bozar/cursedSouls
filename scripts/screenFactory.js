@@ -398,7 +398,9 @@ Main.screens.drawDownstairs = function () {
 };
 
 Main.screens.drawLevelName = function () {
-    let levelName = Main.text.dungeon('grave');
+    let levelName = Main.text.dungeon(
+        'level' + Main.getEntity('gameProgress').BossFight.getDungeonLevel()
+    );
 
     Main.display.drawText(
         Main.UI.level.getX(),

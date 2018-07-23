@@ -71,7 +71,7 @@ Main.system.loadWizardMode = function () {
 Main.system.saveDungeonLevel = function () {
     Main.storage.setItem(
         'dungeonLevel',
-        Main.getEntity('gameProgress').BossFight.getDungeonLevel()
+        Main.getEntity('gameProgress').BossFight.getNextDungeonLevel()
     );
 };
 

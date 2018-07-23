@@ -97,12 +97,12 @@ Main.Component.BossFight = function () {
         this._bossFight = this._progress[nextIndex];
     };
 
-    this.goToNextDungeonLevel = function () {
+    this.getNextDungeonLevel = function () {
         let nextLevel = Math.min(
             this._dungeonLevel + 1,
             this._maxDungeonLevel);
 
-        this._dungeonLevel = nextLevel;
+        return nextLevel;
     };
 
     this.setDungeonLevel = function (level) {

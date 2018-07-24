@@ -266,7 +266,7 @@ Main.system.createEnemies = function () {
             case 2:
                 lump = ['rat'];
                 fire = ['rat'];
-                ice = ['rat'];
+                ice = ['wisp'];
                 slime = ['rat'];
                 break;
             case 3:
@@ -889,7 +889,14 @@ Main.system.pcAttack = function (target, attackType) {
         Main.getEntity('message').Message.pushMsg(
             Main.text.killTarget(target));
 
-        // 3-5: Drop the orb. Perform the last action.
+        // 3a-5: PC loses 1 curse.
+        if (Main.getEntity('pc').Inventory.getCurse() > 0) {
+            Main.getEntity('pc').Inventory.setCurse(-1);
+            Main.getEntity('message').Message.pushMsg(
+                Main.text.action('removeCurse')
+            );
+        }
+        // 3b-5: NPC drops the orb and performs the last action.
         Main.system.npcDropOrb(target, dropRate);
         Main.system.npcActBeforeDeath(target);
 

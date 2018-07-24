@@ -57,6 +57,7 @@ Main.text.initialize = function () {
 
     text.get('action').set('hit', 'You hit the %%.');
     text.get('action').set('kill', 'You kill the %%.');
+    text.get('action').set('removeCurse', 'You are purged.');
 
     text.get('action').set('unlockAchievement', 'Unlock: %%.');
     text.get('action').set('breakTail',
@@ -94,8 +95,12 @@ Main.text.initialize = function () {
     text.get('name').set('gargoyle', 'Tower Gargoyle');
     text.get('name').set('juvenileGargoyle', 'Juvenile Tower Gargoyle');
 
+    text.get('name').set('wisp', 'Wisp');
+
     // Describe the NPC, item or building under the marker.
     text.set('info', new Map());
+
+    // NPCs.
     text.get('info').set('dummy', 'This is a dummy.'
         + ' It has 1 hit point.'
         + ' It drops 1 Slime Orb when killed.');
@@ -134,6 +139,11 @@ Main.text.initialize = function () {
     text.get('info').set('gargoyleHasTail', 'Its tail is a stone axe.');
     text.get('info').set('gargoyleLoseTail', 'Its tail is chopped off.');
 
+    text.get('info').set('wisp',
+        'Wisp description.'
+    );
+
+    // Orbs.
     text.get('info').set('fire', 'Range 1, damage 1. 100% drop rate.');
     text.get('info').set('ice',
         'Protect yourself with at most 2 layers of the Icy Armor.'
@@ -141,6 +151,7 @@ Main.text.initialize = function () {
     text.get('info').set('slime', 'Range 2. Teleport yourself.');
     text.get('info').set('lump', 'Range 2, damage 1. 60% drop rate.');
 
+    // Downstairs.
     text.get('info').set('downstairs1',
         'In the center of the dusty round pool, there stands a grotesque figure.'
         + ' His eyes fix on the ground,'

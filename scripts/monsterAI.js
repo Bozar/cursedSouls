@@ -326,14 +326,13 @@ Main.system.npcActBeforeDeath = function (actor) {
     switch (actor.getEntityName()) {
         case 'zombie':
             summon('dog');
-
-            Main.getEntity('message').Message.pushMsg(
-                Main.text.npcSummon(actor));
+            break;
+        case 'ratMan':
+            summon('rat');
             break;
         case 'wisp':
             if (Main.system.getDistance(actor, Main.getEntity('pc')) === 1
-                && Main.getEntity('pc').Inventory.getCurse()
-                < Main.getEntity('pc').Inventory.getCapacity()
+                && Main.getEntity('pc').Inventory.canBeCursed()
             ) {
                 Main.getEntity('pc').Inventory.setCurse(
                     actor.Damage.getCurse()
@@ -352,6 +351,8 @@ Main.system.npcActBeforeDeath = function (actor) {
 
         // Delay 2 turns.
         Main.getEntity('timer').scheduler.add(newActor, true, 2);
+
+        Main.getEntity('message').Message.pushMsg(Main.text.npcSummon(actor));
     }
 };
 

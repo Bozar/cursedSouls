@@ -97,6 +97,7 @@ Main.text.initialize = function () {
     text.get('name').set('juvenileGargoyle', 'Juvenile Tower Gargoyle');
 
     text.get('name').set('wisp', 'Wisp');
+    text.get('name').set('ratMan', 'Rat Man');
 
     // Describe the NPC, item or building under the marker.
     text.set('info', new Map());
@@ -144,6 +145,11 @@ Main.text.initialize = function () {
         'You can hear these pale white wisps mumble in your head.'
         + ' They are eager to approach any living creature'
         + ' and spread their last bless.'
+    );
+    text.get('info').set('ratMan',
+        'The Rat Man acts clumsly,'
+        + ' perhaps it has not been accustomed to stand on two legs.'
+        + ' But it has already leant to whip the rats in its sight.'
     );
 
     // Orbs.

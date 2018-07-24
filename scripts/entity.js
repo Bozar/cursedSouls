@@ -361,3 +361,25 @@ Main.entity.wisp = function (x, y) {
 
     return e;
 };
+
+Main.entity.ratMan = function (x, y) {
+    let e = new Main.Factory('ratMan');
+
+    e.addComponent(new Main.Component.Position(7, x, y));
+    e.addComponent(new Main.Component.Display('m'));
+    e.addComponent(new Main.Component.ActionDuration());
+    e.addComponent(new Main.Component.Inventory(1, 'fire'));
+    e.addComponent(new Main.Component.HitPoint(2));
+    e.addComponent(new Main.Component.Damage(2));
+    e.addComponent(new Main.Component.AttackRange(2));
+    e.addComponent(new Main.Component.CombatRole(false, false));
+
+    e.ActionDuration.setDuration('slowMove', 1.2);
+    e.ActionDuration.setDuration('slowAttack', 3);
+
+    e.act = Main.system.dummyAct;
+
+    Main.entities.get('npc').set(e.getID(), e);
+
+    return e;
+};

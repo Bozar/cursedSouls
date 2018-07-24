@@ -241,9 +241,14 @@ Main.Component.Inventory = function (capacity, firstItem) {
 
     this.getCurse = function () { return this._curse; };
     this.setCurse = function (addOrRemove) {
-        this._curse = Math.min(this._capacity,
+        this._curse = Math.min(
+            // Only half of the inventory can be cursed.
+            Math.floor(this._capacity / 2),
             Math.max(0, this._curse + addOrRemove)
         );
+    };
+    this.canBeCursed = function () {
+        return this._curse < Math.floor(this._capacity / 2);
     };
 };
 

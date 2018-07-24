@@ -265,7 +265,7 @@ Main.system.createEnemies = function () {
                 break;
             case 2:
                 lump = ['wisp'];
-                fire = ['wisp'];
+                fire = ['ratMan'];
                 ice = ['wisp'];
                 slime = ['rat'];
                 break;

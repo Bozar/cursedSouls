@@ -330,6 +330,19 @@ Main.system.npcActBeforeDeath = function (actor) {
             Main.getEntity('message').Message.pushMsg(
                 Main.text.npcSummon(actor));
             break;
+        case 'wisp':
+            if (Main.system.getDistance(actor, Main.getEntity('pc')) === 1
+                && Main.getEntity('pc').Inventory.getCurse()
+                < Main.getEntity('pc').Inventory.getCapacity()
+            ) {
+                Main.getEntity('pc').Inventory.setCurse(
+                    actor.Damage.getCurse()
+                );
+                Main.getEntity('message').Message.pushMsg(
+                    Main.text.npcCurse(actor)
+                );
+            }
+            break;
     }
 
     // Helper functions.

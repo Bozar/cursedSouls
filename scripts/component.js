@@ -257,17 +257,22 @@ Main.Component.HitPoint = function (hp) {
     this.isDead = function () { return this._hitPoint <= 0; };
 };
 
-Main.Component.Damage = function (baseDamage) {
+Main.Component.Damage = function (baseDamage, curse) {
     this._name = 'Damage';
 
     this._damage = new Map([['base', baseDamage || 1]]);
+    this._curse = curse || 0;
 
     this.getDamage = function (attackType) {
         return this._damage.get(attackType || 'base');
     };
+    this.getCurse = function () { return this._curse; };
 
     this.setDamage = function (attackType, damage) {
         this._damage.set(attackType, damage);
+    };
+    this.setCurse = function (value) {
+        this._curse = value;
     };
 };
 

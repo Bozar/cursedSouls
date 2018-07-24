@@ -65,6 +65,7 @@ Main.text.initialize = function () {
 
     text.get('action').set('drop', 'The %1% drops %2% %3% Orb.');
     text.get('action').set('npcHit', 'The %% hits you.');
+    text.get('action').set('npcCurse', 'The %% curses you.');
     text.get('action').set('npcSummon', 'The %% summons its companion.');
 
     text.get('action').set('gargoyleThrust',
@@ -140,7 +141,9 @@ Main.text.initialize = function () {
     text.get('info').set('gargoyleLoseTail', 'Its tail is chopped off.');
 
     text.get('info').set('wisp',
-        'Wisp description.'
+        'You can hear these pale white wisps mumble in your head.'
+        + ' They are eager to approach any living creature'
+        + ' and spread their last bless.'
     );
 
     // Orbs.
@@ -454,6 +457,14 @@ Main.text.downstairs = function () {
 
 Main.text.npcHit = function (attacker) {
     let text = Main.text.action('npcHit');
+
+    text = text.replace('%%', Main.text.name(attacker.getEntityName()));
+
+    return text;
+};
+
+Main.text.npcCurse = function (attacker) {
+    let text = Main.text.action('npcCurse');
 
     text = text.replace('%%', Main.text.name(attacker.getEntityName()));
 

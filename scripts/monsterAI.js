@@ -13,7 +13,7 @@ Main.system.dummyAct = function () {
 
     Main.getEntity('timer').engine.lock();
 
-    if (Main.system.pcIsInSight(this)) {
+    if (Main.system.npcCannotSeePC(this)) {
         // 1-4: Search the nearby PC or wait 1 turn.
         Main.system.npcSearchOrWait(this, moveDuration);
     } else if (Main.system.pcIsInsideAttackRange(this)) {
@@ -53,7 +53,7 @@ Main.system.gargoyleAct = function () {
     Main.getEntity('timer').engine.lock();
 
     // 1-3: Search the nearby PC or wait 1 turn.
-    if (Main.system.pcIsInSight(this)) {
+    if (Main.system.npcCannotSeePC(this)) {
         Main.system.npcSearchOrWait(this, getMoveDuration(this));
     }
     // 2A-3: Summon the ally.
@@ -356,7 +356,7 @@ Main.system.npcActBeforeDeath = function (actor) {
     }
 };
 
-Main.system.pcIsInSight = function (actor) {
+Main.system.npcCannotSeePC = function (actor) {
     return Main.system.getDistance(actor, Main.getEntity('pc'))
         > actor.Position.getRange()
         || !Main.system.isInSight(actor, Main.getEntity('pc'));

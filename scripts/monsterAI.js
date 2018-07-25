@@ -17,9 +17,17 @@ Main.system.dummyAct = function () {
         // 1-4: Search the nearby PC or wait 1 turn.
         Main.system.npcSearchOrWait(this, moveDuration);
     } else if (Main.system.pcIsInsideAttackRange(this)) {
-        // 2-4: Attack the PC.
-        Main.system.pcTakeDamage(this.Damage.getDamage('base'));
-        Main.system.npcHitOrKill(this, attackDuration, false);
+        // 2a-4: Curse the PC.
+        if (this.CombatRole.getRole('curse')
+            && Main.getEntity('pc').Inventory.canBeCursed()
+        ) {
+            Main.system.npcCursePC(this, true, attackDuration);
+        }
+        // 2b-4: Attack the PC.
+        else {
+            Main.system.pcTakeDamage(this.Damage.getDamage('base'));
+            Main.system.npcHitOrKill(this, attackDuration, false);
+        }
     } else {
         if (this.CombatRole.getCautious()) {
             // A cautious enemy does not approach the PC easily.
@@ -327,19 +335,11 @@ Main.system.npcActBeforeDeath = function (actor) {
         case 'zombie':
             summon('dog');
             break;
-        case 'ratMan':
-            summon('rat');
-            break;
         case 'wisp':
             if (Main.system.getDistance(actor, Main.getEntity('pc')) === 1
                 && Main.getEntity('pc').Inventory.canBeCursed()
             ) {
-                Main.getEntity('pc').Inventory.setCurse(
-                    actor.Damage.getCurse()
-                );
-                Main.getEntity('message').Message.pushMsg(
-                    Main.text.npcCurse(actor)
-                );
+                Main.system.npcCursePC(actor, false);
             }
             break;
     }
@@ -360,4 +360,17 @@ Main.system.npcCannotSeePC = function (actor) {
     return Main.system.getDistance(actor, Main.getEntity('pc'))
         > actor.Position.getRange()
         || !Main.system.isInSight(actor, Main.getEntity('pc'));
+};
+
+Main.system.npcCursePC = function (actor, unlockEngine, duration) {
+    Main.getEntity('pc').Inventory.setCurse(
+        actor.Damage.getCurse()
+    );
+    Main.getEntity('message').Message.pushMsg(
+        Main.text.npcCurse(actor)
+    );
+
+    if (unlockEngine) {
+        Main.system.unlockEngine(duration);
+    }
 };

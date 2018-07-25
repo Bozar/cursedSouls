@@ -98,6 +98,7 @@ Main.text.initialize = function () {
 
     text.get('name').set('wisp', 'Wisp');
     text.get('name').set('ratMan', 'Rat Man');
+    text.get('name').set('cultist', 'Cultist');
 
     // Describe the NPC, item or building under the marker.
     text.set('info', new Map());
@@ -150,6 +151,11 @@ Main.text.initialize = function () {
         'The Rat Man acts clumsly,'
         + ' perhaps it has not been accustomed to stand on two legs.'
         + ' But it has already leant to whip the rats in its sight.'
+    );
+    text.get('info').set('cultist',
+        'The Cultist is a skinny man with a bone wand in his hand'
+        + ' to shoot necro bolts against intruders.'
+        + ' Rumor says he is no longer human, but the host of wisps.'
     );
 
     // Orbs.

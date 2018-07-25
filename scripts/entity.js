@@ -374,7 +374,7 @@ Main.entity.ratMan = function (x, y) {
     e.addComponent(new Main.Component.AttackRange(1));
     e.addComponent(new Main.Component.CombatRole(false, false));
 
-    e.ActionDuration.setDuration('slowMove', 1.5);
+    e.ActionDuration.setDuration('slowMove', 1.2);
 
     e.act = Main.system.dummyAct;
 

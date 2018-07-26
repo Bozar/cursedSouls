@@ -326,7 +326,12 @@ Main.system.pcAct = function () {
 
     if (this.FastMove.getStep() > 0) {
         Main.system.pcFastMove(false, this.FastMove.getDirection());
-    } else {
+    } else if (
+        Main.getEntity('gameProgress').BossFight.getMiniBossAppear() === 1
+    ) {
+        Main.system.enterMiniBossCutScene();
+    }
+    else {
         Main.input.listenEvent('add', 'main');
     }
 
@@ -1214,5 +1219,29 @@ Main.system.fillInventory = function () {
         Main.getEntity('pc').Inventory.addItem('armor');
         Main.getEntity('pc').Inventory.addItem('fire');
         Main.getEntity('pc').Inventory.addItem('lump');
+    }
+};
+
+Main.system.enterMiniBossCutScene = function () {
+    Main.text.cutScene('miniBoss1').forEach((text) => {
+        Main.getEntity('message').Message.pushMsg(text);
+    });
+    Main.getEntity('gameProgress').BossFight.setMiniBossAppear();
+
+    Main.input.listenEvent('add', Main.system.miniBossCutSceneKeyInput);
+};
+
+Main.system.miniBossCutSceneKeyInput = function (e) {
+    if (Main.input.getAction(e, 'fixed') === 'yes') {
+        Main.input.listenEvent('remove', Main.system.miniBossCutSceneKeyInput);
+        Main.input.listenEvent('add', 'main');
+
+        Main.getEntity('message').Message.getMessage().pop();
+        Main.getEntity('message').Message.pushMsg(
+            Main.text.cutScene('miniBoss2')
+        );
+
+        Main.display.clear();
+        Main.screens.main.display();
     }
 };

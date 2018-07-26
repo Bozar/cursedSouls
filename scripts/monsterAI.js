@@ -378,13 +378,9 @@ Main.system.npcCursePC = function (actor, unlockEngine, duration) {
 Main.system.butcherAct = function () {
     Main.getEntity('timer').engine.lock();
 
-    if (!Main.system.npcCannotSeePC(this)
-    ) {
-        if (!this.CombatRole.getRole('playCutScene')) {
-            Main.text.cutScene('miniBoss').forEach((text) => {
-                Main.getEntity('message').Message.pushMsg(text);
-            });
-            this.CombatRole.setRole('playCutScene', true);
+    if (!Main.system.npcCannotSeePC(this)) {
+        if (Main.getEntity('gameProgress').BossFight.getMiniBossAppear() < 1) {
+            Main.getEntity('gameProgress').BossFight.setMiniBossAppear();
         }
     }
 

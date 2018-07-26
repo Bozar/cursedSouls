@@ -86,6 +86,14 @@ Main.Component.BossFight = function () {
     this._dungeonLevel = 1;
     this._maxDungeonLevel = 3;
 
+    // Draw the cut scene for the mini boss.
+    //      0: initial value.
+    //      1: draw the cut scene.
+    //      2: the cut scene has been drawn.
+    // If there are more than 1 mini boss, you should find a better way to handle
+    // this.
+    this._miniBossAppear = 0;
+
     this.getBossFightStatus = function () { return this._bossFight; };
     this.getDungeonLevel = function () { return this._dungeonLevel; };
 
@@ -108,6 +116,9 @@ Main.Component.BossFight = function () {
     this.setDungeonLevel = function (level) {
         this._dungeonLevel = level;
     };
+
+    this.getMiniBossAppear = function () { return this._miniBossAppear; };
+    this.setMiniBossAppear = function () { this._miniBossAppear += 1; };
 };
 
 Main.Component.Display = function (char, color, onlyOneColor) {

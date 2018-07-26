@@ -404,3 +404,28 @@ Main.entity.cultist = function (x, y) {
 
     return e;
 };
+
+Main.entity.butcher = function (x, y) {
+    let e = new Main.Factory('butcher');
+
+    e.addComponent(new Main.Component.Position(5, x, y));
+    e.addComponent(new Main.Component.Display('B'));
+    e.addComponent(new Main.Component.ActionDuration());
+    e.addComponent(new Main.Component.Inventory(1, 'lump'));
+    e.addComponent(new Main.Component.HitPoint(2));
+    e.addComponent(new Main.Component.Damage(1, 2));
+    e.addComponent(new Main.Component.AttackRange(2));
+    e.addComponent(new Main.Component.CombatRole(false, false));
+
+    e.ActionDuration.setDuration('slowAttack', 1.2);
+    e.CombatRole.setRole('curse', true);
+    e.CombatRole.setRole('playCutScene', false);
+    e.CombatRole.setRole('isBoss', true);
+    e.CombatRole.setRole('isMiniBoss', true);
+
+    e.act = Main.system.butcherAct;
+
+    Main.entities.get('npc').set(e.getID(), e);
+
+    return e;
+};

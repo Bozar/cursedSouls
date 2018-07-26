@@ -64,6 +64,13 @@ Main.screens.main.initialize = function () {
         Main.getEntity('timer').scheduler.add(eliteAndGrunt[1][i], true);
     }
 
+    // Place the mini boss, Butcher.
+    if (Main.getEntity('gameProgress').BossFight.getDungeonLevel() === 2) {
+        let butcher = Main.entity.butcher();
+        Main.system.placeActor(butcher, Main.system.verifyButcherPosition);
+        Main.getEntity('timer').scheduler.add(butcher, true);
+    }
+
     // Downstairs.
     Main.entity.downstairs();
 

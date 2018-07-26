@@ -374,3 +374,16 @@ Main.system.npcCursePC = function (actor, unlockEngine, duration) {
         Main.system.unlockEngine(duration);
     }
 };
+
+Main.system.butcherAct = function () {
+    Main.getEntity('timer').engine.lock();
+
+    if (!Main.system.npcCannotSeePC(this)
+        && !this.CombatRole.getRole('playCutScene')
+    ) {
+        console.log('I see you.');
+        this.CombatRole.setRole('playCutScene', true);
+    }
+
+    Main.system.unlockEngine(1);
+};

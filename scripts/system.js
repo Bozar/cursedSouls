@@ -124,6 +124,12 @@ Main.system.verifyEnemyPosition = function (x, y, pcSight, isElite) {
     }
 };
 
+Main.system.verifyButcherPosition = function (x, y) {
+    return !Main.system.isFloor(x, y)
+        || Main.system.getDistance([x, y], Main.getEntity('pc'))
+        < Main.getEntity('pc').Position.getRange() * 3;
+};
+
 Main.system.verifyDownstairsPosition = function (x, y) {
     return !Main.system.isFloor(x, y)
         || Main.system.pcHere(x, y)
@@ -907,7 +913,10 @@ Main.system.pcAttack = function (target, attackType) {
         // 5a-5: Progress the game if the level boss is dead.
         // 5b-5: Check the boss related normal achievements.
         if (Main.system.bossIsDead(target)) {
-            Main.getEntity('gameProgress').BossFight.goToNextBossFightStage();
+            if (!target.CombatRole.getRole('isMiniBoss')) {
+                Main.getEntity('gameProgress').BossFight
+                    .goToNextBossFightStage();
+            }
             Main.system.checkAchBossNormal(target);
         }
     }

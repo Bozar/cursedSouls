@@ -100,6 +100,8 @@ Main.text.initialize = function () {
     text.get('name').set('ratMan', 'Rat Man');
     text.get('name').set('cultist', 'Cultist');
 
+    text.get('name').set('butcher', 'Ravenous Butcher');
+
     // Describe the NPC, item or building under the marker.
     text.set('info', new Map());
 
@@ -156,6 +158,10 @@ Main.text.initialize = function () {
         'The Cultist is a skinny man with a bone wand in his hand'
         + ' to shoot necro bolts against intruders.'
         + ' Rumor says he is no longer human, but the host of wisps.'
+    );
+
+    text.get('info').set('butcher',
+        'Butcher description.'
     );
 
     // Orbs.
@@ -230,7 +236,7 @@ Main.text.initialize = function () {
     text.set('achievementLeft', new Map());
     text.get('achievementLeft').set('boss1Normal', 'Bounty: Tower Gargoyle');
     text.get('achievementLeft').set('boss1Special', 'Gargoyle Tail Axe');
-    text.get('achievementLeft').set('boss2Normal', 'boss2Normal');
+    text.get('achievementLeft').set('boss2Normal', 'Bounty: Ravenous Butcher');
     text.get('achievementLeft').set('boss3Normal', 'boss3Normal');
     text.get('achievementLeft').set('boss3Special', 'boss3Special');
     text.get('achievementLeft').set('boss4Normal', 'boss4Normal');
@@ -246,7 +252,7 @@ Main.text.initialize = function () {
     text.get('achievementRight').set('boss1Special',
         'Keep calm and don\'t roll back.'
     );
-    text.get('achievementRight').set('boss2Normal', 'boss2Normal');
+    text.get('achievementRight').set('boss2Normal', 'Beat the Ravenous Butcher.');
     text.get('achievementRight').set('boss3Normal', 'boss3Normal');
     text.get('achievementRight').set('boss3Special', 'boss3Special');
     text.get('achievementRight').set('boss4Normal', 'boss4Normal');

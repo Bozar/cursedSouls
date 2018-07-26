@@ -313,6 +313,16 @@ Main.text.initialize = function () {
     text.get('cutScene').set('enterLevel3', 'level 3');
     text.get('cutScene').set('beforeBossFight3', 'before 3');
 
+    text.get('cutScene').set('miniBoss',
+        [
+            'You hear the sound of chopping from the corner.',
+            'There is a fatty who raises the cleaver into the air.',
+            'He pushes over the table upon seeing you.',
+            '"Nosferatu rats! You won\'t escape this time!"',
+            '='.repeat(10)
+        ]
+    );
+
     // Error messages.
     text.set('error', new Map());
     text.get('error').set('browser',

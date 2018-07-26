@@ -379,10 +379,13 @@ Main.system.butcherAct = function () {
     Main.getEntity('timer').engine.lock();
 
     if (!Main.system.npcCannotSeePC(this)
-        && !this.CombatRole.getRole('playCutScene')
     ) {
-        console.log('I see you.');
-        this.CombatRole.setRole('playCutScene', true);
+        if (!this.CombatRole.getRole('playCutScene')) {
+            Main.text.cutScene('miniBoss').forEach((text) => {
+                Main.getEntity('message').Message.pushMsg(text);
+            });
+            this.CombatRole.setRole('playCutScene', true);
+        }
     }
 
     Main.system.unlockEngine(1);

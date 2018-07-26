@@ -319,7 +319,9 @@ Main.text.initialize = function () {
             'There is a fatty who raises the cleaver into the air.',
             'He pushes over the table upon seeing you.',
             '"Nosferatu rats! You won\'t escape this time!"',
-            '===Press Space to continue.==='
+            `===${
+            Main.screens.colorfulText('Press Space to continue.', 'green')
+            }===`
         ]
     );
     text.get('cutScene').set('miniBoss2', 'The Ravenous Butcher charges at you.');
@@ -379,14 +381,16 @@ Main.text.modeLine = function (mode) {
         colorfulMode = Main.screens.colorfulText(Main.text.ui(mode), 'orange');
 
         if (!Main.system.insideOrbRange()) {
-            outOfRange = `[${Main.screens.colorfulText(
-                Main.text.action('range'), 'orange')}]`;
+            outOfRange = `[${
+                Main.screens.colorfulText(
+                    Main.text.action('range'), 'orange')
+                }]`;
         }
     } else {
         colorfulMode = Main.text.ui(mode);
     }
 
-    text = `[${colorfulMode}][${Main.text.ui('range')}]${outOfRange}`;
+    text = `[${colorfulMode}][${Main.text.ui('range')}]${outOfRange} `;
     text = text.replace('%%', Main.system.getDistance(
         Main.getEntity('pc'), Main.getEntity('marker')));
 

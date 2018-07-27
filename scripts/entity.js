@@ -420,7 +420,7 @@ Main.entity.butcher = function (x, y) {
     e.ActionDuration.setDuration('slowAttack', 1.2);
     e.ActionDuration.setDuration('slowMove', 1.2);
 
-    e.AttackRange.setRange('pull', 3);
+    e.AttackRange.setRange('pull', 2);
     e.Damage.setDamage('cleave', 2);
 
     e.CombatRole.setRole('playCutScene', false);

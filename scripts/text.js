@@ -159,12 +159,14 @@ Main.text.initialize = function () {
     );
     text.get('info').set('cultist',
         'The Cultist is a skinny man with a bone wand in his hand'
-        + ' to shoot necro bolts against intruders.'
-        + ' Rumor says he is no longer human, but the host of wisps.'
+        + ' to shoot necro bolts which can curse or hurt the intruders.'
     );
 
     text.get('info').set('butcher',
-        'Butcher description.'
+        'The fatty\'s left hand is a hook'
+        + ' which can be used to pull meat in a line.'
+        + ' He helds the razor sharp cleaver in the right hand.'
+        + ' Sometimes he needs to rest.'
     );
 
     // Orbs.

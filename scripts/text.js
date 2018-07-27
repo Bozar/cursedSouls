@@ -72,6 +72,9 @@ Main.text.initialize = function () {
         'The Tower Gargoyle thrusts you with the halberd.');
     text.get('action').set('gargoyleBreathe', 'The %% breathes fire.');
 
+    text.get('action').set('butcherPull', 'The Ravenous Butcher pulls you.');
+    text.get('action').set('butcherCleave', 'The Ravenous Butcher cleaves you.');
+
     text.get('action').set('save', 'Game saved.');
     text.get('action').set('closeOrReload',
         'You can close the tab or press F5 to continue.'

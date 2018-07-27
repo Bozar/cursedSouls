@@ -412,13 +412,17 @@ Main.entity.butcher = function (x, y) {
     e.addComponent(new Main.Component.Display('B'));
     e.addComponent(new Main.Component.ActionDuration());
     e.addComponent(new Main.Component.Inventory(1, 'lump'));
-    e.addComponent(new Main.Component.HitPoint(2));
-    e.addComponent(new Main.Component.Damage(1, 2));
-    e.addComponent(new Main.Component.AttackRange(2));
+    e.addComponent(new Main.Component.HitPoint(3));
+    e.addComponent(new Main.Component.Damage(1));
+    e.addComponent(new Main.Component.AttackRange(1));
     e.addComponent(new Main.Component.CombatRole(false, false));
 
     e.ActionDuration.setDuration('slowAttack', 1.2);
-    e.CombatRole.setRole('curse', true);
+    e.ActionDuration.setDuration('slowMove', 1.2);
+
+    e.AttackRange.setRange('pull', 3);
+    e.Damage.setDamage('cleave', 2);
+
     e.CombatRole.setRole('playCutScene', false);
     e.CombatRole.setRole('isBoss', true);
     e.CombatRole.setRole('isMiniBoss', true);

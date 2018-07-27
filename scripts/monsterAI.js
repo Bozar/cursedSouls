@@ -26,7 +26,7 @@ Main.system.dummyAct = function () {
         // 2b-4: Attack the PC.
         else {
             Main.system.pcTakeDamage(this.Damage.getDamage('base'));
-            Main.system.npcHitOrKill(this, attackDuration, false);
+            Main.system.npcHitOrKill(this, attackDuration);
         }
     } else {
         if (this.CombatRole.getCautious()) {
@@ -93,7 +93,7 @@ Main.system.gargoyleAct = function () {
         Main.getEntity('message').Message.pushMsg(
             Main.text.action('gargoyleThrust'));
 
-        Main.system.npcHitOrKill(this, getAttackDuration(this), true);
+        Main.system.npcHitOrKill(this, getAttackDuration(this));
     }
     // 2C-3: Breathe fire.
     else if (
@@ -109,7 +109,7 @@ Main.system.gargoyleAct = function () {
         Main.getEntity('message').Message.pushMsg(
             Main.text.gargoyleBreathe(this));
 
-        Main.system.npcHitOrKill(this, getAttackDuration(this), true);
+        Main.system.npcHitOrKill(this, getAttackDuration(this));
     }
     // 3-3: Approach the PC in sight.
     else {
@@ -265,8 +265,8 @@ Main.system.npcDecideNextStep = function (actor, nextStep, duration, distance) {
     }
 };
 
-Main.system.npcHitOrKill = function (actor, duration, isBoss) {
-    if (!isBoss) {
+Main.system.npcHitOrKill = function (actor, duration) {
+    if (!actor.CombatRole.getRole('isBoss')) {
         // Bosses have special hit messages.
         Main.getEntity('message').Message.pushMsg(Main.text.npcHit(actor));
     }
@@ -376,28 +376,55 @@ Main.system.npcCursePC = function (actor, unlockEngine, duration) {
 };
 
 Main.system.butcherAct = function () {
+    let moveDuration = this.ActionDuration.getDuration('slowMove');
+    let attackDuration = this.ActionDuration.getDuration('slowAttack');
+    let pullHere
+        = Main.system.canPullPC(this, this.AttackRange.getRange('pull'));
+
     Main.getEntity('timer').engine.lock();
 
-    if (!Main.system.npcCannotSeePC(this)) {
+    // 1-3: Search the nearby PC or wait 1 turn.
+    if (Main.system.npcCannotSeePC(this)) {
+        Main.system.npcSearchOrWait(this, moveDuration);
+    } else {
+        // 2A-3: Wait 1 turn. Play the cut-scene in the PC's turn.
         if (Main.getEntity('gameProgress').BossFight.getMiniBossAppear() < 1) {
             Main.getEntity('gameProgress').BossFight.setMiniBossAppear();
-            // Wait 1 turn.
-        } else {
-            let pullHere = Main.system.canPullPC(this, 2);
-            if (pullHere.length > 0) {
-                Main.getEntity('pc').Position.setX(pullHere[0]);
-                Main.getEntity('pc').Position.setY(pullHere[1]);
-            }
+            Main.system.unlockEngine(1);
+        }
+        // 2B-3: Cleave the PC.
+        else if (Main.system.getDistance(this, Main.getEntity('pc')) === 1) {
+            Main.getEntity('message').Message.pushMsg(
+                Main.text.action('butcherCleave')
+            );
+
+            Main.system.pcTakeDamage(this.Damage.getDamage('cleave'));
+            Main.system.npcHitOrKill(this, attackDuration);
+        }
+        // 2C-3: Pull the PC.
+        else if (pullHere.length > 0) {
+            Main.getEntity('pc').Position.setX(pullHere[0]);
+            Main.getEntity('pc').Position.setY(pullHere[1]);
+
+            Main.getEntity('message').Message.pushMsg(
+                Main.text.action('butcherPull')
+            );
+            Main.system.pcTakeDamage(this.Damage.getDamage('base'));
+            Main.system.npcHitOrKill(this, attackDuration);
+        }
+        // 3-3: Approach the PC in sight.
+        else {
+            Main.system.npcMoveClose(this, moveDuration);
         }
     }
-
-    Main.system.unlockEngine(1);
 };
 
 Main.system.canPullPC = function (actor, pullRange) {
     let range = pullRange;
-    let relativeX = Main.getEntity('pc').Position.getX() - actor.Position.getX();
-    let relativeY = Main.getEntity('pc').Position.getY() - actor.Position.getY();
+    let relativeX
+        = Main.getEntity('pc').Position.getX() - actor.Position.getX();
+    let relativeY
+        = Main.getEntity('pc').Position.getY() - actor.Position.getY();
     let deltaX = relativeX > 0
         ? 1
         : relativeX < 0

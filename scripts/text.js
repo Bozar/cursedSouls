@@ -153,9 +153,9 @@ Main.text.initialize = function () {
         + ' and spread their last bless.'
     );
     text.get('info').set('ratMan',
-        'The Rat Man acts clumsly,'
-        + ' perhaps it has not been accustomed to stand on two legs.'
-        + ' But it has already leant to whip the rats in its sight.'
+        'The Rat Man has not been accustomed to stand on two legs,'
+        + ' but it has already leant to whip the rats around itself'
+        + ' and farther away targets in the front.'
     );
     text.get('info').set('cultist',
         'The Cultist is a skinny man with a bone wand in his hand'

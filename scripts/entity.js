@@ -370,11 +370,12 @@ Main.entity.ratMan = function (x, y) {
     e.addComponent(new Main.Component.ActionDuration());
     e.addComponent(new Main.Component.Inventory(1, 'fire'));
     e.addComponent(new Main.Component.HitPoint(2));
-    e.addComponent(new Main.Component.Damage(2));
+    e.addComponent(new Main.Component.Damage(1));
     e.addComponent(new Main.Component.AttackRange(1));
-    e.addComponent(new Main.Component.CombatRole(false, false));
+    e.addComponent(new Main.Component.CombatRole(false, true));
 
     e.ActionDuration.setDuration('slowMove', 1.2);
+    e.AttackRange.setRange('extend', 2);
 
     e.act = Main.system.dummyAct;
 
@@ -391,7 +392,7 @@ Main.entity.cultist = function (x, y) {
     e.addComponent(new Main.Component.ActionDuration());
     e.addComponent(new Main.Component.Inventory(1, 'lump'));
     e.addComponent(new Main.Component.HitPoint(2));
-    e.addComponent(new Main.Component.Damage(1, 1));
+    e.addComponent(new Main.Component.Damage(1, 2));
     e.addComponent(new Main.Component.AttackRange(2));
     e.addComponent(new Main.Component.CombatRole(false, false));
 

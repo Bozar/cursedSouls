@@ -349,7 +349,7 @@ Main.entity.wisp = function (x, y) {
     e.addComponent(new Main.Component.ActionDuration());
     e.addComponent(new Main.Component.Inventory(1, 'ice'));
     e.addComponent(new Main.Component.HitPoint(1));
-    e.addComponent(new Main.Component.Damage(1, 2));
+    e.addComponent(new Main.Component.Damage(1, 1));
     e.addComponent(new Main.Component.AttackRange(1));
     e.addComponent(new Main.Component.CombatRole(false, false));
 
@@ -391,7 +391,7 @@ Main.entity.cultist = function (x, y) {
     e.addComponent(new Main.Component.ActionDuration());
     e.addComponent(new Main.Component.Inventory(1, 'lump'));
     e.addComponent(new Main.Component.HitPoint(2));
-    e.addComponent(new Main.Component.Damage(1, 2));
+    e.addComponent(new Main.Component.Damage(1, 1));
     e.addComponent(new Main.Component.AttackRange(2));
     e.addComponent(new Main.Component.CombatRole(false, false));
 

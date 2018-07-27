@@ -340,7 +340,7 @@ Main.Component.Memory = function () {
 Main.Component.CombatRole = function (isCautious, hasExtendRange) {
     this._name = 'CombatRole';
 
-    // Available roles: cautious, curse, extendRange, isBoss.
+    // Available roles: cautious, curse, isBoss, isMiniBoss, playCutScene.
     this._combatRoles = new Map();
 
     this._combatRoles.set('cautious', isCautious);

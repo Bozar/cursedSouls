@@ -294,7 +294,7 @@ Main.system.npcSearchOrWait = function (actor, duration) {
 
 Main.system.pcIsInsideAttackRange = function (actor) {
     // Some enemies can hit the PC in a straight line with an extend range.
-    if (actor.CombatRole.getExtendRange()
+    if (actor.AttackRange.getRange('extend') > 0
         && Main.system.pcIsInStraightLine(actor)
     ) {
         return Main.system.getDistance(actor, Main.getEntity('pc'))

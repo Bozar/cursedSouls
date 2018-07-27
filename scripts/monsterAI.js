@@ -381,8 +381,49 @@ Main.system.butcherAct = function () {
     if (!Main.system.npcCannotSeePC(this)) {
         if (Main.getEntity('gameProgress').BossFight.getMiniBossAppear() < 1) {
             Main.getEntity('gameProgress').BossFight.setMiniBossAppear();
+            // Wait 1 turn.
+        } else {
+            let pullHere = Main.system.canPullPC(this, 2);
+            if (pullHere.length > 0) {
+                Main.getEntity('pc').Position.setX(pullHere[0]);
+                Main.getEntity('pc').Position.setY(pullHere[1]);
+            }
         }
     }
 
     Main.system.unlockEngine(1);
+};
+
+Main.system.canPullPC = function (actor, pullRange) {
+    let range = pullRange;
+    let relativeX = Main.getEntity('pc').Position.getX() - actor.Position.getX();
+    let relativeY = Main.getEntity('pc').Position.getY() - actor.Position.getY();
+    let deltaX = relativeX > 0
+        ? 1
+        : relativeX < 0
+            ? -1
+            : 0;
+    let deltaY = relativeY > 0
+        ? 1
+        : relativeY < 0
+            ? -1
+            : 0;
+    let position = [];
+
+    if (Main.system.getDistance(actor, Main.getEntity('pc')) > range
+        || Math.abs(relativeX) > 1
+        && Math.abs(relativeY) > 1
+    ) {
+        return [];
+    }
+
+    position.push(
+        actor.Position.getX() + deltaX, actor.Position.getY() + deltaY
+    );
+
+    if (Main.system.isFloor(...position) && !Main.system.npcHere(...position)) {
+        return position;
+    }
+
+    return [];
 };

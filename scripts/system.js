@@ -907,9 +907,9 @@ Main.system.pcAttack = function (target, attackType) {
                 Main.text.action('removeCurse')
             );
         }
-        // 3b-5: NPC drops the orb and performs the last action.
-        Main.system.npcDropOrb(target, dropRate);
+        // 3b-5: NPC performs the last action and drops the orb.
         Main.system.npcActBeforeDeath(target);
+        Main.system.npcDropOrb(target, dropRate);
 
         // 4-5: Remove the dead enemy.
         Main.getEntity('timer').scheduler.remove(target);

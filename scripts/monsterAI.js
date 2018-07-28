@@ -454,3 +454,76 @@ Main.system.canPullPC = function (actor, pullRange) {
 
     return [];
 };
+
+Main.system.ghoulAct = function () {
+    let moveDuration = this.ActionDuration.getDuration('slowMove');
+    let attackDuration = this.ActionDuration.getDuration('slowAttack');
+    let pullHere
+        = Main.system.canPullPC(this, this.AttackRange.getRange('pull'));
+
+    Main.getEntity('timer').engine.lock();
+
+    // 1-3: Search the nearby PC or wait 1 turn.
+    if (Main.system.npcCannotSeePC(this)) {
+        Main.system.npcSearchOrWait(this, moveDuration);
+    } else {
+        if (Main.system.getDistance(this, Main.getEntity('pc')) < 4) {
+            let position = Main.system.npcSetBomb(this);
+            let newActor = null;
+
+            position.forEach((here) => {
+                newActor = Main.entity.timeBomb(here[0], here[1]);
+                Main.getEntity('timer').scheduler.add(newActor, true);
+            });
+
+            Main.system.unlockEngine(1);
+        }
+        // 3-3: Approach the PC in sight.
+        else {
+            Main.system.npcMoveClose(this, moveDuration);
+        }
+    }
+};
+
+Main.system.timeBombAct = function () {
+    Main.getEntity('timer').engine.lock();
+
+    console.log(this.getID() + ' explode');
+
+    Main.getEntity('timer').scheduler.remove(this);
+    Main.getEntity('npc').delete(this.getID());
+
+    Main.system.unlockEngine(1);
+};
+
+Main.system.npcSetBomb = function (actor) {
+    let pcX = Main.getEntity('pc').Position.getX();
+    let pcY = Main.getEntity('pc').Position.getY();
+    let surroundPC = Main.system.getSurroundPosition(pcX, pcY, 1)
+        .filter((position) => {
+            return Main.system.isFloor(...position)
+                && !Main.system.npcHere(...position);
+        });
+    let maxBomb = actor.Damage.getDamage('maxBomb');
+
+    let setHere = [];
+    let candidate = [];
+
+    if (!Main.system.npcHere(pcX, pcY)) {
+        setHere.push([pcX, pcY]);
+    }
+
+    if (setHere.length + surroundPC.length > maxBomb) {
+        while (setHere.length < maxBomb) {
+            candidate = surroundPC[
+                Math.floor(ROT.RNG.getUniform() * surroundPC.length)
+            ];
+            setHere.push(candidate);
+            surroundPC.splice(surroundPC.indexOf(candidate), 1);
+        }
+    } else {
+        setHere.push(surroundPC);
+    }
+
+    return setHere;
+};

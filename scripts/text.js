@@ -104,6 +104,8 @@ Main.text.initialize = function () {
     text.get('name').set('cultist', 'Cultist');
 
     text.get('name').set('butcher', 'Ravenous Butcher');
+    text.get('name').set('ghoul', 'Olympian Ghoul');
+    text.get('name').set('timeBomb', 'Time Bomb');
 
     // Describe the NPC, item or building under the marker.
     text.set('info', new Map());
@@ -167,6 +169,12 @@ Main.text.initialize = function () {
         + ' which can be used to pull meat in a line.'
         + ' He helds the razor sharp cleaver in the right hand.'
         + ' Sometimes he needs to rest.'
+    );
+    text.get('info').set('ghoul',
+        'Ghoul description.'
+    );
+    text.get('info').set('timeBomb',
+        'Time Bomb description.'
     );
 
     // Orbs.

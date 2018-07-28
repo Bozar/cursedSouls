@@ -62,14 +62,8 @@ Main.system.verifyOrbPosition = function (x, y) {
 };
 
 Main.system.npcIsTooDense = function (x, y) {
-    let surround = [];
+    let surround = Main.system.getSurroundPosition(x, y, 1);
     let count = 0;
-
-    for (let i = -1; i < 2; i++) {
-        for (let j = -1; j < 2; j++) {
-            surround.push([x + i, y + j]);
-        }
-    }
 
     for (let i = 0; i < surround.length; i++) {
         if (Main.system.npcHere(...surround[i])) {
@@ -408,7 +402,19 @@ Main.system.pcUseDownstairs = function () {
                 Main.getEntity('pc'),
                 2
             );
-            newActor = Main.entity.gargoyle(position[0], position[1]);
+            switch (
+            Main.getEntity('gameProgress').BossFight.getDungeonLevel()
+            ) {
+                case 1:
+                    newActor = Main.entity.gargoyle(position[0], position[1]);
+                    break;
+                case 2:
+                    newActor = Main.entity.ghoul(position[0], position[1]);
+                    break;
+                case 3:
+                    newActor = Main.entity.gargoyle(position[0], position[1]);
+                    break;
+            }
             Main.getEntity('timer').scheduler.add(newActor, true, 2);
 
             Main.screens.cutScene.enter();
@@ -1244,4 +1250,18 @@ Main.system.miniBossCutSceneKeyInput = function (e) {
         Main.display.clear();
         Main.screens.main.display();
     }
+};
+
+Main.system.getSurroundPosition = function (x, y, range) {
+    let surround = [];
+
+    for (let i = -range; i < range + 1; i++) {
+        for (let j = -range; j < range + 1; j++) {
+            if (i !== 0 || j !== 0) {
+                surround.push([x + i, y + j]);
+            }
+        }
+    }
+
+    return surround;
 };

@@ -457,6 +457,7 @@ Main.system.move = function (direction, who) {
     let duration = getDuration();
     let actorType = getActorType();
     let isMoveable = false;
+    let npcHere = null;
 
     // Get new coordinates.
     if (direction !== 'wait') {
@@ -469,17 +470,19 @@ Main.system.move = function (direction, who) {
     if (direction === 'wait') {
         isMoveable = true;
     } else {
+        npcHere = Main.system.npcHere(x, y);
+
         switch (actorType) {
             case 'pc':
                 isMoveable
                     = Main.system.isFloor(x, y)
-                    && !Main.system.npcHere(x, y);
+                    && (!npcHere || npcHere.CombatRole.getRole('isBomb'));
                 break;
             case 'npc':
                 isMoveable
                     = Main.system.isFloor(x, y)
                     && !Main.system.pcHere(x, y)
-                    && !Main.system.npcHere(x, y);
+                    && !npcHere;
                 break;
             case 'marker':
                 isMoveable

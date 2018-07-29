@@ -477,6 +477,7 @@ Main.entity.timeBomb = function (x, y) {
 
     e.ActionDuration.setDuration('slowAttack', 1.2);
     e.ActionDuration.setDuration('slowMove', 1.2);
+    e.CombatRole.setRole('isBomb', true);
 
     e.act = Main.system.timeBombAct;
 

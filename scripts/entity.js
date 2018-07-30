@@ -439,7 +439,7 @@ Main.entity.butcher = function (x, y) {
 Main.entity.ghoul = function (x, y) {
     let e = new Main.Factory('ghoul');
 
-    e.addComponent(new Main.Component.Position(5, x, y));
+    e.addComponent(new Main.Component.Position(7, x, y));
     e.addComponent(new Main.Component.Display('J'));
     e.addComponent(new Main.Component.ActionDuration());
     e.addComponent(new Main.Component.Inventory(1, 'lump'));
@@ -448,13 +448,9 @@ Main.entity.ghoul = function (x, y) {
     e.addComponent(new Main.Component.AttackRange(1));
     e.addComponent(new Main.Component.CombatRole(false));
 
-    e.ActionDuration.setDuration('slowAttack', 1.2);
-    e.ActionDuration.setDuration('slowMove', 1.2);
-
-    e.AttackRange.setRange('pull', 2);
-    e.Damage.setDamage('maxBomb', 2);
-
-    e.CombatRole.setRole('playCutScene', false);
+    e.ActionDuration.setDuration('fastAttack', 0.4);
+    e.AttackRange.setRange('bomb', 4);
+    e.Damage.setDamage('maxBomb', 4);
     e.CombatRole.setRole('isBoss', true);
 
     e.act = Main.system.ghoulAct;
@@ -471,7 +467,7 @@ Main.entity.timeBomb = function (x, y) {
     e.addComponent(new Main.Component.Display('t'));
     e.addComponent(new Main.Component.ActionDuration());
     e.addComponent(new Main.Component.Inventory(1, 'slime'));
-    e.addComponent(new Main.Component.HitPoint(1));
+    e.addComponent(new Main.Component.HitPoint(3));
     e.addComponent(new Main.Component.Damage(1));
     e.addComponent(new Main.Component.AttackRange(1));
     e.addComponent(new Main.Component.CombatRole(false));

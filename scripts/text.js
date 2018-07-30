@@ -77,6 +77,9 @@ Main.text.initialize = function () {
         'The Ravenous Butcher cleaves you.'
     );
 
+    text.get('action').set('ghoulPunch', 'The Olympian Ghoul punches you.');
+
+    text.get('action').set('setBomb', 'The %% set bombs around you.');
     text.get('action').set('bombExplode', 'The %% explodes.');
     text.get('action').set('freezeTime', 'You are frozen in time.');
 
@@ -90,6 +93,7 @@ Main.text.initialize = function () {
     text.get('action').set('deathGeneral', 'Rest in peace, ashen one.');
     text.get('action').set('deathBoss1',
         'Ashen one, hearest thou my voice, still?');
+    text.get('action').set('deathBoss2', 'You eventually stop thinking.');
 
     // NPC's names
     text.set('name', new Map());
@@ -593,6 +597,14 @@ Main.text.unlockAchievement = function (achievement) {
 
 Main.text.bombExplode = function (actor) {
     let text = Main.text.action('bombExplode');
+
+    text = text.replace('%%', Main.text.name(actor.getEntityName()));
+
+    return text;
+};
+
+Main.text.setBomb = function (actor) {
+    let text = Main.text.action('setBomb');
 
     text = text.replace('%%', Main.text.name(actor.getEntityName()));
 

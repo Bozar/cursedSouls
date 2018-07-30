@@ -456,35 +456,34 @@ Main.system.canPullPC = function (actor, pullRange) {
 };
 
 Main.system.ghoulAct = function () {
-    let moveDuration = this.ActionDuration.getDuration('slowMove');
-    let attackDuration = this.ActionDuration.getDuration('slowAttack');
-    let pullHere
-        = Main.system.canPullPC(this, this.AttackRange.getRange('pull'));
+    let move = this.ActionDuration.getDuration('base');
+    let setBomb = this.ActionDuration.getDuration('base');
+    let melee = this.ActionDuration.getDuration('fastAttack');
 
     Main.getEntity('timer').engine.lock();
 
     // 1-3: Search the nearby PC or wait 1 turn.
     if (Main.system.npcCannotSeePC(this)) {
-        Main.system.npcSearchOrWait(this, moveDuration);
-    } else {
-        if (Main.getEntity('pc').CombatRole.getRole('isFrozen')) {
-            Main.system.npcMoveClose(this, moveDuration);
-        }
-        else if (Main.system.getDistance(this, Main.getEntity('pc')) < 4) {
-            let position = Main.system.npcSetBomb(this);
-            let newActor = null;
-
-            position.forEach((here) => {
-                newActor = Main.entity.timeBomb(here[0], here[1]);
-                Main.getEntity('timer').scheduler.add(newActor, true);
-            });
-
-            Main.system.unlockEngine(1);
-        }
-        // 3-3: Approach the PC in sight.
-        else {
-            Main.system.npcMoveClose(this, moveDuration);
-        }
+        Main.system.npcSearchOrWait(this, move);
+    }
+    // 2A-3: Attack the PC.
+    else if (Main.system.pcIsInsideAttackRange(this)) {
+        Main.getEntity('message').Message.pushMsg(
+            Main.text.action('ghoulPunch')
+        );
+        Main.system.pcTakeDamage(this.Damage.getDamage('base'));
+        Main.system.npcHitOrKill(this, melee);
+    }
+    // 2B-3: Set bombs.
+    else if (Main.system.getDistance(this, Main.getEntity('pc'))
+        < this.AttackRange.getRange('bomb')
+        && !Main.getEntity('pc').CombatRole.getRole('isFrozen')
+    ) {
+        Main.system.npcSetBomb(this, 'timeBomb', setBomb);
+    }
+    // 3-3: Approach the PC in sight.
+    else {
+        Main.system.npcMoveClose(this, move);
     }
 };
 
@@ -510,7 +509,7 @@ Main.system.bombAct = function () {
     Main.system.unlockEngine(1);
 };
 
-Main.system.npcSetBomb = function (actor) {
+Main.system.npcSetBomb = function (actor, bomb, duration) {
     let pcX = Main.getEntity('pc').Position.getX();
     let pcY = Main.getEntity('pc').Position.getY();
     let surroundPC = Main.system.getSurroundPosition(pcX, pcY, 1)
@@ -522,6 +521,7 @@ Main.system.npcSetBomb = function (actor) {
 
     let setHere = [];
     let candidate = [];
+    let newActor = null;
 
     if (!Main.system.npcHere(pcX, pcY)) {
         setHere.push([pcX, pcY]);
@@ -539,5 +539,12 @@ Main.system.npcSetBomb = function (actor) {
         setHere.push(surroundPC);
     }
 
-    return setHere;
+    setHere.forEach((here) => {
+        newActor = Main.entity[bomb](here[0], here[1]);
+        Main.getEntity('timer').scheduler.add(newActor, true);
+    });
+
+    Main.getEntity('message').Message.pushMsg(Main.text.setBomb(actor));
+
+    Main.system.unlockEngine(duration);
 };

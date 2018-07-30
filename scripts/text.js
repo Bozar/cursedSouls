@@ -278,7 +278,7 @@ Main.text.initialize = function () {
     text.get('achievementRight').set('boss2Normal', 'Beat the Ravenous Butcher.');
     text.get('achievementRight').set('boss3Normal', 'Beat the Olympian Ghoul.');
     text.get('achievementRight').set('boss3Special',
-        'Beat the Ghoul without using the Lump or Fire Orb.'
+        'Beat the Olympian Ghoul with 3 bump attacks.'
     );
     text.get('achievementRight').set('boss4Normal', 'boss4Normal');
     text.get('achievementRight').set('boss4Special', 'boss4Special');

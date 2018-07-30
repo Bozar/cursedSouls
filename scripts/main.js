@@ -81,6 +81,10 @@ window.onload = function () {
     // TODO: delete this line when finish builidng the 2nd level.
     Main.getEntity('gameProgress').BossFight.setDungeonLevel(2);
 
+    // Achievements.
+    Main.system.setAchievement();
+    Main.system.checkAchUnlockAll();
+
     if (Main.getDevelop()) {
         Main.screens.main.enter();
         Main.input.listenEvent('add', 'main');

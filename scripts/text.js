@@ -73,7 +73,12 @@ Main.text.initialize = function () {
     text.get('action').set('gargoyleBreathe', 'The %% breathes fire.');
 
     text.get('action').set('butcherPull', 'The Ravenous Butcher pulls you.');
-    text.get('action').set('butcherCleave', 'The Ravenous Butcher cleaves you.');
+    text.get('action').set('butcherCleave',
+        'The Ravenous Butcher cleaves you.'
+    );
+
+    text.get('action').set('bombExplode', 'The %% explodes.');
+    text.get('action').set('freezeTime', 'You are frozen in time.');
 
     text.get('action').set('save', 'Game saved.');
     text.get('action').set('closeOrReload',
@@ -174,7 +179,8 @@ Main.text.initialize = function () {
         'Ghoul description.'
     );
     text.get('info').set('timeBomb',
-        'Time Bomb description.'
+        'The second form of the Bomb.'
+        + ' It can affect the world in a bizarre way.'
     );
 
     // Orbs.
@@ -581,6 +587,14 @@ Main.text.unlockAchievement = function (achievement) {
     let text = Main.text.action('unlockAchievement');
 
     text = text.replace('%%', Main.screens.colorfulText(achievement, 'green'));
+
+    return text;
+};
+
+Main.text.bombExplode = function (actor) {
+    let text = Main.text.action('bombExplode');
+
+    text = text.replace('%%', Main.text.name(actor.getEntityName()));
 
     return text;
 };

@@ -101,6 +101,7 @@ Main.entity.pc = function () {
     e.addComponent(new Main.Component.DropRate());
     e.addComponent(new Main.Component.AttackRange());
     e.addComponent(new Main.Component.FastMove());
+    e.addComponent(new Main.Component.CombatRole(false));
 
     e.Display.setColor('die', 'grey');
     e.Damage.setDamage('nuke', 9);
@@ -470,16 +471,14 @@ Main.entity.timeBomb = function (x, y) {
     e.addComponent(new Main.Component.Display('t'));
     e.addComponent(new Main.Component.ActionDuration());
     e.addComponent(new Main.Component.Inventory(1, 'slime'));
-    e.addComponent(new Main.Component.HitPoint(3));
+    e.addComponent(new Main.Component.HitPoint(1));
     e.addComponent(new Main.Component.Damage(1));
     e.addComponent(new Main.Component.AttackRange(1));
     e.addComponent(new Main.Component.CombatRole(false));
 
-    e.ActionDuration.setDuration('slowAttack', 1.2);
-    e.ActionDuration.setDuration('slowMove', 1.2);
     e.CombatRole.setRole('isBomb', true);
 
-    e.act = Main.system.timeBombAct;
+    e.act = Main.system.bombAct;
 
     Main.entities.get('npc').set(e.getID(), e);
 

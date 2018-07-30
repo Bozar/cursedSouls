@@ -318,14 +318,16 @@ Main.system.isInSight = function (source, target) {
 Main.system.pcAct = function () {
     Main.getEntity('timer').engine.lock();
 
-    if (this.FastMove.getStep() > 0) {
+    if (this.CombatRole.getRole('isFrozen')) {
+        this.CombatRole.setRole('isFrozen', false);
+        Main.system.unlockEngine(1);
+    } else if (this.FastMove.getStep() > 0) {
         Main.system.pcFastMove(false, this.FastMove.getDirection());
     } else if (
         Main.getEntity('gameProgress').BossFight.getMiniBossAppear() === 1
     ) {
         Main.system.enterMiniBossCutScene();
-    }
-    else {
+    } else {
         Main.input.listenEvent('add', 'main');
     }
 

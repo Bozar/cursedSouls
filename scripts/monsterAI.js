@@ -467,7 +467,10 @@ Main.system.ghoulAct = function () {
     if (Main.system.npcCannotSeePC(this)) {
         Main.system.npcSearchOrWait(this, moveDuration);
     } else {
-        if (Main.system.getDistance(this, Main.getEntity('pc')) < 4) {
+        if (Main.getEntity('pc').CombatRole.getRole('isFrozen')) {
+            Main.system.npcMoveClose(this, moveDuration);
+        }
+        else if (Main.system.getDistance(this, Main.getEntity('pc')) < 4) {
             let position = Main.system.npcSetBomb(this);
             let newActor = null;
 
@@ -485,10 +488,21 @@ Main.system.ghoulAct = function () {
     }
 };
 
-Main.system.timeBombAct = function () {
+Main.system.bombAct = function () {
     Main.getEntity('timer').engine.lock();
 
-    console.log(this.getID() + ' explode');
+    if (Main.system.pcHere(this.Position.getX(), this.Position.getY())) {
+        switch (this.getEntityName()) {
+            case 'timeBomb':
+                Main.getEntity('pc').CombatRole.setRole('isFrozen', true);
+                Main.getEntity('message').Message.pushMsg(
+                    Main.text.action('freezeTime')
+                );
+                break;
+        }
+    } else if (Main.system.isInSight(this, Main.getEntity('pc'))) {
+        Main.getEntity('message').Message.pushMsg(Main.text.bombExplode(this));
+    }
 
     Main.getEntity('timer').scheduler.remove(this);
     Main.getEntity('npc').delete(this.getID());

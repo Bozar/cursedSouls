@@ -947,7 +947,7 @@ Main.system.pcAttack = function (target, attackType) {
                     .goToNextBossFightStage();
             }
             Main.system.checkAchBossNormal(target);
-            Main.system.checkAchBoss3Special();
+            Main.system.checkAchBoss3Special(target);
         }
     }
     // Step 2B-4: The enemy is still alive.

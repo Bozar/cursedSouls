@@ -400,7 +400,7 @@ Main.Component.Achievement = function () {
 
     // Use the boolean value to check if an achievement is unlockable.
     this._noExamine = true;
-    this._boss3Special = false;
+    this._boss3Special = true;
 
     this.getAchievement = function (id) {
         if (id && this._achievement.has(id)) {

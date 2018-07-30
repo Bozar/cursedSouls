@@ -890,10 +890,8 @@ Main.system.pcAttack = function (target, attackType) {
             : Main.getEntity('pc').Damage.getDamage('base')
     );
 
-    if (target.getEntityName() === 'ghoul'
-        && attackType === 'base'
-    ) {
-        Main.getEntity('gameProgress').Achievement.setBoss3Special(true);
+    if (target.getEntityName() === 'ghoul' && attackType !== 'base') {
+        Main.getEntity('gameProgress').Achievement.setBoss3Special(false);
     }
 
     // Step 2A-4: The enemy is dead.

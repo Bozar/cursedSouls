@@ -419,6 +419,15 @@ Main.system.pcUseDownstairs = function () {
             }
             Main.getEntity('timer').scheduler.add(newActor, true, 2);
 
+            if (Main.getEntity('pc').Inventory.getCurse()
+                >= Math.floor(Main.getEntity('pc').Inventory.getCapacity() / 2)
+            ) {
+                Main.getEntity('pc').Inventory.setCurse(-1);
+                Main.getEntity('message').Message.pushMsg(
+                    Main.text.action('removeCurse')
+                );
+            }
+
             Main.screens.cutScene.enter();
             Main.input.listenEvent('add', 'cutScene');
 

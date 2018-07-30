@@ -398,9 +398,9 @@ Main.Component.Achievement = function () {
     this._achievement.set('boss4Normal', false);
     this._achievement.set('boss4Special', false);
 
-    // Use the boolean value to check if an achievement is unlockable. The
-    // default value is ALWAYS true (unlockable).
+    // Use the boolean value to check if an achievement is unlockable.
     this._noExamine = true;
+    this._boss3Special = false;
 
     this.getAchievement = function (id) {
         if (id && this._achievement.has(id)) {
@@ -423,4 +423,7 @@ Main.Component.Achievement = function () {
 
     this.getNoExamine = function () { return this._noExamine; };
     this.setNoExamine = function (status) { this._noExamine = status; };
+
+    this.getBoss3Special = function () { return this._boss3Special; };
+    this.setBoss3Special = function (status) { this._boss3Special = status; };
 };

@@ -260,8 +260,8 @@ Main.text.initialize = function () {
     text.get('achievementLeft').set('boss1Normal', 'Bounty: Tower Gargoyle');
     text.get('achievementLeft').set('boss1Special', 'Gargoyle Tail Axe');
     text.get('achievementLeft').set('boss2Normal', 'Bounty: Ravenous Butcher');
-    text.get('achievementLeft').set('boss3Normal', 'boss3Normal');
-    text.get('achievementLeft').set('boss3Special', 'boss3Special');
+    text.get('achievementLeft').set('boss3Normal', 'Bounty: Olympian Ghoul');
+    text.get('achievementLeft').set('boss3Special', 'Muda Muda Muda!');
     text.get('achievementLeft').set('boss4Normal', 'boss4Normal');
     text.get('achievementLeft').set('boss4Special', 'boss4Special');
     text.get('achievementLeft').set('noExamine', 'Readme Is For Noobs');
@@ -276,8 +276,10 @@ Main.text.initialize = function () {
         'Keep calm and don\'t roll back.'
     );
     text.get('achievementRight').set('boss2Normal', 'Beat the Ravenous Butcher.');
-    text.get('achievementRight').set('boss3Normal', 'boss3Normal');
-    text.get('achievementRight').set('boss3Special', 'boss3Special');
+    text.get('achievementRight').set('boss3Normal', 'Beat the Olympian Ghoul.');
+    text.get('achievementRight').set('boss3Special',
+        'Bump attack the Olympian Ghoul at least once.'
+    );
     text.get('achievementRight').set('boss4Normal', 'boss4Normal');
     text.get('achievementRight').set('boss4Special', 'boss4Special');
 

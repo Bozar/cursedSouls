@@ -890,6 +890,12 @@ Main.system.pcAttack = function (target, attackType) {
             : Main.getEntity('pc').Damage.getDamage('base')
     );
 
+    if (target.getEntityName() === 'ghoul'
+        && attackType === 'base'
+    ) {
+        Main.getEntity('gameProgress').Achievement.setBoss3Special(true);
+    }
+
     // Step 2A-4: The enemy is dead.
     if (target.HitPoint.isDead()) {
         // 1a-5: Drop rate: the boss.
@@ -943,6 +949,7 @@ Main.system.pcAttack = function (target, attackType) {
                     .goToNextBossFightStage();
             }
             Main.system.checkAchBossNormal(target);
+            Main.system.checkAchBoss3Special();
         }
     }
     // Step 2B-4: The enemy is still alive.

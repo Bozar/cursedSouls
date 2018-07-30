@@ -152,3 +152,12 @@ Main.system.checkAchNoExamine = function () {
         Main.system.checkAchUnlockAll();
     }
 };
+
+Main.system.checkAchBoss3Special = function () {
+    if (Main.system.achievementIsLocked('boss3Special')
+        && Main.getEntity('gameProgress').Achievement.getBoss3Special()
+    ) {
+        Main.system.unlockAchievement('boss3Special');
+        Main.system.checkAchUnlockAll();
+    }
+};

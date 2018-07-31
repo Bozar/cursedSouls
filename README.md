@@ -122,6 +122,8 @@ Some enemies can curse the PC. You can have at most 3 curses, and you can remove
 
 You cannot use cursed orbs, nor can you pick up orbs from the ground and put them into cursed slots.
 
+The cursed orb is still counted as your HP and you will lose it when taking damage.
+
 Your last uncursed orb is used to attack, teleport or raise the drop rate (if it is the Icy Armor.)
 
 If your last uncursed orb is the Ice Orb, you can use it and get 2 layers of Icy Armor, one of which might be cursed and you might lose the last cursed orb in the following situation.

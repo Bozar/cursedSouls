@@ -180,7 +180,10 @@ Main.text.initialize = function () {
         + ' Sometimes he needs to rest.'
     );
     text.get('info').set('ghoul',
-        'Ghoul description.'
+        'The Olympian Ghoul wears nothing but a loincloth.'
+        + ' His body seems perfect to mortal eyes,'
+        + ' but still is a pathetic faker of Dio.'
+        + ' He punches at lightning speed.'
     );
     text.get('info').set('timeBomb',
         'The second form of the Bomb.'
@@ -201,6 +204,11 @@ Main.text.initialize = function () {
         + ' His eyes fix on the ground,'
         + ' %%'
     );
+    text.get('info').set('downstairs2',
+        'This is an opened coffin on the ground,'
+        + ' which is covered by spider webs.'
+        + ' %%'
+    );
 
     text.get('info').set('downstairs1Inactive',
         'and he carries an empty jar on the right shoulder.');
@@ -209,7 +217,13 @@ Main.text.initialize = function () {
     text.get('info').set('downstairs1Win',
         'and the jar on his right shoulder is dripping blood.');
 
-    text.get('info').set('downstairs2', 'Level 2 downstairs.');
+    text.get('info').set('downstairs2Inactive',
+        'A dead body lies inside it.');
+    text.get('info').set('downstairs2Active',
+        'The coffin is empty and the web is intact.');
+    text.get('info').set('downstairs2Win',
+        'There are scratches around the coffin.');
+
     text.get('info').set('downstairs3', 'Level 3 downstairs.');
 
     // The help screen.
@@ -329,11 +343,28 @@ Main.text.initialize = function () {
 
     text.get('cutScene').set('enterLevel2',
         'You follow the source of the voices and push open the church door.'
-        + ' There is a hole on the ground, revealing a downward ramp,'
-        + ' the bottom of which seems to be deeper than sea.'
+        + ' There is a swirling downstairs on the side,'
+        + ' leading to the bottom which seems to be deeper than sea.'
         + ' Sharper than blade is the chilling wind cutting through your face.'
+        + '\n\n'
+        + 'Ghostly pale flames dance on the torches.'
+        + ' Rats with lash scars run away from you without a sound.'
+        + ' Judging from the stew pot in the kitchen,'
+        + ' someone still lives in the cellar.'
     );
-    text.get('cutScene').set('beforeBossFight2', 'before 2');
+    text.get('cutScene').set('beforeBossFight2',
+        'The dungeon citizens are reluctant to get close to this place --'
+        + ' an opened coffin covered with spider webs.'
+        + ' Inside the coffin, there lies a dead man,'
+        + ' who is tall, strong and handsome.'
+        + ' You blink your eyes. At the next moment,'
+        + ' the coffin is empty and the web remains unbroken.'
+        + '\n\n'
+        + 'Someone says behind you: "Even the evil needs an evil savior,'
+        + ' so you are not allowed to bother our master."'
+        + ' You turn around and get bunched and fall on the ground.'
+        + ' All these things happen at the exact same moment.'
+    );
 
     text.get('cutScene').set('enterLevel3', 'level 3');
     text.get('cutScene').set('beforeBossFight3', 'before 3');

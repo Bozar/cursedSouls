@@ -353,7 +353,7 @@ Main.text.initialize = function () {
         + ' someone still lives in the cellar.'
     );
     text.get('cutScene').set('beforeBossFight2',
-        'The dungeon citizens are reluctant to get close to this place --'
+        'The dungeon citizens are reluctant to get close to this place -'
         + ' an opened coffin covered with spider webs.'
         + ' Inside the coffin, there lies a dead man,'
         + ' who is tall, strong and handsome.'
@@ -362,7 +362,8 @@ Main.text.initialize = function () {
         + '\n\n'
         + 'Someone says behind you: "Even the evil needs an evil savior,'
         + ' so you are not allowed to bother our master."'
-        + ' You turn around and get bunched and fall on the ground.'
+        + '\n\n'
+        + 'You turn around and get bunched and fall on the ground.'
         + ' All these things happen at the exact same moment.'
     );
 

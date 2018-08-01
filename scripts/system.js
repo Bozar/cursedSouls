@@ -62,14 +62,8 @@ Main.system.verifyOrbPosition = function (x, y) {
 };
 
 Main.system.npcIsTooDense = function (x, y) {
-    let surround = [];
+    let surround = Main.system.getSurroundPosition(x, y, 1);
     let count = 0;
-
-    for (let i = -1; i < 2; i++) {
-        for (let j = -1; j < 2; j++) {
-            surround.push([x + i, y + j]);
-        }
-    }
 
     for (let i = 0; i < surround.length; i++) {
         if (Main.system.npcHere(...surround[i])) {
@@ -122,6 +116,12 @@ Main.system.verifyEnemyPosition = function (x, y, pcSight, isElite) {
 
         return number > 2;
     }
+};
+
+Main.system.verifyButcherPosition = function (x, y) {
+    return !Main.system.isFloor(x, y)
+        || Main.system.getDistance([x, y], Main.getEntity('pc'))
+        < Main.getEntity('pc').Position.getRange() * 3;
 };
 
 Main.system.verifyDownstairsPosition = function (x, y) {
@@ -198,28 +198,32 @@ Main.system.createOrbs = function () {
 
 Main.system.createEnemies = function () {
     let enemyAmount = amount();
-    // TODO: change the enemies base on the dungeon level.
-    let enemyType = type(1);
+    let enemyType = type(
+        Main.getEntity('gameProgress').BossFight.getDungeonLevel()
+    );
     let elite = [];
     let grunt = [];
 
-    // Lump1 & Lump2.
-    for (let i = 0; i < 2; i++) {
-        for (let j = 0; j < enemyAmount[i]; j++) {
-            elite.push(Main.entity[enemyType[i]]());
-        }
+    // Lump.
+    for (let i = 0; i < enemyAmount[0]; i++) {
+        elite.push(Main.entity[
+            pickUp(enemyType[0])
+        ]());
     }
 
     // Fire, Ice & Slime.
-    for (let i = 2; i < enemyAmount.length; i++) {
+    for (let i = 1; i < enemyAmount.length; i++) {
         for (let j = 0; j < enemyAmount[i]; j++) {
-            grunt.push(Main.entity[enemyType[i]]());
+            grunt.push(Main.entity[
+                pickUp(enemyType[i])
+            ]());
         }
     }
 
     return [elite, grunt];
 
     // Helper functions.
+    // Generate the amount for each types.
     function amount() {
         // 25 to 30 enemies on one level.
         let total = 25 + Math.floor(6 * ROT.RNG.getUniform());
@@ -231,13 +235,11 @@ Main.system.createEnemies = function () {
         // Slime: 30%.
         let slime = total - lump - fireAndIce;
 
-        let lump1 = Math.floor(lump * percent());
-        let lump2 = lump - lump1;
         let fire = Math.floor(fireAndIce * percent());
         let ice = fireAndIce - fire;
 
         Main._log.enemyCount = total;
-        Main._log.enemyComposition = [lump1, lump2, fire, ice, slime];
+        Main._log.enemyComposition = [lump, fire, ice, slime];
 
         return Main._log.enemyComposition;
     }
@@ -247,24 +249,45 @@ Main.system.createEnemies = function () {
         return Math.floor(4 + 3 * ROT.RNG.getUniform()) / 10;
     }
 
+    // Generate the enemies' IDs.
     function type(dungeonLevel) {
-        let lump1 = '';
-        let lump2 = '';
-        let fire = '';
-        let ice = '';
-        let slime = '';
+        let lump = [];
+        let fire = [];
+        let ice = [];
+        let slime = [];
 
         switch (dungeonLevel) {
             case 1:
-                lump1 = 'archer';
-                lump2 = 'zombie';
-                fire = 'dog';
-                ice = 'raven';
-                slime = 'rat';
+                lump = ['archer', 'zombie'];
+                fire = ['dog'];
+                ice = ['raven'];
+                slime = ['rat'];
+                break;
+            case 2:
+                lump = ['cultist'];
+                fire = ['ratMan'];
+                ice = ['wisp'];
+                slime = ['rat'];
+                break;
+            case 3:
+                lump = ['dog'];
+                fire = ['dog'];
+                ice = ['dog'];
+                slime = ['dog'];
                 break;
         }
 
-        return [lump1, lump2, fire, ice, slime];
+        return [lump, fire, ice, slime];
+    }
+
+    // Pick up an enemy ID from the list.
+    function pickUp(enemyList) {
+        if (enemyList.length > 1) {
+            return enemyList[
+                Math.floor(enemyList.length * ROT.RNG.getUniform())
+            ];
+        }
+        return enemyList[0];
     }
 };
 
@@ -295,8 +318,15 @@ Main.system.isInSight = function (source, target) {
 Main.system.pcAct = function () {
     Main.getEntity('timer').engine.lock();
 
-    if (this.FastMove.getStep() > 0) {
+    if (this.CombatRole.getRole('isFrozen')) {
+        this.CombatRole.setRole('isFrozen', false);
+        Main.system.unlockEngine(1);
+    } else if (this.FastMove.getStep() > 0) {
         Main.system.pcFastMove(false, this.FastMove.getDirection());
+    } else if (
+        Main.getEntity('gameProgress').BossFight.getMiniBossAppear() === 1
+    ) {
+        Main.system.enterMiniBossCutScene();
     } else {
         Main.input.listenEvent('add', 'main');
     }
@@ -328,7 +358,9 @@ Main.system.pcPickOrUse = function () {
         Main.getEntity('pc').Position.getX(),
         Main.getEntity('pc').Position.getY())
         && Main.getEntity('pc').Inventory.getLength()
-        < Main.getEntity('pc').Inventory.getCapacity()) {
+        < Main.getEntity('pc').Inventory.getCapacity()
+        - Main.getEntity('pc').Inventory.getCurse()
+    ) {
         Main.system.pcPickUpOrb();
     } else if (Main.getEntity('pc').Inventory.getLength() > 0
         && Main.getEntity('pc').Inventory.getLastOrb() !== 'armor') {
@@ -372,8 +404,29 @@ Main.system.pcUseDownstairs = function () {
                 Main.getEntity('pc'),
                 2
             );
-            newActor = Main.entity.gargoyle(position[0], position[1]);
+            switch (
+            Main.getEntity('gameProgress').BossFight.getDungeonLevel()
+            ) {
+                case 1:
+                    newActor = Main.entity.gargoyle(position[0], position[1]);
+                    break;
+                case 2:
+                    newActor = Main.entity.ghoul(position[0], position[1]);
+                    break;
+                case 3:
+                    newActor = Main.entity.gargoyle(position[0], position[1]);
+                    break;
+            }
             Main.getEntity('timer').scheduler.add(newActor, true, 2);
+
+            if (Main.getEntity('pc').Inventory.getCurse()
+                >= Math.floor(Main.getEntity('pc').Inventory.getCapacity() / 2)
+            ) {
+                Main.getEntity('pc').Inventory.setCurse(-1);
+                Main.getEntity('message').Message.pushMsg(
+                    Main.text.action('removeCurse')
+                );
+            }
 
             Main.screens.cutScene.enter();
             Main.input.listenEvent('add', 'cutScene');
@@ -382,17 +435,15 @@ Main.system.pcUseDownstairs = function () {
         case 'win':
             Main.input.listenEvent('remove', 'main');
 
-            // TODO: Change these lines when the 2nd level is ready.
-            let debug = 0;
-            if (debug > 0) {
-                Main.getEntity('gameProgress').BossFight.goToNextDungeonLevel();
+            Main.system.checkAchNoExamine();
+
+            // TODO: Change this when the 3rd level is ready.
+            if (Main.getEntity('gameProgress').BossFight.getDungeonLevel() < 2) {
                 Main.system.saveDungeonLevel();
                 Main.system.saveSeed();
                 Main.system.saveInventory();
                 Main.system.saveOrbsOnTheGround();
             }
-
-            Main.system.checkAchNoExamine();
 
             Main.getEntity('message').Message.pushMsg(
                 Main.text.action('save')
@@ -417,6 +468,7 @@ Main.system.move = function (direction, who) {
     let duration = getDuration();
     let actorType = getActorType();
     let isMoveable = false;
+    let npcHere = null;
 
     // Get new coordinates.
     if (direction !== 'wait') {
@@ -429,17 +481,19 @@ Main.system.move = function (direction, who) {
     if (direction === 'wait') {
         isMoveable = true;
     } else {
+        npcHere = Main.system.npcHere(x, y);
+
         switch (actorType) {
             case 'pc':
                 isMoveable
                     = Main.system.isFloor(x, y)
-                    && !Main.system.npcHere(x, y);
+                    && (!npcHere || npcHere.CombatRole.getRole('isBomb'));
                 break;
             case 'npc':
                 isMoveable
                     = Main.system.isFloor(x, y)
                     && !Main.system.pcHere(x, y)
-                    && !Main.system.npcHere(x, y);
+                    && !npcHere;
                 break;
             case 'marker':
                 isMoveable
@@ -836,6 +890,10 @@ Main.system.pcAttack = function (target, attackType) {
             : Main.getEntity('pc').Damage.getDamage('base')
     );
 
+    if (target.getEntityName() === 'ghoul' && attackType !== 'base') {
+        Main.getEntity('gameProgress').Achievement.setBoss3Special(false);
+    }
+
     // Step 2A-4: The enemy is dead.
     if (target.HitPoint.isDead()) {
         // 1a-5: Drop rate: the boss.
@@ -866,9 +924,16 @@ Main.system.pcAttack = function (target, attackType) {
         Main.getEntity('message').Message.pushMsg(
             Main.text.killTarget(target));
 
-        // 3-5: Drop the orb. Perform the last action.
-        Main.system.npcDropOrb(target, dropRate);
+        // 3a-5: PC loses 1 curse.
+        if (Main.getEntity('pc').Inventory.getCurse() > 0) {
+            Main.getEntity('pc').Inventory.setCurse(-1);
+            Main.getEntity('message').Message.pushMsg(
+                Main.text.action('removeCurse')
+            );
+        }
+        // 3b-5: NPC performs the last action and drops the orb.
         Main.system.npcActBeforeDeath(target);
+        Main.system.npcDropOrb(target, dropRate);
 
         // 4-5: Remove the dead enemy.
         Main.getEntity('timer').scheduler.remove(target);
@@ -877,8 +942,12 @@ Main.system.pcAttack = function (target, attackType) {
         // 5a-5: Progress the game if the level boss is dead.
         // 5b-5: Check the boss related normal achievements.
         if (Main.system.bossIsDead(target)) {
-            Main.getEntity('gameProgress').BossFight.goToNextBossFightStage();
+            if (!target.CombatRole.getRole('isMiniBoss')) {
+                Main.getEntity('gameProgress').BossFight
+                    .goToNextBossFightStage();
+            }
             Main.system.checkAchBossNormal(target);
+            Main.system.checkAchBoss3Special(target);
         }
     }
     // Step 2B-4: The enemy is still alive.
@@ -910,9 +979,19 @@ Main.system.pcUseSlimeOrb = function (x, y) {
 };
 
 Main.system.pcUseIceOrb = function () {
-    Main.getEntity('pc').Inventory.removeItem(1);
-    Main.getEntity('pc').Inventory.addItem('armor');
-    Main.getEntity('pc').Inventory.addItem('armor');
+    let cutIndex = Main.getEntity('pc').Inventory.getLastIndex();
+
+    // Remove the ice orb and add 2 Icy Armors.
+    Main.getEntity('pc').Inventory.getInventory().splice(cutIndex, 1);
+    Main.getEntity('pc').Inventory.getInventory().splice(cutIndex, 0,
+        'armor', 'armor'
+    );
+    // Remove overflowed orbs.
+    while (Main.getEntity('pc').Inventory.getInventory().length >
+        Main.getEntity('pc').Inventory.getCapacity()
+    ) {
+        Main.getEntity('pc').Inventory.getInventory().pop();
+    }
 
     Main.getEntity('message').Message.pushMsg(Main.text.action('armor'));
 
@@ -947,7 +1026,7 @@ Main.system.npcDropOrb = function (actor, dropRate) {
 };
 
 Main.system.printGenerationLog = function () {
-    let labels = ['Lump1: ', 'Lump2: ', 'Fire: ', 'Ice: ', 'Slime: '];
+    let labels = ['Lump: ', 'Fire: ', 'Ice: ', 'Slime: '];
 
     if (!Main._log.seedPrinted) {
         console.log('Seed: '
@@ -961,7 +1040,7 @@ Main.system.printGenerationLog = function () {
         console.log('Floor: ' + Main._log.floor + '%');
         console.log('Enemy: ' + Main._log.enemyCount);
 
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < labels.length; i++) {
             console.log(labels[i] + Main._log.enemyComposition[i]);
         }
 
@@ -1166,4 +1245,42 @@ Main.system.fillInventory = function () {
         Main.getEntity('pc').Inventory.addItem('fire');
         Main.getEntity('pc').Inventory.addItem('lump');
     }
+};
+
+Main.system.enterMiniBossCutScene = function () {
+    Main.text.cutScene('miniBoss1').forEach((text) => {
+        Main.getEntity('message').Message.pushMsg(text);
+    });
+    Main.getEntity('gameProgress').BossFight.setMiniBossAppear();
+
+    Main.input.listenEvent('add', Main.system.miniBossCutSceneKeyInput);
+};
+
+Main.system.miniBossCutSceneKeyInput = function (e) {
+    if (Main.input.getAction(e, 'fixed') === 'yes') {
+        Main.input.listenEvent('remove', Main.system.miniBossCutSceneKeyInput);
+        Main.input.listenEvent('add', 'main');
+
+        Main.getEntity('message').Message.getMessage().pop();
+        Main.getEntity('message').Message.pushMsg(
+            Main.text.cutScene('miniBoss2')
+        );
+
+        Main.display.clear();
+        Main.screens.main.display();
+    }
+};
+
+Main.system.getSurroundPosition = function (x, y, range) {
+    let surround = [];
+
+    for (let i = -range; i < range + 1; i++) {
+        for (let j = -range; j < range + 1; j++) {
+            if (i !== 0 || j !== 0) {
+                surround.push([x + i, y + j]);
+            }
+        }
+    }
+
+    return surround;
 };

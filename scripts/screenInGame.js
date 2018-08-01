@@ -7,7 +7,7 @@
 Main.screens.main = new Main.Screen('main', ['main', 'examine', 'aim']);
 
 // * Create & place entities (if necessacry) in this order:
-//   Seed, Timer, Dungeon, Marker, (PC, NPCs, Downstairs, Orbs), Achievements.
+//   Seed, Timer, Dungeon, Marker, (PC, NPCs, Downstairs, Orbs).
 // * The PC cannot stick to the wall.
 // * No more than 5 NPCs can appear in the PC's sight.
 // * Orbs cannot be generated on the downstairs.
@@ -64,6 +64,13 @@ Main.screens.main.initialize = function () {
         Main.getEntity('timer').scheduler.add(eliteAndGrunt[1][i], true);
     }
 
+    // Place the mini boss, Butcher.
+    if (Main.getEntity('gameProgress').BossFight.getDungeonLevel() === 2) {
+        let butcher = Main.entity.butcher();
+        Main.system.placeActor(butcher, Main.system.verifyButcherPosition);
+        Main.getEntity('timer').scheduler.add(butcher, true);
+    }
+
     // Downstairs.
     Main.entity.downstairs();
 
@@ -79,9 +86,6 @@ Main.screens.main.initialize = function () {
             keyValue[1],
             Main.system.verifyOrbPosition);
     }
-
-    // Achievements.
-    Main.system.setAchievement();
 
     // Output the dungeon generation details.
     Main.system.printGenerationLog();
@@ -112,7 +116,7 @@ Main.screens.main.display = function () {
 
     Main.screens.drawLevelName();
     Main.screens.drawPCHitPoint();
-    Main.screens.drawPower();
+    Main.screens.drawInventory();
     Main.screens.drawItemUnderYourFoot();
     Main.screens.drawEnemyList();
     Main.screens.drawDungeon();
@@ -220,6 +224,12 @@ Main.screens.main.keyInput = function (e) {
                 break;
             case 'removeOrb':
                 Main.getEntity('pc').Inventory.removeItem(1);
+                break;
+            case 'addCurse':
+                Main.getEntity('pc').Inventory.setCurse(1);
+                break;
+            case 'removeCurse':
+                Main.getEntity('pc').Inventory.setCurse(-1);
                 break;
         }
         // Redraw the screen after pressing a development key.

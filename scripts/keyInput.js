@@ -33,6 +33,8 @@ Main.input.keybind.get('fixed').set('addSlime', ['3']);
 Main.input.keybind.get('fixed').set('addLump', ['4']);
 Main.input.keybind.get('fixed').set('addArmor', ['5']);
 Main.input.keybind.get('fixed').set('addNuke', ['6']);
+Main.input.keybind.get('fixed').set('removeCurse', ['7']);
+Main.input.keybind.get('fixed').set('addCurse', ['8']);
 Main.input.keybind.get('fixed').set('removeOrb', ['-']);
 
 // Movement

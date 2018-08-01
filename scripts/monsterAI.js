@@ -13,13 +13,21 @@ Main.system.dummyAct = function () {
 
     Main.getEntity('timer').engine.lock();
 
-    if (Main.system.pcIsInSight(this)) {
+    if (Main.system.npcCannotSeePC(this)) {
         // 1-4: Search the nearby PC or wait 1 turn.
         Main.system.npcSearchOrWait(this, moveDuration);
     } else if (Main.system.pcIsInsideAttackRange(this)) {
-        // 2-4: Attack the PC.
-        Main.system.pcTakeDamage(this.Damage.getDamage('base'));
-        Main.system.npcHitOrKill(this, attackDuration, false);
+        // 2a-4: Curse the PC.
+        if (this.CombatRole.getRole('curse')
+            && Main.getEntity('pc').Inventory.canBeCursed()
+        ) {
+            Main.system.npcCursePC(this, true, attackDuration);
+        }
+        // 2b-4: Attack the PC.
+        else {
+            Main.system.pcTakeDamage(this.Damage.getDamage('base'));
+            Main.system.npcHitOrKill(this, attackDuration);
+        }
     } else {
         if (this.CombatRole.getCautious()) {
             // A cautious enemy does not approach the PC easily.
@@ -53,7 +61,7 @@ Main.system.gargoyleAct = function () {
     Main.getEntity('timer').engine.lock();
 
     // 1-3: Search the nearby PC or wait 1 turn.
-    if (Main.system.pcIsInSight(this)) {
+    if (Main.system.npcCannotSeePC(this)) {
         Main.system.npcSearchOrWait(this, getMoveDuration(this));
     }
     // 2A-3: Summon the ally.
@@ -85,7 +93,7 @@ Main.system.gargoyleAct = function () {
         Main.getEntity('message').Message.pushMsg(
             Main.text.action('gargoyleThrust'));
 
-        Main.system.npcHitOrKill(this, getAttackDuration(this), true);
+        Main.system.npcHitOrKill(this, getAttackDuration(this));
     }
     // 2C-3: Breathe fire.
     else if (
@@ -101,7 +109,7 @@ Main.system.gargoyleAct = function () {
         Main.getEntity('message').Message.pushMsg(
             Main.text.gargoyleBreathe(this));
 
-        Main.system.npcHitOrKill(this, getAttackDuration(this), true);
+        Main.system.npcHitOrKill(this, getAttackDuration(this));
     }
     // 3-3: Approach the PC in sight.
     else {
@@ -257,8 +265,8 @@ Main.system.npcDecideNextStep = function (actor, nextStep, duration, distance) {
     }
 };
 
-Main.system.npcHitOrKill = function (actor, duration, isBoss) {
-    if (!isBoss) {
+Main.system.npcHitOrKill = function (actor, duration) {
+    if (!actor.CombatRole.getRole('isBoss')) {
         // Bosses have special hit messages.
         Main.getEntity('message').Message.pushMsg(Main.text.npcHit(actor));
     }
@@ -286,7 +294,7 @@ Main.system.npcSearchOrWait = function (actor, duration) {
 
 Main.system.pcIsInsideAttackRange = function (actor) {
     // Some enemies can hit the PC in a straight line with an extend range.
-    if (actor.CombatRole.getExtendRange()
+    if (actor.AttackRange.getRange('extend') > 0
         && Main.system.pcIsInStraightLine(actor)
     ) {
         return Main.system.getDistance(actor, Main.getEntity('pc'))
@@ -326,9 +334,13 @@ Main.system.npcActBeforeDeath = function (actor) {
     switch (actor.getEntityName()) {
         case 'zombie':
             summon('dog');
-
-            Main.getEntity('message').Message.pushMsg(
-                Main.text.npcSummon(actor));
+            break;
+        case 'wisp':
+            if (Main.system.getDistance(actor, Main.getEntity('pc')) === 1
+                && Main.getEntity('pc').Inventory.canBeCursed()
+            ) {
+                Main.system.npcCursePC(actor, false);
+            }
             break;
     }
 
@@ -339,11 +351,200 @@ Main.system.npcActBeforeDeath = function (actor) {
 
         // Delay 2 turns.
         Main.getEntity('timer').scheduler.add(newActor, true, 2);
+
+        Main.getEntity('message').Message.pushMsg(Main.text.npcSummon(actor));
     }
 };
 
-Main.system.pcIsInSight = function (actor) {
+Main.system.npcCannotSeePC = function (actor) {
     return Main.system.getDistance(actor, Main.getEntity('pc'))
         > actor.Position.getRange()
         || !Main.system.isInSight(actor, Main.getEntity('pc'));
+};
+
+Main.system.npcCursePC = function (actor, unlockEngine, duration) {
+    Main.getEntity('pc').Inventory.setCurse(
+        actor.Damage.getCurse()
+    );
+    Main.getEntity('message').Message.pushMsg(
+        Main.text.npcCurse(actor)
+    );
+
+    if (unlockEngine) {
+        Main.system.unlockEngine(duration);
+    }
+};
+
+Main.system.butcherAct = function () {
+    let moveDuration = this.ActionDuration.getDuration('slowMove');
+    let attackDuration = this.ActionDuration.getDuration('slowAttack');
+    let pullHere
+        = Main.system.canPullPC(this, this.AttackRange.getRange('pull'));
+
+    Main.getEntity('timer').engine.lock();
+
+    // 1-3: Search the nearby PC or wait 1 turn.
+    if (Main.system.npcCannotSeePC(this)) {
+        Main.system.npcSearchOrWait(this, moveDuration);
+    } else {
+        // 2A-3: Wait 1 turn. Play the cut-scene in the PC's turn.
+        if (Main.getEntity('gameProgress').BossFight.getMiniBossAppear() < 1) {
+            Main.getEntity('gameProgress').BossFight.setMiniBossAppear();
+            Main.system.unlockEngine(1);
+        }
+        // 2B-3: Cleave the PC.
+        else if (Main.system.getDistance(this, Main.getEntity('pc')) === 1) {
+            Main.getEntity('message').Message.pushMsg(
+                Main.text.action('butcherCleave')
+            );
+
+            Main.system.pcTakeDamage(this.Damage.getDamage('cleave'));
+            Main.system.npcHitOrKill(this, attackDuration);
+        }
+        // 2C-3: Pull the PC.
+        else if (pullHere.length > 0) {
+            Main.getEntity('pc').Position.setX(pullHere[0]);
+            Main.getEntity('pc').Position.setY(pullHere[1]);
+
+            Main.getEntity('message').Message.pushMsg(
+                Main.text.action('butcherPull')
+            );
+            Main.system.pcTakeDamage(this.Damage.getDamage('base'));
+            Main.system.npcHitOrKill(this, attackDuration);
+        }
+        // 3-3: Approach the PC in sight.
+        else {
+            Main.system.npcMoveClose(this, moveDuration);
+        }
+    }
+};
+
+Main.system.canPullPC = function (actor, pullRange) {
+    let range = pullRange;
+    let relativeX
+        = Main.getEntity('pc').Position.getX() - actor.Position.getX();
+    let relativeY
+        = Main.getEntity('pc').Position.getY() - actor.Position.getY();
+    let deltaX = relativeX > 0
+        ? 1
+        : relativeX < 0
+            ? -1
+            : 0;
+    let deltaY = relativeY > 0
+        ? 1
+        : relativeY < 0
+            ? -1
+            : 0;
+    let position = [];
+
+    if (Main.system.getDistance(actor, Main.getEntity('pc')) > range
+        || Math.abs(relativeX) > 1
+        && Math.abs(relativeY) > 1
+    ) {
+        return [];
+    }
+
+    position.push(
+        actor.Position.getX() + deltaX, actor.Position.getY() + deltaY
+    );
+
+    if (Main.system.isFloor(...position) && !Main.system.npcHere(...position)) {
+        return position;
+    }
+
+    return [];
+};
+
+Main.system.ghoulAct = function () {
+    let move = this.ActionDuration.getDuration('base');
+    let setBomb = this.ActionDuration.getDuration('base');
+    let melee = this.ActionDuration.getDuration('fastAttack');
+
+    Main.getEntity('timer').engine.lock();
+
+    // 1-3: Search the nearby PC or wait 1 turn.
+    if (Main.system.npcCannotSeePC(this)) {
+        Main.system.npcSearchOrWait(this, move);
+    }
+    // 2A-3: Attack the PC.
+    else if (Main.system.pcIsInsideAttackRange(this)) {
+        Main.getEntity('message').Message.pushMsg(
+            Main.text.action('ghoulPunch')
+        );
+        Main.system.pcTakeDamage(this.Damage.getDamage('base'));
+        Main.system.npcHitOrKill(this, melee);
+    }
+    // 2B-3: Set bombs.
+    else if (Main.system.getDistance(this, Main.getEntity('pc'))
+        < this.AttackRange.getRange('bomb')
+        && !Main.getEntity('pc').CombatRole.getRole('isFrozen')
+    ) {
+        Main.system.npcSetBomb(this, 'timeBomb', setBomb);
+    }
+    // 3-3: Approach the PC in sight.
+    else {
+        Main.system.npcMoveClose(this, move);
+    }
+};
+
+Main.system.bombAct = function () {
+    Main.getEntity('timer').engine.lock();
+
+    if (Main.system.pcHere(this.Position.getX(), this.Position.getY())) {
+        switch (this.getEntityName()) {
+            case 'timeBomb':
+                Main.getEntity('pc').CombatRole.setRole('isFrozen', true);
+                Main.getEntity('message').Message.pushMsg(
+                    Main.text.action('freezeTime')
+                );
+                break;
+        }
+    } else if (Main.system.isInSight(this, Main.getEntity('pc'))) {
+        Main.getEntity('message').Message.pushMsg(Main.text.bombExplode(this));
+    }
+
+    Main.getEntity('timer').scheduler.remove(this);
+    Main.getEntity('npc').delete(this.getID());
+
+    Main.system.unlockEngine(1);
+};
+
+Main.system.npcSetBomb = function (actor, bomb, duration) {
+    let pcX = Main.getEntity('pc').Position.getX();
+    let pcY = Main.getEntity('pc').Position.getY();
+    let surroundPC = Main.system.getSurroundPosition(pcX, pcY, 1)
+        .filter((position) => {
+            return Main.system.isFloor(...position)
+                && !Main.system.npcHere(...position);
+        });
+    let maxBomb = actor.Damage.getDamage('maxBomb');
+
+    let setHere = [];
+    let candidate = [];
+    let newActor = null;
+
+    if (!Main.system.npcHere(pcX, pcY)) {
+        setHere.push([pcX, pcY]);
+    }
+
+    if (setHere.length + surroundPC.length > maxBomb) {
+        while (setHere.length < maxBomb) {
+            candidate = surroundPC[
+                Math.floor(ROT.RNG.getUniform() * surroundPC.length)
+            ];
+            setHere.push(candidate);
+            surroundPC.splice(surroundPC.indexOf(candidate), 1);
+        }
+    } else {
+        setHere.push(surroundPC);
+    }
+
+    setHere.forEach((here) => {
+        newActor = Main.entity[bomb](here[0], here[1]);
+        Main.getEntity('timer').scheduler.add(newActor, true);
+    });
+
+    Main.getEntity('message').Message.pushMsg(Main.text.setBomb(actor));
+
+    Main.system.unlockEngine(duration);
 };

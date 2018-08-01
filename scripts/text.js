@@ -15,7 +15,9 @@ Main.text.initialize = function () {
     text.set('dungeon', new Map());
     text.get('dungeon').set('downstairsIcon', '>');
     text.get('dungeon').set('downstairs', 'Downstairs');
-    text.get('dungeon').set('grave', 'Churchyard');
+    text.get('dungeon').set('level1', 'Churchyard');
+    text.get('dungeon').set('level2', 'Cellar');
+    text.get('dungeon').set('level3', 'Sanctum');
 
     text.get('dungeon').set('fire', 'Fire');
     text.get('dungeon').set('ice', 'Ice');
@@ -33,6 +35,7 @@ Main.text.initialize = function () {
     text.get('ui').set('studio', 'Red Tabby Studio');
 
     text.get('ui').set('enhance', '*');
+    text.get('ui').set('curse', 'x');
     text.get('ui').set('hp', 'HP: %%');
     text.get('ui').set('dead', 'Dead');
     text.get('ui').set('ground', '@');
@@ -54,6 +57,7 @@ Main.text.initialize = function () {
 
     text.get('action').set('hit', 'You hit the %%.');
     text.get('action').set('kill', 'You kill the %%.');
+    text.get('action').set('removeCurse', 'You are purged.');
 
     text.get('action').set('unlockAchievement', 'Unlock: %%.');
     text.get('action').set('breakTail',
@@ -61,11 +65,23 @@ Main.text.initialize = function () {
 
     text.get('action').set('drop', 'The %1% drops %2% %3% Orb.');
     text.get('action').set('npcHit', 'The %% hits you.');
+    text.get('action').set('npcCurse', 'The %% curses you.');
     text.get('action').set('npcSummon', 'The %% summons its companion.');
 
     text.get('action').set('gargoyleThrust',
         'The Tower Gargoyle thrusts you with the halberd.');
     text.get('action').set('gargoyleBreathe', 'The %% breathes fire.');
+
+    text.get('action').set('butcherPull', 'The Ravenous Butcher pulls you.');
+    text.get('action').set('butcherCleave',
+        'The Ravenous Butcher cleaves you.'
+    );
+
+    text.get('action').set('ghoulPunch', 'The Olympian Ghoul punches you.');
+
+    text.get('action').set('setBomb', 'The %% set bombs around you.');
+    text.get('action').set('bombExplode', 'The %% explodes.');
+    text.get('action').set('freezeTime', 'You are frozen in time.');
 
     text.get('action').set('save', 'Game saved.');
     text.get('action').set('closeOrReload',
@@ -77,6 +93,7 @@ Main.text.initialize = function () {
     text.get('action').set('deathGeneral', 'Rest in peace, ashen one.');
     text.get('action').set('deathBoss1',
         'Ashen one, hearest thou my voice, still?');
+    text.get('action').set('deathBoss2', 'You eventually stop thinking.');
 
     // NPC's names
     text.set('name', new Map());
@@ -91,8 +108,18 @@ Main.text.initialize = function () {
     text.get('name').set('gargoyle', 'Tower Gargoyle');
     text.get('name').set('juvenileGargoyle', 'Juvenile Tower Gargoyle');
 
+    text.get('name').set('wisp', 'Wisp');
+    text.get('name').set('ratMan', 'Rat Man');
+    text.get('name').set('cultist', 'Cultist');
+
+    text.get('name').set('butcher', 'Ravenous Butcher');
+    text.get('name').set('ghoul', 'Olympian Ghoul');
+    text.get('name').set('timeBomb', 'Time Bomb');
+
     // Describe the NPC, item or building under the marker.
     text.set('info', new Map());
+
+    // NPCs.
     text.get('info').set('dummy', 'This is a dummy.'
         + ' It has 1 hit point.'
         + ' It drops 1 Slime Orb when killed.');
@@ -131,6 +158,39 @@ Main.text.initialize = function () {
     text.get('info').set('gargoyleHasTail', 'Its tail is a stone axe.');
     text.get('info').set('gargoyleLoseTail', 'Its tail is chopped off.');
 
+    text.get('info').set('wisp',
+        'You can hear these pale white wisps mumble in your head.'
+        + ' They are eager to approach any living creature'
+        + ' and spread their last bless.'
+    );
+    text.get('info').set('ratMan',
+        'The Rat Man has not been accustomed to stand on two legs,'
+        + ' but it has already leant to whip the rats around itself'
+        + ' and farther away targets in the front.'
+    );
+    text.get('info').set('cultist',
+        'The Cultist is a skinny man with a bone wand in his hand'
+        + ' to shoot necro bolts which can curse or hurt the intruders.'
+    );
+
+    text.get('info').set('butcher',
+        'The fatty\'s left hand is a hook'
+        + ' which can be used to pull meat in a line.'
+        + ' He helds the razor sharp cleaver in the right hand.'
+        + ' Sometimes he needs to rest.'
+    );
+    text.get('info').set('ghoul',
+        'The Olympian Ghoul wears nothing but a loincloth.'
+        + ' His body seems perfect to mortal eyes,'
+        + ' but still is a pathetic faker of Dio.'
+        + ' He punches at lightning speed.'
+    );
+    text.get('info').set('timeBomb',
+        'The second form of the Bomb.'
+        + ' It can affect the world in a bizarre way.'
+    );
+
+    // Orbs.
     text.get('info').set('fire', 'Range 1, damage 1. 100% drop rate.');
     text.get('info').set('ice',
         'Protect yourself with at most 2 layers of the Icy Armor.'
@@ -138,9 +198,15 @@ Main.text.initialize = function () {
     text.get('info').set('slime', 'Range 2. Teleport yourself.');
     text.get('info').set('lump', 'Range 2, damage 1. 60% drop rate.');
 
+    // Downstairs.
     text.get('info').set('downstairs1',
         'In the center of the dusty round pool, there stands a grotesque figure.'
         + ' His eyes fix on the ground,'
+        + ' %%'
+    );
+    text.get('info').set('downstairs2',
+        'This is an opened coffin on the ground,'
+        + ' which is covered by spider webs.'
         + ' %%'
     );
 
@@ -151,7 +217,13 @@ Main.text.initialize = function () {
     text.get('info').set('downstairs1Win',
         'and the jar on his right shoulder is dripping blood.');
 
-    text.get('info').set('downstairs2', 'Level 2 downstairs.');
+    text.get('info').set('downstairs2Inactive',
+        'A dead body lies inside it.');
+    text.get('info').set('downstairs2Active',
+        'The coffin is empty and the web is intact.');
+    text.get('info').set('downstairs2Win',
+        'There are scratches around the coffin.');
+
     text.get('info').set('downstairs3', 'Level 3 downstairs.');
 
     // The help screen.
@@ -201,9 +273,9 @@ Main.text.initialize = function () {
     text.set('achievementLeft', new Map());
     text.get('achievementLeft').set('boss1Normal', 'Bounty: Tower Gargoyle');
     text.get('achievementLeft').set('boss1Special', 'Gargoyle Tail Axe');
-    text.get('achievementLeft').set('boss2Normal', 'boss2Normal');
-    text.get('achievementLeft').set('boss3Normal', 'boss3Normal');
-    text.get('achievementLeft').set('boss3Special', 'boss3Special');
+    text.get('achievementLeft').set('boss2Normal', 'Bounty: Ravenous Butcher');
+    text.get('achievementLeft').set('boss3Normal', 'Bounty: Olympian Ghoul');
+    text.get('achievementLeft').set('boss3Special', 'Muda Muda Muda!');
     text.get('achievementLeft').set('boss4Normal', 'boss4Normal');
     text.get('achievementLeft').set('boss4Special', 'boss4Special');
     text.get('achievementLeft').set('noExamine', 'Readme Is For Noobs');
@@ -217,9 +289,11 @@ Main.text.initialize = function () {
     text.get('achievementRight').set('boss1Special',
         'Keep calm and don\'t roll back.'
     );
-    text.get('achievementRight').set('boss2Normal', 'boss2Normal');
-    text.get('achievementRight').set('boss3Normal', 'boss3Normal');
-    text.get('achievementRight').set('boss3Special', 'boss3Special');
+    text.get('achievementRight').set('boss2Normal', 'Beat the Ravenous Butcher.');
+    text.get('achievementRight').set('boss3Normal', 'Beat the Olympian Ghoul.');
+    text.get('achievementRight').set('boss3Special',
+        'Beat the Olympian Ghoul with 3 bump attacks.'
+    );
     text.get('achievementRight').set('boss4Normal', 'boss4Normal');
     text.get('achievementRight').set('boss4Special', 'boss4Special');
 
@@ -269,14 +343,45 @@ Main.text.initialize = function () {
 
     text.get('cutScene').set('enterLevel2',
         'You follow the source of the voices and push open the church door.'
-        + ' There is a hole on the ground, revealing a downward ramp,'
-        + ' the bottom of which seems to be deeper than sea.'
+        + ' There is a swirling downstairs on the side,'
+        + ' leading to the bottom which seems to be deeper than sea.'
         + ' Sharper than blade is the chilling wind cutting through your face.'
+        + '\n\n'
+        + 'Ghostly pale flames dance on the torches.'
+        + ' Rats with lash scars run away from you without a sound.'
+        + ' Judging from the stew pot in the kitchen,'
+        + ' someone still lives in the cellar.'
     );
-    text.get('cutScene').set('beforeBossFight2', 'before 2');
+    text.get('cutScene').set('beforeBossFight2',
+        'The dungeon citizens are reluctant to get close to this place -'
+        + ' an opened coffin covered with spider webs.'
+        + ' Inside the coffin, there lies a dead man,'
+        + ' who is tall, strong and handsome.'
+        + ' You blink your eyes. At the next moment,'
+        + ' the coffin is empty and the web remains unbroken.'
+        + '\n\n'
+        + 'Someone says behind you: "Even the evil needs an evil savior,'
+        + ' so you are not allowed to bother our master."'
+        + '\n\n'
+        + 'You turn around and get bunched and fall on the ground.'
+        + ' All these things happen at the exact same moment.'
+    );
 
     text.get('cutScene').set('enterLevel3', 'level 3');
     text.get('cutScene').set('beforeBossFight3', 'before 3');
+
+    text.get('cutScene').set('miniBoss1',
+        [
+            'You hear the sound of chopping from the corner.',
+            'There is a fatty who raises the cleaver into the air.',
+            'He pushes over the table upon seeing you.',
+            '"Nosferatu rats! You won\'t escape this time!"',
+            `===${
+            Main.screens.colorfulText('Press Space to continue.', 'green')
+            }===`
+        ]
+    );
+    text.get('cutScene').set('miniBoss2', 'The Ravenous Butcher charges at you.');
 
     // Error messages.
     text.set('error', new Map());
@@ -333,14 +438,16 @@ Main.text.modeLine = function (mode) {
         colorfulMode = Main.screens.colorfulText(Main.text.ui(mode), 'orange');
 
         if (!Main.system.insideOrbRange()) {
-            outOfRange = `[${Main.screens.colorfulText(
-                Main.text.action('range'), 'orange')}]`;
+            outOfRange = `[${
+                Main.screens.colorfulText(
+                    Main.text.action('range'), 'orange')
+                }]`;
         }
     } else {
         colorfulMode = Main.text.ui(mode);
     }
 
-    text = `[${colorfulMode}][${Main.text.ui('range')}]${outOfRange}`;
+    text = `[${colorfulMode}][${Main.text.ui('range')}]${outOfRange} `;
     text = text.replace('%%', Main.system.getDistance(
         Main.getEntity('pc'), Main.getEntity('marker')));
 
@@ -446,6 +553,14 @@ Main.text.npcHit = function (attacker) {
     return text;
 };
 
+Main.text.npcCurse = function (attacker) {
+    let text = Main.text.action('npcCurse');
+
+    text = text.replace('%%', Main.text.name(attacker.getEntityName()));
+
+    return text;
+};
+
 Main.text.npcSummon = function (actor) {
     let text = Main.text.action('npcSummon');
 
@@ -510,6 +625,22 @@ Main.text.unlockAchievement = function (achievement) {
     let text = Main.text.action('unlockAchievement');
 
     text = text.replace('%%', Main.screens.colorfulText(achievement, 'green'));
+
+    return text;
+};
+
+Main.text.bombExplode = function (actor) {
+    let text = Main.text.action('bombExplode');
+
+    text = text.replace('%%', Main.text.name(actor.getEntityName()));
+
+    return text;
+};
+
+Main.text.setBomb = function (actor) {
+    let text = Main.text.action('setBomb');
+
+    text = text.replace('%%', Main.text.name(actor.getEntityName()));
 
     return text;
 };

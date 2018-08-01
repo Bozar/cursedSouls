@@ -80,7 +80,7 @@ Follow these steps to use an orb.
 
 ## Drop Power Orbs
 
-Enemies have a chance to drop 1 orb when killed. Bosses always drop 1 Lump Orb. As for the grunts, the drop rate depends on how they are killed:
+Enemies have a chance to drop 1 orb when killed. Bosses (the enemy who has a bounty achievement) always drop 1 Lump Orb. As for the grunts, the drop rate depends on how they are killed:
 
 * Bump: 20%.
 * Bump with the Icy Armor: 60%.
@@ -105,17 +105,42 @@ There is no randomness in the hit chance or damage. No enemies, including the bo
 
 The PC's actions take exactly 1 turn. But this rule dose not apply to some enemies.
 
-In addition to deal damage, some enemies have special abilities. There are 3 types of such abilities and they are introduced on the first three dungeon levels.
+In addition to deal damage, some enemies have special abilities.
 
 * Summon allies (Level 1): Add one or more enemies to the dungeon under certain circumstances.
-* ??? (Level 2): ???.
-* ??? (Level 3): ???.
-
-[Work In Progress]
+* Curse & Bomb (Level 2): See below.
 
 After the boss fight, at most 4 orbs on the ground will reappear on the next dungeon level, which are selected in this order: Lump, Fire, Ice, Slime.
 
-[/Work In Progress]
+## Curse
+
+Some enemies can curse the PC. You can have at most 3 curses, and you can remove them in 3 ways.
+
+* Remove 1 curse by killing 1 enemy.
+* Remove 1 curse when at the start of the boss fight if you have 3 curses.
+* Remove all curses when entering a new dungeon level.
+
+You cannot use cursed orbs, nor can you pick up orbs from the ground and put them into cursed slots.
+
+The cursed orb is still counted as your HP and you will lose it when taking damage.
+
+Your last uncursed orb is used to attack, teleport or raise the drop rate (if it is the Icy Armor.)
+
+If your last uncursed orb is the Ice Orb, you can use it and get 2 layers of Icy Armor, one of which might be cursed and you might lose the last cursed orb in the following situation.
+
+Before:
+
+    1 2 3 4 5 C
+    S F F F I L
+
+After:
+
+    1 2 3 4 5 C
+    S F F F A A
+
+## Bomb
+
+The Bomb is a special type of enemy. You can stand on a bomb and use orb to attack it, but you cannot bump attack a bomb. The bomb explodes in 1 turn and you will be affected if you and the bomb are in the same grid.
 
 ## Survival Tips
 
@@ -178,6 +203,8 @@ else {
 * Print the seed: `=`.
 * Add an orb: `1` to `6`.
 * Remove an orb: `-`.
+* Add a curse: `8`.
+* Remove a curse: `7`.
 * Print the current turn in the browser console: `\`.
 * Switch the fog of war: `]`.
 * Kill all enemies and teleport to the downstairs: `0`.

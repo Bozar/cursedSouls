@@ -152,3 +152,13 @@ Main.system.checkAchNoExamine = function () {
         Main.system.checkAchUnlockAll();
     }
 };
+
+Main.system.checkAchBoss3Special = function (actor) {
+    if (Main.system.achievementIsLocked('boss3Special')
+        && Main.getEntity('gameProgress').Achievement.getBoss3Special()
+        && actor.getEntityName() === 'ghoul'
+    ) {
+        Main.system.unlockAchievement('boss3Special');
+        Main.system.checkAchUnlockAll();
+    }
+};

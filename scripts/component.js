@@ -86,6 +86,14 @@ Main.Component.BossFight = function () {
     this._dungeonLevel = 1;
     this._maxDungeonLevel = 3;
 
+    // Draw the cut scene for the mini boss.
+    //      0: initial value.
+    //      1: draw the cut scene.
+    //      2: the cut scene has been drawn.
+    // If there are more than 1 mini boss, you should find a better way to handle
+    // this.
+    this._miniBossAppear = 0;
+
     this.getBossFightStatus = function () { return this._bossFight; };
     this.getDungeonLevel = function () { return this._dungeonLevel; };
 
@@ -97,17 +105,20 @@ Main.Component.BossFight = function () {
         this._bossFight = this._progress[nextIndex];
     };
 
-    this.goToNextDungeonLevel = function () {
+    this.getNextDungeonLevel = function () {
         let nextLevel = Math.min(
             this._dungeonLevel + 1,
             this._maxDungeonLevel);
 
-        this._dungeonLevel = nextLevel;
+        return nextLevel;
     };
 
     this.setDungeonLevel = function (level) {
         this._dungeonLevel = level;
     };
+
+    this.getMiniBossAppear = function () { return this._miniBossAppear; };
+    this.setMiniBossAppear = function () { this._miniBossAppear += 1; };
 };
 
 Main.Component.Display = function (char, color, onlyOneColor) {
@@ -180,6 +191,7 @@ Main.Component.Inventory = function (capacity, firstItem) {
     this._inventory = [];
     this._capacity = capacity || 1;
     this._isDead = false;
+    this._curse = 0;
 
     // Enemies have only one of the four orbs: fire, ice, slime & lump.
     // Give the PC four orbs at the beginning of the game.
@@ -187,11 +199,31 @@ Main.Component.Inventory = function (capacity, firstItem) {
         this._inventory.push(firstItem);
     }
 
-    this.getCapacity = function () { return this._capacity; };
-    this.getLength = function () { return this._inventory.length; };
-    this.getLastOrb = function () {
-        return this._inventory[this._inventory.length - 1];
+    this.getInventory = function (index) {
+        if (this._inventory[index]) {
+            return this._inventory[index];
+        }
+        return this._inventory;
     };
+    this.getLength = function () { return this._inventory.length; };
+    this.getCapacity = function () { return this._capacity; };
+
+    this.getLastOrb = function () {
+        let index = this.getLastIndex();
+
+        if (index > -1) {
+            return this._inventory[index];
+        }
+        return null;
+    };
+    this.getLastIndex = function () {
+        let index = Math.min(
+            this._inventory.length - 1, this._capacity - this._curse - 1
+        );
+
+        return index;
+    };
+
     this.getIsDead = function () { return this._isDead; };
     this.isEnhanced = function () {
         if (this._inventory.length > 1) {
@@ -201,19 +233,11 @@ Main.Component.Inventory = function (capacity, firstItem) {
         return false;
     };
 
-    this.getInventory = function (index) {
-        if (this._inventory[index]) {
-            return this._inventory[index];
-        }
-        return this._inventory;
-    };
-
     this.addItem = function (item) {
         if (item && this._inventory.length < this._capacity) {
             this._inventory.push(item);
         }
     };
-
     this.removeItem = function (amount) {
         amount = Math.min(amount, this._inventory.length);
 
@@ -225,6 +249,18 @@ Main.Component.Inventory = function (capacity, firstItem) {
     };
 
     this.setIsDead = function (status) { this._isDead = status; };
+
+    this.getCurse = function () { return this._curse; };
+    this.setCurse = function (addOrRemove) {
+        this._curse = Math.min(
+            // Only half of the inventory can be cursed.
+            Math.floor(this._capacity / 2),
+            Math.max(0, this._curse + addOrRemove)
+        );
+    };
+    this.canBeCursed = function () {
+        return this._curse < Math.floor(this._capacity / 2);
+    };
 };
 
 Main.Component.HitPoint = function (hp) {
@@ -237,17 +273,22 @@ Main.Component.HitPoint = function (hp) {
     this.isDead = function () { return this._hitPoint <= 0; };
 };
 
-Main.Component.Damage = function (baseDamage) {
+Main.Component.Damage = function (baseDamage, curse) {
     this._name = 'Damage';
 
     this._damage = new Map([['base', baseDamage || 1]]);
+    this._curse = curse || 0;
 
     this.getDamage = function (attackType) {
         return this._damage.get(attackType || 'base');
     };
+    this.getCurse = function () { return this._curse; };
 
     this.setDamage = function (attackType, damage) {
         this._damage.set(attackType, damage);
+    };
+    this.setCurse = function (value) {
+        this._curse = value;
     };
 };
 
@@ -299,7 +340,7 @@ Main.Component.Memory = function () {
 Main.Component.CombatRole = function (isCautious, hasExtendRange) {
     this._name = 'CombatRole';
 
-    // Available roles: cautious, extendRange, isBoss.
+    // Available roles: cautious, curse, isBoss, isMiniBoss, playCutScene.
     this._combatRoles = new Map();
 
     this._combatRoles.set('cautious', isCautious);
@@ -357,9 +398,9 @@ Main.Component.Achievement = function () {
     this._achievement.set('boss4Normal', false);
     this._achievement.set('boss4Special', false);
 
-    // Use the boolean value to check if an achievement is unlockable. The
-    // default value is ALWAYS true (unlockable).
+    // Use the boolean value to check if an achievement is unlockable.
     this._noExamine = true;
+    this._boss3Special = true;
 
     this.getAchievement = function (id) {
         if (id && this._achievement.has(id)) {
@@ -382,4 +423,7 @@ Main.Component.Achievement = function () {
 
     this.getNoExamine = function () { return this._noExamine; };
     this.setNoExamine = function (status) { this._noExamine = status; };
+
+    this.getBoss3Special = function () { return this._boss3Special; };
+    this.setBoss3Special = function (status) { this._boss3Special = status; };
 };

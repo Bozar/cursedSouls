@@ -79,7 +79,7 @@ window.onload = function () {
         Main.system.loadDungeonLevel()
     );
     // TODO: delete this line when finish builidng the 2nd level.
-    // Main.getEntity('gameProgress').BossFight.setDungeonLevel(2);
+    Main.getEntity('gameProgress').BossFight.setDungeonLevel(3);
 
     // Achievements.
     Main.system.setAchievement();

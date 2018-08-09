@@ -180,8 +180,7 @@ Main.system.placeBoss = function (observer, target, distance) {
 };
 
 Main.system.createOrbs = function () {
-    // TODO: change the loop based on the dungeon level.
-    let loop = 3;
+    let loop = 4 - Main.getEntity('gameProgress').BossFight.getDungeonLevel();
     let orbsInherited = Main.system.loadOrbsOnTheGround();
 
     for (var i = 0; i < loop; i++) {
@@ -237,6 +236,10 @@ Main.system.createEnemies = function () {
 
         let fire = Math.floor(fireAndIce * percent());
         let ice = fireAndIce - fire;
+
+        // Add more Lump enemies on deeper levels.
+        lump += 2 *
+            (Main.getEntity('gameProgress').BossFight.getDungeonLevel() - 1);
 
         Main._log.enemyCount = total;
         Main._log.enemyComposition = [lump, fire, ice, slime];

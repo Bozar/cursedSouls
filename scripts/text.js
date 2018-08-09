@@ -116,6 +116,8 @@ Main.text.initialize = function () {
     text.get('name').set('ghoul', 'Olympian Ghoul');
     text.get('name').set('timeBomb', 'Time Bomb');
 
+    text.get('name').set('cursedRat', 'Cursed Rat');
+
     // Describe the NPC, item or building under the marker.
     text.set('info', new Map());
 
@@ -185,6 +187,11 @@ Main.text.initialize = function () {
         + ' but still is a pathetic faker of Dio.'
         + ' He punches at lightning speed.'
     );
+
+    text.get('info').set('cursedRat',
+        'These cursed little bastards eat whatever they can find.'
+        + ' But they are not a real threat unless you get yourself cornered.');
+
     text.get('info').set('timeBomb',
         'The second form of the Bomb.'
         + ' It can affect the world in a bizarre way.'

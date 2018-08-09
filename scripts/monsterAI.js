@@ -336,6 +336,7 @@ Main.system.npcActBeforeDeath = function (actor) {
             summon('dog');
             break;
         case 'wisp':
+        case 'cursedRat':
             if (Main.system.getDistance(actor, Main.getEntity('pc')) === 1
                 && Main.getEntity('pc').Inventory.canBeCursed()
             ) {
@@ -363,12 +364,8 @@ Main.system.npcCannotSeePC = function (actor) {
 };
 
 Main.system.npcCursePC = function (actor, unlockEngine, duration) {
-    Main.getEntity('pc').Inventory.setCurse(
-        actor.Damage.getCurse()
-    );
-    Main.getEntity('message').Message.pushMsg(
-        Main.text.npcCurse(actor)
-    );
+    Main.getEntity('pc').Inventory.setCurse(actor.Damage.getCurse());
+    Main.getEntity('message').Message.pushMsg(Main.text.npcCurse(actor));
 
     if (unlockEngine) {
         Main.system.unlockEngine(duration);

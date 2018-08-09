@@ -283,8 +283,8 @@ Main.text.initialize = function () {
     text.get('achievementLeft').set('boss2Normal', 'Bounty: Ravenous Butcher');
     text.get('achievementLeft').set('boss3Normal', 'Bounty: Olympian Ghoul');
     text.get('achievementLeft').set('boss3Special', 'Muda Muda Muda!');
-    text.get('achievementLeft').set('boss4Normal', 'boss4Normal');
-    text.get('achievementLeft').set('boss4Special', 'boss4Special');
+    text.get('achievementLeft').set('boss4Normal', 'Bounty: Wise Giovanni');
+    text.get('achievementLeft').set('boss4Special', 'Trinity');
     text.get('achievementLeft').set('noExamine', 'Readme Is For Noobs');
     text.get('achievementLeft').set('unlockAll', 'One Punch Man');
 
@@ -292,17 +292,21 @@ Main.text.initialize = function () {
     text.get('achievementRight').set('locked', '[Locked]');
     text.get('achievementRight').set('unlocked', '[Unlocked]');
 
-    text.get('achievementRight').set('boss1Normal', 'Beat the Tower Gargoyle.');
+    text.get('achievementRight').set('boss1Normal', 'Beat Tower Gargoyle.');
     text.get('achievementRight').set('boss1Special',
         'Keep calm and don\'t roll back.'
     );
-    text.get('achievementRight').set('boss2Normal', 'Beat the Ravenous Butcher.');
-    text.get('achievementRight').set('boss3Normal', 'Beat the Olympian Ghoul.');
+    text.get('achievementRight').set('boss2Normal', 'Beat Ravenous Butcher.');
+    text.get('achievementRight').set('boss3Normal', 'Beat Olympian Ghoul.');
     text.get('achievementRight').set('boss3Special',
-        'Beat the Olympian Ghoul with 3 bump attacks.'
+        'Beat Olympian Ghoul with three bump attacks.'
     );
-    text.get('achievementRight').set('boss4Normal', 'boss4Normal');
-    text.get('achievementRight').set('boss4Special', 'boss4Special');
+    text.get('achievementRight').set('boss4Normal', 'Beat Wise Giovanni.');
+    text.get('achievementRight').set('boss4Special',
+        'Perform the Symbol SHattering Nuke against Wise Giovanni, that is,'
+        + ' three consecutive attacks with three different orbs:'
+        + ' Icy Armor, Fire and Lump.'
+    );
 
     // Hats off, gentlemen. Here before you stands a TRUE player.
     // https://www.reddit.com/r/roguelikes/comments/3drjoz/rroguelikes_developer_ama_uunormal_and/ct8116x/

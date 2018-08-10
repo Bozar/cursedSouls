@@ -180,7 +180,9 @@ Main.system.placeBoss = function (observer, target, distance) {
 };
 
 Main.system.createOrbs = function () {
-    let loop = 4 - Main.getEntity('gameProgress').BossFight.getDungeonLevel();
+    let loop = Main.getEntity('gameProgress').BossFight.getDungeonLevel() > 1
+        ? 2
+        : 3;
     let orbsInherited = Main.system.loadOrbsOnTheGround();
 
     for (var i = 0; i < loop; i++) {
@@ -237,10 +239,6 @@ Main.system.createEnemies = function () {
         let fire = Math.floor(fireAndIce * percent());
         let ice = fireAndIce - fire;
 
-        // Add more Lump enemies on deeper levels.
-        lump += 2 *
-            (Main.getEntity('gameProgress').BossFight.getDungeonLevel() - 1);
-
         Main._log.enemyCount = total;
         Main._log.enemyComposition = [lump, fire, ice, slime];
 
@@ -273,7 +271,7 @@ Main.system.createEnemies = function () {
                 slime = ['rat'];
                 break;
             case 3:
-                lump = ['archer', 'cultist'];
+                lump = ['archer', 'zombie', 'cultist', 'cultist', 'cultist'];
                 fire = ['dog', 'ratMan'];
                 ice = ['raven', 'wisp'];
                 slime = ['cursedRat'];

@@ -117,6 +117,7 @@ Main.text.initialize = function () {
     text.get('name').set('timeBomb', 'Time Bomb');
 
     text.get('name').set('cursedRat', 'Cursed Rat');
+    text.get('name').set('twinWisp', 'Twin Wisp');
 
     // Describe the NPC, item or building under the marker.
     text.set('info', new Map());
@@ -190,7 +191,13 @@ Main.text.initialize = function () {
 
     text.get('info').set('cursedRat',
         'These cursed little bastards eat whatever they can find.'
-        + ' But they are not a real threat unless you get yourself cornered.');
+        + ' But they are not a real threat unless you get yourself cornered.'
+    );
+    text.get('info').set('twinWisp',
+        'You can hear two voices mumble in your head.'
+        + ' These pale white wisps are eager to approach any living creature'
+        + ' and spread their last bless.'
+    );
 
     text.get('info').set('timeBomb',
         'The second form of the Bomb.'

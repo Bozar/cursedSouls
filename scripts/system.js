@@ -273,7 +273,7 @@ Main.system.createEnemies = function () {
             case 3:
                 lump = ['archer', 'zombie', 'cultist', 'cultist', 'cultist'];
                 fire = ['dog', 'ratMan'];
-                ice = ['raven', 'wisp'];
+                ice = ['raven', 'twinWisp'];
                 slime = ['cursedRat'];
                 break;
         }

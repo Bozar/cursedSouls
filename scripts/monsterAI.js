@@ -336,6 +336,7 @@ Main.system.npcActBeforeDeath = function (actor) {
             summon('dog');
             break;
         case 'wisp':
+        case 'twinWisp':
         case 'cursedRat':
             if (Main.system.getDistance(actor, Main.getEntity('pc')) === 1
                 && Main.getEntity('pc').Inventory.canBeCursed()

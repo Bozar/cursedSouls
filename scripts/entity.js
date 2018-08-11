@@ -557,6 +557,7 @@ Main.entity.giovanni = function (x, y) {
     e.AttackRange.setRange('bomb', 5);
     e.Damage.setDamage('maxBomb', 4);
     e.CombatRole.setRole('isBoss', true);
+    e.CombatRole.setRole('justRevived', false);
 
     e.act = Main.system.giovanniAct;
 

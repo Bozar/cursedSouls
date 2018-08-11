@@ -561,8 +561,11 @@ Main.system.giovanniAct = function () {
     Main.getEntity('timer').engine.lock();
 
     // 1-3: Search the nearby PC or wait 1 turn.
-    if (Main.system.npcCannotSeePC(this)) {
+    if (Main.system.npcCannotSeePC(this)
+        || this.CombatRole.getRole('justRevived')
+    ) {
         Main.system.npcSearchOrWait(this, move);
+        this.CombatRole.setRole('justRevived', false);
     }
     // 2A-3: Keep distance.
     else if (Main.getEntity('pc').CombatRole.getRole('isFrozen')) {
@@ -570,7 +573,11 @@ Main.system.giovanniAct = function () {
             this, move, this.AttackRange.getRange('bomb')
         );
     }
-    // 2B-3: Set bombs.
+    // 2B-3: Set the Remote Bomb.
+    else if (Main.system.getDistance(this, Main.getEntity('pc')) === 1) {
+        Main.system.npcSetBomb(this, 'hpBomb', setBomb);
+    }
+    // 2C-3: Set bombs.
     else if (Main.system.getDistance(this, Main.getEntity('pc'))
         <= this.AttackRange.getRange('bomb')
     ) {
@@ -586,5 +593,62 @@ Main.system.giovanniAct = function () {
     // 3-3: Approach the PC in sight.
     else {
         Main.system.npcMoveClose(this, move);
+    }
+};
+
+Main.system.reviveGiovanni = function (target) {
+    let newPosition = [];
+    let addOrb = [];
+
+    Main.getEntity('pc').Position.setX(
+        Main.getEntity('downstairs').Position.getX()
+    );
+    Main.getEntity('pc').Position.setY(
+        Main.getEntity('downstairs').Position.getY()
+    );
+
+    newPosition = Main.system.placeBoss(
+        Main.getEntity('downstairs'),
+        Main.getEntity('pc'),
+        2
+    );
+
+    target.HitPoint.takeDamage(-1);
+    target.Position.setX(newPosition[0]);
+    target.Position.setY(newPosition[1]);
+    target.CombatRole.setRole('justRevived', true);
+
+    if (!hasIceOrb()) {
+        if (Main.getEntity('orb').size > 20) {
+            Main.entities.set('orb', new Map());
+        }
+
+        addOrb = [
+            Main.entity.orb('fire'),
+            Main.entity.orb('ice'),
+            Main.entity.orb('slime'),
+            Main.entity.orb('lump')
+        ];
+
+        addOrb.forEach((orbID) => {
+            Main.system.placeActor(
+                Main.getEntity('orb').get(orbID),
+                Main.system.verifyOrbPosition);
+        });
+    }
+
+    Main.text.action('reviveGiovanni').forEach((text) => {
+        Main.getEntity('message').Message.pushMsg(text);
+    });
+
+    // Helper function
+    function hasIceOrb() {
+        let orbName = [];
+
+        Main.getEntity('orb').forEach((orbEntity) => {
+            orbName.push(orbEntity.getEntityName());
+        });
+
+        return orbName.some((name) => { return name === 'ice'; });
     }
 };

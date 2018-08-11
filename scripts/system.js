@@ -900,7 +900,12 @@ Main.system.pcAttack = function (target, attackType) {
     }
 
     // Step 2A-4: The enemy is dead.
-    if (target.HitPoint.isDead()) {
+    if (target.HitPoint.isDead()
+        && (target.getEntityName() !== 'giovanni'
+            || target.getEntityName() === 'giovanni'
+            && attackType === 'base' && lastOrb === 'armor'
+        )
+    ) {
         // 1a-5: Drop rate: the boss.
         if (target.CombatRole.getRole('isBoss')) {
             dropRate = Main.getEntity('pc').DropRate.getDropRate('fire');
@@ -959,6 +964,14 @@ Main.system.pcAttack = function (target, attackType) {
     else {
         Main.getEntity('message').Message.pushMsg(
             Main.text.hitTarget(target));
+    }
+
+    // Step 2C-4: Revive Giovanni if possible.
+    if (target.getEntityName() === 'giovanni'
+        && target.HitPoint.isDead()
+        && (attackType !== 'base' || lastOrb !== 'armor')
+    ) {
+        Main.system.reviveGiovanni(target);
     }
 
     // Step 3-4: Check the boss related special achievements.

@@ -83,6 +83,14 @@ Main.text.initialize = function () {
     text.get('action').set('bombExplode', 'The %% explodes.');
     text.get('action').set('freezeTime', 'You are frozen in time.');
 
+    text.get('action').set('reviveGiovanni',
+        [
+            'You see sinners buried in the frozen lake.',
+            'The vision quickly fades away...',
+            'and it is time to begin the fight with Giovanni.'
+        ]
+    );
+
     text.get('action').set('save', 'Game saved.');
     text.get('action').set('closeOrReload',
         'You can close the tab or press F5 to continue.'
@@ -608,7 +616,7 @@ Main.text.lastWords = function () {
     let text = '';
 
     if (Main.getEntity('gameProgress').BossFight.getBossFightStatus()
-        === 'active') {
+        !== 'inactive') {
         text = Main.text.action('deathBoss'
             + Main.getEntity('gameProgress').BossFight.getDungeonLevel());
     } else {

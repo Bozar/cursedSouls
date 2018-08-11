@@ -415,7 +415,7 @@ Main.system.pcUseDownstairs = function () {
                     newActor = Main.entity.ghoul(position[0], position[1]);
                     break;
                 case 3:
-                    newActor = Main.entity.gargoyle(position[0], position[1]);
+                    newActor = Main.entity.giovanni(position[0], position[1]);
                     break;
             }
             Main.getEntity('timer').scheduler.add(newActor, true, 2);

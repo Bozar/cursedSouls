@@ -520,3 +520,48 @@ Main.entity.twinWisp = function (x, y) {
 
     return e;
 };
+
+Main.entity.hpBomb = function (x, y) {
+    let e = new Main.Factory('hpBomb');
+
+    e.addComponent(new Main.Component.Position(5, x, y));
+    e.addComponent(new Main.Component.Display('b'));
+    e.addComponent(new Main.Component.ActionDuration());
+    e.addComponent(new Main.Component.Inventory(1, 'slime'));
+    e.addComponent(new Main.Component.HitPoint(3));
+    e.addComponent(new Main.Component.Damage(2));
+    e.addComponent(new Main.Component.AttackRange(1));
+    e.addComponent(new Main.Component.CombatRole(false));
+
+    e.CombatRole.setRole('isBomb', true);
+
+    e.act = Main.system.bombAct;
+
+    Main.entities.get('npc').set(e.getID(), e);
+
+    return e;
+};
+
+Main.entity.giovanni = function (x, y) {
+    let e = new Main.Factory('giovanni');
+
+    e.addComponent(new Main.Component.Position(7, x, y));
+    e.addComponent(new Main.Component.Display('V'));
+    e.addComponent(new Main.Component.ActionDuration());
+    e.addComponent(new Main.Component.Inventory(1, 'lump'));
+    e.addComponent(new Main.Component.HitPoint(3));
+    e.addComponent(new Main.Component.Damage(1));
+    e.addComponent(new Main.Component.AttackRange(1));
+    e.addComponent(new Main.Component.CombatRole(false));
+
+    e.ActionDuration.setDuration('fastAttack', 0.4);
+    e.AttackRange.setRange('bomb', 4);
+    e.Damage.setDamage('maxBomb', 4);
+    e.CombatRole.setRole('isBoss', true);
+
+    e.act = Main.system.giovanniAct;
+
+    Main.entities.get('npc').set(e.getID(), e);
+
+    return e;
+};

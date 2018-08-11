@@ -496,6 +496,10 @@ Main.system.bombAct = function () {
                     Main.text.action('freezeTime')
                 );
                 break;
+            case 'hpBomb':
+                Main.system.pcTakeDamage(this.Damage.getDamage('base'));
+                Main.system.npcHitOrKill(this, 1);
+                break;
         }
     } else if (Main.system.isInSight(this, Main.getEntity('pc'))) {
         Main.getEntity('message').Message.pushMsg(Main.text.bombExplode(this));
@@ -504,7 +508,9 @@ Main.system.bombAct = function () {
     Main.getEntity('timer').scheduler.remove(this);
     Main.getEntity('npc').delete(this.getID());
 
-    Main.system.unlockEngine(1);
+    if (!Main.getEntity('pc').Inventory.getIsDead()) {
+        Main.system.unlockEngine(1);
+    }
 };
 
 Main.system.npcSetBomb = function (actor, bomb, duration) {
@@ -545,4 +551,37 @@ Main.system.npcSetBomb = function (actor, bomb, duration) {
     Main.getEntity('message').Message.pushMsg(Main.text.setBomb(actor));
 
     Main.system.unlockEngine(duration);
+};
+
+Main.system.giovanniAct = function () {
+    let move = this.ActionDuration.getDuration('base');
+    let setBomb = this.ActionDuration.getDuration('base');
+    let melee = this.ActionDuration.getDuration('fastAttack');
+
+    Main.getEntity('timer').engine.lock();
+
+    // 1-3: Search the nearby PC or wait 1 turn.
+    if (Main.system.npcCannotSeePC(this)) {
+        Main.system.npcSearchOrWait(this, move);
+    }
+    // 2A-3: Attack the PC.
+    else if (Main.system.pcIsInsideAttackRange(this)) {
+        Main.getEntity('message').Message.pushMsg(
+            Main.text.action('ghoulPunch')
+        );
+        Main.system.pcTakeDamage(this.Damage.getDamage('base'));
+        Main.system.npcHitOrKill(this, melee);
+    }
+    // 2B-3: Set bombs.
+    else if (Main.system.getDistance(this, Main.getEntity('pc'))
+        < this.AttackRange.getRange('bomb')
+        && !Main.getEntity('pc').CombatRole.getRole('isFrozen')
+    ) {
+        Main.system.npcSetBomb(this, 'hpBomb', setBomb);
+        //Main.system.npcSetBomb(this, 'timeBomb', setBomb);
+    }
+    // 3-3: Approach the PC in sight.
+    else {
+        Main.system.npcMoveClose(this, move);
+    }
 };

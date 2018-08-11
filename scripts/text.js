@@ -91,9 +91,16 @@ Main.text.initialize = function () {
     text.get('action').set('die', 'You die.');
     text.get('action').set('end', '===The End===');
     text.get('action').set('deathGeneral', 'Rest in peace, ashen one.');
+
     text.get('action').set('deathBoss1',
-        'Ashen one, hearest thou my voice, still?');
+        'Ashen one, hearest thou my voice, still?'
+    );
     text.get('action').set('deathBoss2', 'You eventually stop thinking.');
+    // The Divine Comedy, Purgatorio, V, Vintage classics
+    // '...and there saw you a pool growing on the ground from your veins.'
+    text.get('action').set('deathBoss3',
+        '...a pool growing on the ground from your veins.'
+    );
 
     // NPC's names
     text.set('name', new Map());
@@ -114,10 +121,13 @@ Main.text.initialize = function () {
 
     text.get('name').set('butcher', 'Ravenous Butcher');
     text.get('name').set('ghoul', 'Olympian Ghoul');
+
     text.get('name').set('timeBomb', 'Time Bomb');
+    text.get('name').set('hpBomb', 'Remote Bomb');
 
     text.get('name').set('cursedRat', 'Cursed Rat');
     text.get('name').set('twinWisp', 'Twin Wisp');
+    text.get('name').set('giovanni', 'Wise Giovanni');
 
     // Describe the NPC, item or building under the marker.
     text.set('info', new Map());
@@ -199,9 +209,16 @@ Main.text.initialize = function () {
         + ' and spread their last bless.'
     );
 
+    text.get('info').set('giovanni',
+        'Giovanni.'
+    );
+
     text.get('info').set('timeBomb',
         'The second form of the Bomb.'
         + ' It can affect the world in a bizarre way.'
+    );
+    text.get('info').set('hpBomb',
+        'The first form of the Bomb.'
     );
 
     // Orbs.

@@ -474,7 +474,7 @@ Main.system.ghoulAct = function () {
     }
     // 2B-3: Set bombs.
     else if (Main.system.getDistance(this, Main.getEntity('pc'))
-        < this.AttackRange.getRange('bomb')
+        <= this.AttackRange.getRange('bomb')
         && !Main.getEntity('pc').CombatRole.getRole('isFrozen')
     ) {
         Main.system.npcSetBomb(this, 'timeBomb', setBomb);
@@ -556,7 +556,6 @@ Main.system.npcSetBomb = function (actor, bomb, duration) {
 Main.system.giovanniAct = function () {
     let move = this.ActionDuration.getDuration('base');
     let setBomb = this.ActionDuration.getDuration('base');
-    let melee = this.ActionDuration.getDuration('fastAttack');
 
     Main.getEntity('timer').engine.lock();
 
@@ -564,21 +563,24 @@ Main.system.giovanniAct = function () {
     if (Main.system.npcCannotSeePC(this)) {
         Main.system.npcSearchOrWait(this, move);
     }
-    // 2A-3: Attack the PC.
-    else if (Main.system.pcIsInsideAttackRange(this)) {
-        Main.getEntity('message').Message.pushMsg(
-            Main.text.action('ghoulPunch')
+    // 2A-3: Keep distance.
+    else if (Main.getEntity('pc').CombatRole.getRole('isFrozen')) {
+        Main.system.npcKeepDistance(
+            this, move, this.AttackRange.getRange('bomb')
         );
-        Main.system.pcTakeDamage(this.Damage.getDamage('base'));
-        Main.system.npcHitOrKill(this, melee);
     }
     // 2B-3: Set bombs.
     else if (Main.system.getDistance(this, Main.getEntity('pc'))
-        < this.AttackRange.getRange('bomb')
-        && !Main.getEntity('pc').CombatRole.getRole('isFrozen')
+        <= this.AttackRange.getRange('bomb')
     ) {
-        Main.system.npcSetBomb(this, 'hpBomb', setBomb);
-        //Main.system.npcSetBomb(this, 'timeBomb', setBomb);
+        switch (Math.floor(ROT.RNG.getUniform() * 2)) {
+            case 0:
+                Main.system.npcSetBomb(this, 'timeBomb', setBomb);
+                break;
+            case 1:
+                Main.system.npcSetBomb(this, 'hpBomb', setBomb);
+                break;
+        }
     }
     // 3-3: Approach the PC in sight.
     else {

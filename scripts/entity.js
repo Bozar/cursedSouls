@@ -554,8 +554,7 @@ Main.entity.giovanni = function (x, y) {
     e.addComponent(new Main.Component.AttackRange(1));
     e.addComponent(new Main.Component.CombatRole(false));
 
-    e.ActionDuration.setDuration('fastAttack', 0.4);
-    e.AttackRange.setRange('bomb', 4);
+    e.AttackRange.setRange('bomb', 5);
     e.Damage.setDamage('maxBomb', 4);
     e.CombatRole.setRole('isBoss', true);
 

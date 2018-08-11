@@ -438,23 +438,28 @@ Main.system.pcUseDownstairs = function () {
 
             Main.system.checkAchNoExamine();
 
-            // TODO: Change this when the 3rd level is ready.
-            if (Main.getEntity('gameProgress').BossFight.getDungeonLevel() < 2) {
+            if (Main.getEntity('gameProgress').BossFight.getDungeonLevel()
+                < 3
+            ) {
                 Main.system.saveDungeonLevel();
                 Main.system.saveSeed();
                 Main.system.saveInventory();
                 Main.system.saveOrbsOnTheGround();
+
+                Main.getEntity('message').Message.pushMsg(
+                    Main.text.action('save')
+                );
+                Main.getEntity('message').Message.pushMsg(
+                    Main.text.action('closeOrReload')
+                );
+
+                Main.display.clear();
+                Main.screens.main.display();
+            } else {
+                Main.display.clear();
+                Main.screens.main.exit();
+                Main.screens.cutScene.enter(true);
             }
-
-            Main.getEntity('message').Message.pushMsg(
-                Main.text.action('save')
-            );
-            Main.getEntity('message').Message.pushMsg(
-                Main.text.action('closeOrReload')
-            );
-
-            Main.display.clear();
-            Main.screens.main.display();
 
             break;
     }

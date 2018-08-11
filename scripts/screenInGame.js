@@ -250,7 +250,18 @@ Main.screens.main.keyInput = function (e) {
 Main.screens.cutScene = new Main.Screen('cutScene', ['main']);
 
 Main.screens.cutScene.display = function () {
-    Main.getEntity('message').Message.setModeline(Main.text.action('continue'));
+    if (Main.getEntity('gameProgress').BossFight.getDungeonLevel() === 3
+        && Main.getEntity('gameProgress').BossFight.getBossFightStatus()
+        === 'win'
+    ) {
+        Main.getEntity('message').Message.setModeline(
+            Main.text.action('closeOrReload')
+        );
+    } else {
+        Main.getEntity('message').Message.setModeline(
+            Main.text.action('continue')
+        );
+    }
 
     Main.screens.drawCutScene();
     Main.screens.drawModeLine();

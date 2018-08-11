@@ -93,7 +93,7 @@ Main.text.initialize = function () {
 
     text.get('action').set('save', 'Game saved.');
     text.get('action').set('closeOrReload',
-        'You can close the tab or press F5 to continue.'
+        'Close the tab or press F5 to continue.'
     );
 
     text.get('action').set('die', 'You die.');
@@ -424,7 +424,13 @@ Main.text.initialize = function () {
             }===`
         ]
     );
-    text.get('cutScene').set('miniBoss2', 'The Ravenous Butcher charges at you.');
+    text.get('cutScene').set('miniBoss2',
+        'The Ravenous Butcher charges at you.'
+    );
+
+    text.get('cutScene').set('youWin',
+        'You win.'
+    );
 
     // Error messages.
     text.set('error', new Map());

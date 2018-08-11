@@ -541,6 +541,10 @@ Main.screens.drawCutScene = function () {
         case 'active':
             text = Main.text.cutScene('beforeBossFight' + level);
             break;
+        case 'win':
+            if (level === 3) {
+                text = Main.text.cutScene('youWin');
+            }
     }
 
     Main.display.drawText(

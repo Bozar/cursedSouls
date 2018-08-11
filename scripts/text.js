@@ -95,6 +95,9 @@ Main.text.initialize = function () {
     text.get('action').set('closeOrReload',
         'Close the tab or press F5 to continue.'
     );
+    text.get('action').set('useDownstairs',
+        'Interact with the donwstairs to proceed.'
+    );
 
     text.get('action').set('die', 'You die.');
     text.get('action').set('end', '===The End===');
@@ -225,9 +228,7 @@ Main.text.initialize = function () {
         'The second form of the Bomb.'
         + ' It can affect the world in a bizarre way.'
     );
-    text.get('info').set('hpBomb',
-        'The first form of the Bomb.'
-    );
+    text.get('info').set('hpBomb', 'The first form of the Bomb.');
 
     // Orbs.
     text.get('info').set('fire', 'Range 1, damage 1. 100% drop rate.');

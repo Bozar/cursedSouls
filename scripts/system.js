@@ -964,6 +964,14 @@ Main.system.pcAttack = function (target, attackType) {
             Main.system.checkAchBossNormal(target);
             Main.system.checkAchBoss3Special(target);
         }
+        // 5c-5: Prompt the player to use the downstairs after the final fight.
+        if (target.getEntityName() === 'giovanni') {
+            Main.getEntity('message').Message.pushMsg(
+                Main.screens.colorfulText(
+                    Main.text.action('useDownstairs'), 'green'
+                )
+            );
+        }
     }
     // Step 2B-4: The enemy is still alive.
     else {

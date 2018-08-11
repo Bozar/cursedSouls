@@ -600,6 +600,7 @@ Main.system.reviveGiovanni = function (target) {
     let newPosition = [];
     let addOrb = [];
 
+    // Move the PC to the downstairs.
     Main.getEntity('pc').Position.setX(
         Main.getEntity('downstairs').Position.getX()
     );
@@ -607,17 +608,19 @@ Main.system.reviveGiovanni = function (target) {
         Main.getEntity('downstairs').Position.getY()
     );
 
+    // Move Giovanni & raise HP.
     newPosition = Main.system.placeBoss(
         Main.getEntity('downstairs'),
         Main.getEntity('pc'),
         2
     );
 
-    target.HitPoint.takeDamage(-1);
     target.Position.setX(newPosition[0]);
     target.Position.setY(newPosition[1]);
+    target.HitPoint.takeDamage(-1);
     target.CombatRole.setRole('justRevived', true);
 
+    // Add orbs if necessary.
     if (!hasIceOrb()) {
         if (Main.getEntity('orb').size > 20) {
             Main.entities.set('orb', new Map());
@@ -637,6 +640,10 @@ Main.system.reviveGiovanni = function (target) {
         });
     }
 
+    // Forbid unlocking Giovanni's special achievement.
+    Main.getEntity('gameProgress').Achievement.clearBoss4Special();
+
+    // Print cut-scene text.
     Main.text.action('reviveGiovanni').forEach((text) => {
         Main.getEntity('message').Message.pushMsg(text);
     });

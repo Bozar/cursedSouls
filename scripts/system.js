@@ -891,8 +891,12 @@ Main.system.pcAttack = function (target, attackType) {
             : Main.getEntity('pc').Damage.getDamage('base')
     );
 
+    // Check the boss related special achievements.
     if (target.getEntityName() === 'ghoul' && attackType !== 'base') {
         Main.getEntity('gameProgress').Achievement.setBoss3Special(false);
+    }
+    if (target.getEntityName() === 'giovanni') {
+        Main.system.checkAchBoss4Special(target, attackType);
     }
 
     // Step 2A-4: The enemy is dead.

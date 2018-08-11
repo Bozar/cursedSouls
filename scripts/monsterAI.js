@@ -501,9 +501,10 @@ Main.system.bombAct = function () {
                 Main.system.npcHitOrKill(this, 1);
                 break;
         }
-    } else if (Main.system.isInSight(this, Main.getEntity('pc'))) {
-        Main.getEntity('message').Message.pushMsg(Main.text.bombExplode(this));
     }
+    // else if (Main.system.isInSight(this, Main.getEntity('pc'))) {
+    //     Main.getEntity('message').Message.pushMsg(Main.text.bombExplode(this));
+    // }
 
     Main.getEntity('timer').scheduler.remove(this);
     Main.getEntity('npc').delete(this.getID());

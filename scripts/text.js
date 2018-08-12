@@ -110,7 +110,7 @@ Main.text.initialize = function () {
     );
     text.get('action').set('deathBoss2', 'You eventually stop thinking.');
     // The Divine Comedy, Purgatorio, V, Vintage classics
-    // '...and there saw you a pool growing on the ground from your veins.'
+    // ...and there saw I a pool growing on the ground from my veins.
     text.get('action').set('deathBoss3',
         '...a pool growing on the ground from your veins.'
     );
@@ -381,7 +381,7 @@ Main.text.initialize = function () {
     );
     text.get('cutScene').set('beforeBossFight1',
         'At first, you think it is the trick of the light'
-        + ' -- how can a statue change his position?'
+        + ' - how can a statue change his position?'
         + ' Then you take another look and confirm that'
         + ' the grotesque stone figure is looking at you, with mouth wide open,'
         + ' as if crying in slience.'

@@ -5,7 +5,7 @@
 // ================================================
 
 var Main = {};
-Main._version = '0.2.0';
+Main._version = '0.3.0';
 // Set the _develop value in the window.onload function.
 // Main._develop = false;
 

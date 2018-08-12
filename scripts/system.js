@@ -967,9 +967,7 @@ Main.system.pcAttack = function (target, attackType) {
         // 5c-5: Prompt the player to use the downstairs after the final fight.
         if (target.getEntityName() === 'giovanni') {
             Main.getEntity('message').Message.pushMsg(
-                Main.screens.colorfulText(
-                    Main.text.action('useDownstairs'), 'green'
-                )
+                Main.text.action('useDownstairs')
             );
         }
     }

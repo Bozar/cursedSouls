@@ -96,7 +96,9 @@ Main.text.initialize = function () {
         'Close the tab or press F5 to continue.'
     );
     text.get('action').set('useDownstairs',
-        'Interact with the donwstairs to proceed.'
+        Main.screens.colorfulText(
+            '[Interact with the donwstairs to proceed.]', 'green'
+        )
     );
 
     text.get('action').set('die', 'You die.');
@@ -172,7 +174,7 @@ Main.text.initialize = function () {
     text.get('info').set('gargoyle',
         'The Tower Gargoyle moves slowly,'
         + ' but it can reach the enemy with the halberd.'
-        + ' It breathes fire in which few can survive head on.'
+        + ' It breathes fire in which few can survive heads on.'
         + ' %%'
     );
     text.get('info').set('juvenileGargoyle',
@@ -221,7 +223,9 @@ Main.text.initialize = function () {
     );
 
     text.get('info').set('giovanni',
-        'Giovanni.'
+        'Wise Giovanni wears a purple robe and lives like a hermit.'
+        + ' He clenches his left fist and raises the thumb.'
+        + ' It seems he is about to press a button.'
     );
 
     text.get('info').set('timeBomb',
@@ -264,7 +268,15 @@ Main.text.initialize = function () {
     text.get('info').set('downstairs2Win',
         'There are scratches around the coffin.');
 
-    text.get('info').set('downstairs3', 'Level 3 downstairs.');
+    text.get('info').set('downstairs3',
+        'Behind the ornate door there seems to be a study room.'
+        + ' %%'
+    );
+    text.get('info').set('downstairs3Inactive',
+        'You can hear someone talking inside.'
+    );
+    text.get('info').set('downstairs3Active', '');
+    text.get('info').set('downstairs3Win', '');
 
     // The help screen.
     text.set('help', new Map());
@@ -411,8 +423,35 @@ Main.text.initialize = function () {
         + ' All these things happen at the exact same moment.'
     );
 
-    text.get('cutScene').set('enterLevel3', 'level 3');
-    text.get('cutScene').set('beforeBossFight3', 'before 3');
+    text.get('cutScene').set('enterLevel3',
+        'You pull the lever in the coffin.'
+        + ' It slides aside and reveals a stone downstairs.'
+        + ' The bottom level of the church is, or rather, used to be a sanctum.'
+        + '\n\n'
+        + 'Specimens are kept in transparent jars along the wall -'
+        + ' small mammals, organs, humans, inhumans,'
+        + ' and some other THINGS you cannot describe.'
+        + ' If you stay here for too long,'
+        + ' you will certainly be dronwed in the cursed sea'
+        + ' and become one of them.'
+    );
+    text.get('cutScene').set('beforeBossFight3',
+        'You hear a voice from behind the door.'
+        + '\n\n'
+        + '"Tutte quelle grida dolorose, che un\'orchestra meravigliosa."'
+        + '\n'
+        + '("All those painful cries, what a wonderful orchestra.")'
+        + '\n\n'
+        + '"Sii paziente, bellezza mia.'
+        + ' Ecco che arriva il nostro ospite."'
+        + '\n'
+        + '("Be patient, my beauty. Here comes our guest.")'
+        + '\n\n'
+        + 'A man in purple robe walks out of the study.'
+        + '\n\n'
+        + ' "I just want to be a hermit. Is this too much to ask?"'
+        + ' He stares at you and sighs. "Fear not, amico. It ends soon."'
+    );
 
     text.get('cutScene').set('miniBoss1',
         [
@@ -420,9 +459,7 @@ Main.text.initialize = function () {
             'There is a fatty who raises the cleaver into the air.',
             'He pushes over the table upon seeing you.',
             '"Nosferatu rats! You won\'t escape this time!"',
-            `===${
-            Main.screens.colorfulText('Press Space to continue.', 'green')
-            }===`
+            Main.screens.colorfulText('[Press Space to continue.]', 'green')
         ]
     );
     text.get('cutScene').set('miniBoss2',
@@ -430,7 +467,20 @@ Main.text.initialize = function () {
     );
 
     text.get('cutScene').set('youWin',
-        'You win.'
+        'The study room is small and cozy.'
+        + ' The walls were hung with blankets and candles burn bright.'
+        + ' In addition to books, there is also a crystal skull on the shelf.'
+        + ' Is it the other one that Giovanni was talking to?'
+        + ' You cannot tell why but you feel that it is watching you.'
+        + '\n\n'
+        + ' On the desk there is an unfolded scroll,'
+        + ' on which someone draws with black ink the two underground levels'
+        + ' and a trap door leading to an even deeper tunnel system.'
+        + '\n\n'
+        + ' The dungeon is vast and infinite.'
+        + '\n\n'
+        + '\n\n'
+        + '[You win. Thanks for playing the game.]'
     );
 
     // Error messages.

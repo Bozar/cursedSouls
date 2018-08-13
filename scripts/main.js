@@ -5,7 +5,7 @@
 // ================================================
 
 var Main = {};
-Main._version = '0.2.0';
+Main._version = '0.3.0';
 // Set the _develop value in the window.onload function.
 // Main._develop = false;
 
@@ -79,7 +79,7 @@ window.onload = function () {
         Main.system.loadDungeonLevel()
     );
     // TODO: delete this line when finish builidng the 2nd level.
-    // Main.getEntity('gameProgress').BossFight.setDungeonLevel(2);
+    // Main.getEntity('gameProgress').BossFight.setDungeonLevel(3);
 
     // Achievements.
     Main.system.setAchievement();

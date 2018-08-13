@@ -402,6 +402,9 @@ Main.Component.Achievement = function () {
     this._noExamine = true;
     this._boss3Special = true;
 
+    // Use an array to store the attack types.
+    this._boss4Special = [];
+
     this.getAchievement = function (id) {
         if (id && this._achievement.has(id)) {
             return this._achievement.get(id);
@@ -426,4 +429,12 @@ Main.Component.Achievement = function () {
 
     this.getBoss3Special = function () { return this._boss3Special; };
     this.setBoss3Special = function (status) { this._boss3Special = status; };
+
+    this.getBoss4Special = function () { return this._boss4Special; };
+    this.setBoss4Special = function (attackType) {
+        if (this._boss4Special.push(attackType) > 3) {
+            this._boss4Special.shift();
+        }
+    };
+    this.clearBoss4Special = function () { this._boss4Special = []; };
 };

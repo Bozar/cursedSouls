@@ -83,17 +83,37 @@ Main.text.initialize = function () {
     text.get('action').set('bombExplode', 'The %% explodes.');
     text.get('action').set('freezeTime', 'You are frozen in time.');
 
+    text.get('action').set('reviveGiovanni',
+        [
+            'You see sinners buried in the frozen lake.',
+            'The vision quickly fades away...',
+            'and it is time to begin the fight with Giovanni.'
+        ]
+    );
+
     text.get('action').set('save', 'Game saved.');
     text.get('action').set('closeOrReload',
-        'You can close the tab or press F5 to continue.'
+        'Close the tab or press F5 to continue.'
+    );
+    text.get('action').set('useDownstairs',
+        Main.screens.colorfulText(
+            '[Interact with the donwstairs to proceed.]', 'green'
+        )
     );
 
     text.get('action').set('die', 'You die.');
     text.get('action').set('end', '===The End===');
     text.get('action').set('deathGeneral', 'Rest in peace, ashen one.');
+
     text.get('action').set('deathBoss1',
-        'Ashen one, hearest thou my voice, still?');
+        'Ashen one, hearest thou my voice, still?'
+    );
     text.get('action').set('deathBoss2', 'You eventually stop thinking.');
+    // The Divine Comedy, Purgatorio, V, Vintage classics
+    // ...and there saw I a pool growing on the ground from my veins.
+    text.get('action').set('deathBoss3',
+        '...a pool growing on the ground from your veins.'
+    );
 
     // NPC's names
     text.set('name', new Map());
@@ -114,7 +134,13 @@ Main.text.initialize = function () {
 
     text.get('name').set('butcher', 'Ravenous Butcher');
     text.get('name').set('ghoul', 'Olympian Ghoul');
+
     text.get('name').set('timeBomb', 'Time Bomb');
+    text.get('name').set('hpBomb', 'Remote Bomb');
+
+    text.get('name').set('cursedRat', 'Cursed Rat');
+    text.get('name').set('twinWisp', 'Twin Wisp');
+    text.get('name').set('giovanni', 'Wise Giovanni');
 
     // Describe the NPC, item or building under the marker.
     text.set('info', new Map());
@@ -148,7 +174,7 @@ Main.text.initialize = function () {
     text.get('info').set('gargoyle',
         'The Tower Gargoyle moves slowly,'
         + ' but it can reach the enemy with the halberd.'
-        + ' It breathes fire in which few can survive head on.'
+        + ' It breathes fire in which few can survive heads on.'
         + ' %%'
     );
     text.get('info').set('juvenileGargoyle',
@@ -185,10 +211,28 @@ Main.text.initialize = function () {
         + ' but still is a pathetic faker of Dio.'
         + ' He punches at lightning speed.'
     );
+
+    text.get('info').set('cursedRat',
+        'These cursed little bastards eat whatever they can find.'
+        + ' But they are not a real threat unless you get yourself cornered.'
+    );
+    text.get('info').set('twinWisp',
+        'You can hear two voices mumble in your head.'
+        + ' These pale white wisps are eager to approach any living creature'
+        + ' and spread their last bless.'
+    );
+
+    text.get('info').set('giovanni',
+        'Wise Giovanni wears a purple robe and lives like a hermit.'
+        + ' He clenches his left fist and raises the thumb.'
+        + ' It seems he is about to press a button.'
+    );
+
     text.get('info').set('timeBomb',
         'The second form of the Bomb.'
         + ' It can affect the world in a bizarre way.'
     );
+    text.get('info').set('hpBomb', 'The first form of the Bomb.');
 
     // Orbs.
     text.get('info').set('fire', 'Range 1, damage 1. 100% drop rate.');
@@ -224,7 +268,15 @@ Main.text.initialize = function () {
     text.get('info').set('downstairs2Win',
         'There are scratches around the coffin.');
 
-    text.get('info').set('downstairs3', 'Level 3 downstairs.');
+    text.get('info').set('downstairs3',
+        'Behind the ornate door there seems to be a study room.'
+        + ' %%'
+    );
+    text.get('info').set('downstairs3Inactive',
+        'You can hear someone talking inside.'
+    );
+    text.get('info').set('downstairs3Active', '');
+    text.get('info').set('downstairs3Win', '');
 
     // The help screen.
     text.set('help', new Map());
@@ -276,8 +328,8 @@ Main.text.initialize = function () {
     text.get('achievementLeft').set('boss2Normal', 'Bounty: Ravenous Butcher');
     text.get('achievementLeft').set('boss3Normal', 'Bounty: Olympian Ghoul');
     text.get('achievementLeft').set('boss3Special', 'Muda Muda Muda!');
-    text.get('achievementLeft').set('boss4Normal', 'boss4Normal');
-    text.get('achievementLeft').set('boss4Special', 'boss4Special');
+    text.get('achievementLeft').set('boss4Normal', 'Bounty: Wise Giovanni');
+    text.get('achievementLeft').set('boss4Special', 'Trinity');
     text.get('achievementLeft').set('noExamine', 'Readme Is For Noobs');
     text.get('achievementLeft').set('unlockAll', 'One Punch Man');
 
@@ -285,17 +337,21 @@ Main.text.initialize = function () {
     text.get('achievementRight').set('locked', '[Locked]');
     text.get('achievementRight').set('unlocked', '[Unlocked]');
 
-    text.get('achievementRight').set('boss1Normal', 'Beat the Tower Gargoyle.');
+    text.get('achievementRight').set('boss1Normal', 'Beat Tower Gargoyle.');
     text.get('achievementRight').set('boss1Special',
         'Keep calm and don\'t roll back.'
     );
-    text.get('achievementRight').set('boss2Normal', 'Beat the Ravenous Butcher.');
-    text.get('achievementRight').set('boss3Normal', 'Beat the Olympian Ghoul.');
+    text.get('achievementRight').set('boss2Normal', 'Beat Ravenous Butcher.');
+    text.get('achievementRight').set('boss3Normal', 'Beat Olympian Ghoul.');
     text.get('achievementRight').set('boss3Special',
-        'Beat the Olympian Ghoul with 3 bump attacks.'
+        'Beat Olympian Ghoul with three bump attacks.'
     );
-    text.get('achievementRight').set('boss4Normal', 'boss4Normal');
-    text.get('achievementRight').set('boss4Special', 'boss4Special');
+    text.get('achievementRight').set('boss4Normal', 'Beat Wise Giovanni.');
+    text.get('achievementRight').set('boss4Special',
+        'Perform the Symbol SHattering Nuke against Wise Giovanni, that is,'
+        + ' three consecutive attacks with three different orbs:'
+        + ' Icy Armor, Fire and Lump.'
+    );
 
     // Hats off, gentlemen. Here before you stands a TRUE player.
     // https://www.reddit.com/r/roguelikes/comments/3drjoz/rroguelikes_developer_ama_uunormal_and/ct8116x/
@@ -325,7 +381,7 @@ Main.text.initialize = function () {
     );
     text.get('cutScene').set('beforeBossFight1',
         'At first, you think it is the trick of the light'
-        + ' -- how can a statue change his position?'
+        + ' - how can a statue change his position?'
         + ' Then you take another look and confirm that'
         + ' the grotesque stone figure is looking at you, with mouth wide open,'
         + ' as if crying in slience.'
@@ -367,8 +423,35 @@ Main.text.initialize = function () {
         + ' All these things happen at the exact same moment.'
     );
 
-    text.get('cutScene').set('enterLevel3', 'level 3');
-    text.get('cutScene').set('beforeBossFight3', 'before 3');
+    text.get('cutScene').set('enterLevel3',
+        'You pull the lever in the coffin.'
+        + ' It slides aside and reveals a stone downstairs.'
+        + ' The bottom level of the church is, or rather, used to be a sanctum.'
+        + '\n\n'
+        + 'Specimens are kept in transparent jars along the wall -'
+        + ' small mammals, organs, humans, inhumans,'
+        + ' and some other THINGS you cannot describe.'
+        + ' If you stay here for too long,'
+        + ' you will certainly be dronwed in the cursed sea'
+        + ' and become one of them.'
+    );
+    text.get('cutScene').set('beforeBossFight3',
+        'You hear a voice from behind the door.'
+        + '\n\n'
+        + '"Tutte quelle grida dolorose, che un\'orchestra meravigliosa."'
+        + '\n'
+        + '("All those painful cries, what a wonderful orchestra.")'
+        + '\n\n'
+        + '"Sii paziente, bellezza mia.'
+        + ' Ecco che arriva il nostro ospite."'
+        + '\n'
+        + '("Be patient, my beauty. Here comes our guest.")'
+        + '\n\n'
+        + 'A man in purple robe walks out of the study.'
+        + '\n\n'
+        + ' "I just want to be a hermit. Is this too much to ask?"'
+        + ' He stares at you and sighs. "Fear not, amico. It ends soon."'
+    );
 
     text.get('cutScene').set('miniBoss1',
         [
@@ -376,12 +459,29 @@ Main.text.initialize = function () {
             'There is a fatty who raises the cleaver into the air.',
             'He pushes over the table upon seeing you.',
             '"Nosferatu rats! You won\'t escape this time!"',
-            `===${
-            Main.screens.colorfulText('Press Space to continue.', 'green')
-            }===`
+            Main.screens.colorfulText('[Press Space to continue.]', 'green')
         ]
     );
-    text.get('cutScene').set('miniBoss2', 'The Ravenous Butcher charges at you.');
+    text.get('cutScene').set('miniBoss2',
+        'The Ravenous Butcher charges at you.'
+    );
+
+    text.get('cutScene').set('youWin',
+        'The study room is small and cozy.'
+        + ' The walls were hung with blankets and candles burn bright.'
+        + ' In addition to books, there is also a crystal skull on the shelf.'
+        + ' Is it the other one that Giovanni was talking to?'
+        + ' You cannot tell why but you feel that it is watching you.'
+        + '\n\n'
+        + ' On the desk there is an unfolded scroll,'
+        + ' on which someone draws with black ink the two underground levels'
+        + ' and a trap door leading to an even deeper tunnel system.'
+        + '\n\n'
+        + ' The dungeon is vast and infinite.'
+        + '\n\n'
+        + '\n\n'
+        + '[You win. Thanks for playing the game.]'
+    );
 
     // Error messages.
     text.set('error', new Map());
@@ -573,7 +673,7 @@ Main.text.lastWords = function () {
     let text = '';
 
     if (Main.getEntity('gameProgress').BossFight.getBossFightStatus()
-        === 'active') {
+        !== 'inactive') {
         text = Main.text.action('deathBoss'
             + Main.getEntity('gameProgress').BossFight.getDungeonLevel());
     } else {

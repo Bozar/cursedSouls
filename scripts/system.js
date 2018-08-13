@@ -180,8 +180,9 @@ Main.system.placeBoss = function (observer, target, distance) {
 };
 
 Main.system.createOrbs = function () {
-    // TODO: change the loop based on the dungeon level.
-    let loop = 3;
+    let loop = Main.getEntity('gameProgress').BossFight.getDungeonLevel() > 1
+        ? 2
+        : 3;
     let orbsInherited = Main.system.loadOrbsOnTheGround();
 
     for (var i = 0; i < loop; i++) {
@@ -270,10 +271,10 @@ Main.system.createEnemies = function () {
                 slime = ['rat'];
                 break;
             case 3:
-                lump = ['dog'];
-                fire = ['dog'];
-                ice = ['dog'];
-                slime = ['dog'];
+                lump = ['archer', 'zombie', 'cultist', 'cultist', 'cultist'];
+                fire = ['dog', 'ratMan'];
+                ice = ['raven', 'twinWisp'];
+                slime = ['cursedRat'];
                 break;
         }
 
@@ -414,7 +415,7 @@ Main.system.pcUseDownstairs = function () {
                     newActor = Main.entity.ghoul(position[0], position[1]);
                     break;
                 case 3:
-                    newActor = Main.entity.gargoyle(position[0], position[1]);
+                    newActor = Main.entity.giovanni(position[0], position[1]);
                     break;
             }
             Main.getEntity('timer').scheduler.add(newActor, true, 2);
@@ -437,23 +438,28 @@ Main.system.pcUseDownstairs = function () {
 
             Main.system.checkAchNoExamine();
 
-            // TODO: Change this when the 3rd level is ready.
-            if (Main.getEntity('gameProgress').BossFight.getDungeonLevel() < 2) {
+            if (Main.getEntity('gameProgress').BossFight.getDungeonLevel()
+                < 3
+            ) {
                 Main.system.saveDungeonLevel();
                 Main.system.saveSeed();
                 Main.system.saveInventory();
                 Main.system.saveOrbsOnTheGround();
+
+                Main.getEntity('message').Message.pushMsg(
+                    Main.text.action('save')
+                );
+                Main.getEntity('message').Message.pushMsg(
+                    Main.text.action('closeOrReload')
+                );
+
+                Main.display.clear();
+                Main.screens.main.display();
+            } else {
+                Main.display.clear();
+                Main.screens.main.exit();
+                Main.screens.cutScene.enter(true);
             }
-
-            Main.getEntity('message').Message.pushMsg(
-                Main.text.action('save')
-            );
-            Main.getEntity('message').Message.pushMsg(
-                Main.text.action('closeOrReload')
-            );
-
-            Main.display.clear();
-            Main.screens.main.display();
 
             break;
     }
@@ -890,12 +896,21 @@ Main.system.pcAttack = function (target, attackType) {
             : Main.getEntity('pc').Damage.getDamage('base')
     );
 
+    // Check the boss related special achievements.
     if (target.getEntityName() === 'ghoul' && attackType !== 'base') {
         Main.getEntity('gameProgress').Achievement.setBoss3Special(false);
     }
+    if (target.getEntityName() === 'giovanni') {
+        Main.system.checkAchBoss4Special(target, attackType);
+    }
 
     // Step 2A-4: The enemy is dead.
-    if (target.HitPoint.isDead()) {
+    if (target.HitPoint.isDead()
+        && (target.getEntityName() !== 'giovanni'
+            || target.getEntityName() === 'giovanni'
+            && attackType === 'base' && lastOrb === 'armor'
+        )
+    ) {
         // 1a-5: Drop rate: the boss.
         if (target.CombatRole.getRole('isBoss')) {
             dropRate = Main.getEntity('pc').DropRate.getDropRate('fire');
@@ -949,11 +964,25 @@ Main.system.pcAttack = function (target, attackType) {
             Main.system.checkAchBossNormal(target);
             Main.system.checkAchBoss3Special(target);
         }
+        // 5c-5: Prompt the player to use the downstairs after the final fight.
+        if (target.getEntityName() === 'giovanni') {
+            Main.getEntity('message').Message.pushMsg(
+                Main.text.action('useDownstairs')
+            );
+        }
     }
     // Step 2B-4: The enemy is still alive.
     else {
         Main.getEntity('message').Message.pushMsg(
             Main.text.hitTarget(target));
+    }
+
+    // Step 2C-4: Revive Giovanni if possible.
+    if (target.getEntityName() === 'giovanni'
+        && target.HitPoint.isDead()
+        && (attackType !== 'base' || lastOrb !== 'armor')
+    ) {
+        Main.system.reviveGiovanni(target);
     }
 
     // Step 3-4: Check the boss related special achievements.

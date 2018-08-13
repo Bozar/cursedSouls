@@ -162,3 +162,39 @@ Main.system.checkAchBoss3Special = function (actor) {
         Main.system.checkAchUnlockAll();
     }
 };
+
+Main.system.checkAchBoss4Special = function (target, attackType) {
+    let check = ['ice', 'fire', 'lump'];
+    let orb = attackType;
+
+    if (attackType === 'base'
+        && Main.getEntity('pc').Inventory.getLastOrb() === 'armor'
+    ) {
+        orb = 'ice';
+    }
+
+    if (Main.system.achievementIsLocked('boss4Special')) {
+        Main.getEntity('gameProgress').Achievement.setBoss4Special(orb);
+
+        if (arrayEquals(check,
+            Main.getEntity('gameProgress').Achievement.getBoss4Special())
+        ) {
+            Main.system.unlockAchievement('boss4Special');
+            Main.system.checkAchUnlockAll();
+        }
+    }
+
+    // Helper function
+    function arrayEquals(left, right) {
+        if (left.length !== 3 || right.length !== 3) {
+            return false;
+        }
+
+        for (let i = 0; i < 3; i++) {
+            if (left[i] !== right[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+};

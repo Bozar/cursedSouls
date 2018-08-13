@@ -336,6 +336,8 @@ Main.system.npcActBeforeDeath = function (actor) {
             summon('dog');
             break;
         case 'wisp':
+        case 'twinWisp':
+        case 'cursedRat':
             if (Main.system.getDistance(actor, Main.getEntity('pc')) === 1
                 && Main.getEntity('pc').Inventory.canBeCursed()
             ) {
@@ -363,12 +365,8 @@ Main.system.npcCannotSeePC = function (actor) {
 };
 
 Main.system.npcCursePC = function (actor, unlockEngine, duration) {
-    Main.getEntity('pc').Inventory.setCurse(
-        actor.Damage.getCurse()
-    );
-    Main.getEntity('message').Message.pushMsg(
-        Main.text.npcCurse(actor)
-    );
+    Main.getEntity('pc').Inventory.setCurse(actor.Damage.getCurse());
+    Main.getEntity('message').Message.pushMsg(Main.text.npcCurse(actor));
 
     if (unlockEngine) {
         Main.system.unlockEngine(duration);
@@ -476,7 +474,7 @@ Main.system.ghoulAct = function () {
     }
     // 2B-3: Set bombs.
     else if (Main.system.getDistance(this, Main.getEntity('pc'))
-        < this.AttackRange.getRange('bomb')
+        <= this.AttackRange.getRange('bomb')
         && !Main.getEntity('pc').CombatRole.getRole('isFrozen')
     ) {
         Main.system.npcSetBomb(this, 'timeBomb', setBomb);
@@ -498,15 +496,22 @@ Main.system.bombAct = function () {
                     Main.text.action('freezeTime')
                 );
                 break;
+            case 'hpBomb':
+                Main.system.pcTakeDamage(this.Damage.getDamage('base'));
+                Main.system.npcHitOrKill(this, 1);
+                break;
         }
-    } else if (Main.system.isInSight(this, Main.getEntity('pc'))) {
-        Main.getEntity('message').Message.pushMsg(Main.text.bombExplode(this));
     }
+    // else if (Main.system.isInSight(this, Main.getEntity('pc'))) {
+    //     Main.getEntity('message').Message.pushMsg(Main.text.bombExplode(this));
+    // }
 
     Main.getEntity('timer').scheduler.remove(this);
     Main.getEntity('npc').delete(this.getID());
 
-    Main.system.unlockEngine(1);
+    if (!Main.getEntity('pc').Inventory.getIsDead()) {
+        Main.system.unlockEngine(1);
+    }
 };
 
 Main.system.npcSetBomb = function (actor, bomb, duration) {
@@ -547,4 +552,110 @@ Main.system.npcSetBomb = function (actor, bomb, duration) {
     Main.getEntity('message').Message.pushMsg(Main.text.setBomb(actor));
 
     Main.system.unlockEngine(duration);
+};
+
+Main.system.giovanniAct = function () {
+    let move = this.ActionDuration.getDuration('base');
+    let setBomb = this.ActionDuration.getDuration('base');
+
+    Main.getEntity('timer').engine.lock();
+
+    // 1-3: Search the nearby PC or wait 1 turn.
+    if (Main.system.npcCannotSeePC(this)
+        || this.CombatRole.getRole('justRevived')
+    ) {
+        Main.system.npcSearchOrWait(this, move);
+        this.CombatRole.setRole('justRevived', false);
+    }
+    // 2A-3: Keep distance.
+    else if (Main.getEntity('pc').CombatRole.getRole('isFrozen')) {
+        Main.system.npcKeepDistance(
+            this, move, this.AttackRange.getRange('bomb')
+        );
+    }
+    // 2B-3: Set the Remote Bomb.
+    else if (Main.system.getDistance(this, Main.getEntity('pc')) === 1) {
+        Main.system.npcSetBomb(this, 'hpBomb', setBomb);
+    }
+    // 2C-3: Set bombs.
+    else if (Main.system.getDistance(this, Main.getEntity('pc'))
+        <= this.AttackRange.getRange('bomb')
+    ) {
+        switch (Math.floor(ROT.RNG.getUniform() * 2)) {
+            case 0:
+                Main.system.npcSetBomb(this, 'timeBomb', setBomb);
+                break;
+            case 1:
+                Main.system.npcSetBomb(this, 'hpBomb', setBomb);
+                break;
+        }
+    }
+    // 3-3: Approach the PC in sight.
+    else {
+        Main.system.npcMoveClose(this, move);
+    }
+};
+
+Main.system.reviveGiovanni = function (target) {
+    let newPosition = [];
+    let addOrb = [];
+
+    // Move the PC to the downstairs.
+    Main.getEntity('pc').Position.setX(
+        Main.getEntity('downstairs').Position.getX()
+    );
+    Main.getEntity('pc').Position.setY(
+        Main.getEntity('downstairs').Position.getY()
+    );
+
+    // Move Giovanni & raise HP.
+    newPosition = Main.system.placeBoss(
+        Main.getEntity('downstairs'),
+        Main.getEntity('pc'),
+        2
+    );
+
+    target.Position.setX(newPosition[0]);
+    target.Position.setY(newPosition[1]);
+    target.HitPoint.takeDamage(-1);
+    target.CombatRole.setRole('justRevived', true);
+
+    // Add orbs if necessary.
+    if (!hasIceOrb()) {
+        if (Main.getEntity('orb').size > 20) {
+            Main.entities.set('orb', new Map());
+        }
+
+        addOrb = [
+            Main.entity.orb('fire'),
+            Main.entity.orb('ice'),
+            Main.entity.orb('slime'),
+            Main.entity.orb('lump')
+        ];
+
+        addOrb.forEach((orbID) => {
+            Main.system.placeActor(
+                Main.getEntity('orb').get(orbID),
+                Main.system.verifyOrbPosition);
+        });
+    }
+
+    // Forbid unlocking Giovanni's special achievement.
+    Main.getEntity('gameProgress').Achievement.clearBoss4Special();
+
+    // Print cut-scene text.
+    Main.text.action('reviveGiovanni').forEach((text) => {
+        Main.getEntity('message').Message.pushMsg(text);
+    });
+
+    // Helper function
+    function hasIceOrb() {
+        let orbName = [];
+
+        Main.getEntity('orb').forEach((orbEntity) => {
+            orbName.push(orbEntity.getEntityName());
+        });
+
+        return orbName.some((name) => { return name === 'ice'; });
+    }
 };
